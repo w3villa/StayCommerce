@@ -1,29 +1,58 @@
-<h1>Chats</h1>
+<div class="card mb-7">
+  <div class="card-header">
+    <div class="row align-items-center">
+      <div class="col-sm-6 col-12 mb-4 mb-sm-0">
+          <!-- Title -->
+          <h1 class="h3 mb-0 ls-tight">Chats</h1>
+      </div>
+      <!-- Actions -->
+      <div class="col-sm-6 col-12 text-sm-end">
+          <div class="mx-n1">
+          <%= link_to new_admin_chat_path, class:"btn d-inline-flex btn-sm btn-primary mx-1" do %>
+              <span class=" pe-2">
+              <i class="bi bi-plus"></i>
+              </span>
+              <span>Create New</span>
+          <%end%>
+          </div>
+      </div>
+    </div>  
+  </div>
+  <div class="table-responsive">
+    <table class="table table-hover table-nowrap">
+      <thead class="table-light">
+        <tr>
+          <th scope="col">Sender</th>
+          <th scope="col">Receiver</th>
+          <th scope="col">Property</th>
+          <th></th>
+        </tr>
+      </thead>
 
-<%= link_to 'New Chat', new_admin_chat_path, class: 'btn btn-primary' %>
+      <tbody>
+       <% @chats.each do |chat| %>
+       <tr>
+            <td><%= chat.sender_id %></td>
+            <td><%= chat.receiver_id %></td>
+            <td><%= chat.property_id %></td>
+            <td class="text-end d-flex justify-content-end">
+              <%= link_to edit_admin_chat_path(chat), class: 'btn d-inline-flex btn-sm btn-neutral mx-1' do %>
+                <i class="bi bi-pencil">Edit</i>
+              <% end %>  
+              <%= link_to admin_chat_path(chat), class: 'btn d-inline-flex btn-sm btn-neutral mx-1' do %>
+                <i class="bi bi-eye">View</i>
+              <% end %>
+              <%= button_to admin_chat_path(chat), method: :delete, data: { turbo_method: :delete, turbo_confirm: 'Are you sure?' }, class: 'btn btn-sm btn-neutral mx-1 text-danger-hover' do %>
+                <i class="bi bi-trash">Destroy</i>
+              <% end %>                
+           </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
 
-<table class="table">
-  <thead>
-    <tr>
-      <th>Sender</th>
-      <th>Receiver</th>
-      <th>Property</th>
-      <th colspan="3">Actions</th>
-    </tr>
-  </thead>
-
-  <tbody>
-    <% @chats.each do |chat| %>
-      <tr>
-        <td><%= chat.sender_id %></td>
-        <td><%= chat.receiver_id %></td>
-        <td><%= chat.property_id %></td>
-        <td><%= link_to 'Show', admin_chat_path(chat), class: 'btn btn-info' %></td>
-        <td><%= link_to 'Edit', edit_admin_chat_path(chat), class: 'btn btn-primary' %></td>
-        <td>
-          <%= link_to 'Destroy', admin_chat_path(chat), method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-danger' %>
-        </td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
+  <div class="card-footer border-0 py-5">
+    <span class="text-muted text-sm">Showing 10 items out of 250 results found</span>
+  </div>
+</div>  
