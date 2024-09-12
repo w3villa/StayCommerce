@@ -1,0 +1,31 @@
+<h1>Rooms</h1>
+
+<%= link_to 'New Room', new_admin_room_path, class: 'btn btn-primary' %>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>Property</th>
+      <th>Max Guests</th>
+      <th>Price Per Night</th>
+      <th>Room Type</th>
+      <th colspan="3">Actions</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @rooms.each do |room| %>
+      <tr>
+        <td><%= room.property_id %></td>
+        <td><%= room.max_guests %></td>
+        <td><%= room.price_per_night %></td>
+        <td><%= room.room_type %></td>
+        <td><%= link_to 'Show', admin_room_path(room), class: 'btn btn-info' %></td>
+        <td><%= link_to 'Edit', edit_admin_room_path(room), class: 'btn btn-primary' %></td>
+        <td>
+          <%= link_to 'Destroy', admin_room_path(room), method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-danger' %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

@@ -1,0 +1,9 @@
+<h1>Role Details</h1>
+
+<p>
+  <strong>Name:</strong>
+  <%= @role.name %>
+</p>
+
+<%= link_to 'Edit', edit_admin_role_path(@role), class: 'btn btn-warning' %>
+<%= link_to 'Back', admin_roles_path, class: 'btn btn-secondary' %>

@@ -1,0 +1,35 @@
+<h1>Bookings</h1>
+
+<%= link_to 'New Booking', new_admin_booking_path, class: 'btn btn-primary' %>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>User</th>
+      <th>Room</th>
+      <th>Check In Date</th>
+      <th>Check Out Date</th>
+      <th>Number of Guests</th>
+      <th>Status</th>
+      <th colspan="3">Actions</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @bookings.each do |booking| %>
+      <tr>
+        <td><%= booking.user_id %></td>
+        <td><%= booking.room_id %></td>
+        <td><%= booking.check_in_date %></td>
+        <td><%= booking.check_out_date %></td>
+        <td><%= booking.number_of_guests %></td>
+        <td><%= booking.status %></td>
+        <td><%= link_to 'Show', admin_booking_path(booking), class: 'btn btn-info' %></td>
+        <td><%= link_to 'Edit', edit_admin_booking_path(booking), class: 'btn btn-primary' %></td>
+        <td>
+          <%= link_to 'Destroy', admin_booking_path(booking), method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-danger' %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

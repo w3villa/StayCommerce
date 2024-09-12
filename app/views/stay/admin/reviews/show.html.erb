@@ -1,0 +1,19 @@
+<h1>Review Details</h1>
+
+<p>
+  <strong>Booking ID:</strong>
+  <%= @review.booking_id %>
+</p>
+
+<p>
+  <strong>Rating:</strong>
+  <%= @review.rating %>
+</p>
+
+<p>
+  <strong>Comment:</strong>
+  <%= @review.comment %>
+</p>
+
+<%= link_to 'Edit', edit_admin_review_path(@review), class: 'btn btn-primary' %>
+<%= link_to 'Back', admin_reviews_path, class: 'btn btn-secondary' %>
