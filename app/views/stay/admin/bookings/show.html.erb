@@ -1,0 +1,34 @@
+<h1>Booking Details</h1>
+
+<p>
+  <strong>User:</strong>
+  <%= @booking.user_id %>
+</p>
+
+<p>
+  <strong>Room:</strong>
+  <%= @booking.room_id %>
+</p>
+
+<p>
+  <strong>Check In Date:</strong>
+  <%= @booking.check_in_date %>
+</p>
+
+<p>
+  <strong>Check Out Date:</strong>
+  <%= @booking.check_out_date %>
+</p>
+
+<p>
+  <strong>Number of Guests:</strong>
+  <%= @booking.number_of_guests %>
+</p>
+
+<p>
+  <strong>Status:</strong>
+  <%= @booking.status %>
+</p>
+
+<%= link_to 'Edit', edit_admin_booking_path(@booking), class: 'btn btn-primary' %>
+<%= link_to 'Back', admin_bookings_path, class: 'btn btn-secondary' %>

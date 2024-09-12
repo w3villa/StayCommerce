@@ -1,0 +1,24 @@
+<h1>Room Details</h1>
+
+<p>
+  <strong>Property:</strong>
+  <%= @room.property_id %>
+</p>
+
+<p>
+  <strong>Max Guests:</strong>
+  <%= @room.max_guests %>
+</p>
+
+<p>
+  <strong>Price Per Night:</strong>
+  <%= @room.price_per_night %>
+</p>
+
+<p>
+  <strong>Room Type:</strong>
+  <%= @room.room_type %>
+</p>
+
+<%= link_to 'Edit', edit_admin_room_path(@room), class: 'btn btn-primary' %>
+<%= link_to 'Back', admin_rooms_path, class: 'btn btn-secondary' %>

@@ -1,0 +1,24 @@
+<h1>Message Details</h1>
+
+<p>
+  <strong>Body:</strong>
+  <%= @message.body %>
+</p>
+
+<p>
+  <strong>Sender:</strong>
+  <%= @message.sender_id %>
+</p>
+
+<p>
+  <strong>Receiver:</strong>
+  <%= @message.receiver_id %>
+</p>
+
+<p>
+  <strong>Chat:</strong>
+  <%= @message.chat_id %>
+</p>
+
+<%= link_to 'Edit', edit_admin_message_path(@message), class: 'btn btn-primary' %>
+<%= link_to 'Back', admin_messages_path, class: 'btn btn-secondary' %>

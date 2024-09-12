@@ -1,0 +1,56 @@
+<%= form_with(model: [:admin, property], local: true) do |f| %>
+  <% if property.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(property.errors.count, "error") %> prohibited this property from being saved:</h2>
+      <ul>
+        <% property.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :active %>
+    <%= f.check_box :active %>
+  </div>
+
+  <div class="field">
+    <%= f.label :title %>
+    <%= f.text_field :title, class: 'form-control' %>
+  </div>
+
+  <div class="field">
+    <%= f.label :description %>
+    <%= f.text_area :description, class: 'form-control' %>
+  </div>
+
+  <div class="field">
+    <%= f.label :availability_start %>
+    <%= f.date_select :availability_start, class: 'form-control' %>
+  </div>
+
+  <div class="field">
+    <%= f.label :availability_end %>
+    <%= f.date_select :availability_end, class: 'form-control' %>
+  </div>
+
+  <div class="field">
+    <%= f.label :user_id %>
+    <%= f.number_field :user_id, class: 'form-control' %>
+  </div>
+
+  <div class="field">
+    <%= f.label :room_id %>
+    <%= f.number_field :room_id, class: 'form-control' %>
+  </div>
+
+  <div class="field">
+    <%= f.label :address_id %>
+    <%= f.number_field :address_id, class: 'form-control' %>
+  </div>
+
+  <div class="actions">
+    <%= f.submit class: 'btn btn-primary' %>
+  </div>
+<% end %>

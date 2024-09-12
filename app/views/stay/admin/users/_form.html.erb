@@ -1,0 +1,68 @@
+<%= form_with(model: [:admin, user], local: true) do |f| %>
+  <% if user.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(user.errors.count, "error") %> prohibited this user from being saved:</h2>
+      <ul>
+        <% user.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :email %>
+    <%= f.email_field :email, class: 'form-control' %>
+  </div>
+
+  <div class="field">
+    <%= f.label :password %>
+    <%= f.text_field :password, class: 'form-control' %>
+  </div>
+
+  <div class="field">
+    <%= f.label :password_confirmation %>
+    <%= f.text_field :password_confirmation, class: 'form-control' %>
+  </div>
+
+  <div class="field">
+    <%= f.label :first_name %>
+    <%= f.text_field :first_name, class: 'form-control' %>
+  </div>
+
+  <div class="field">
+    <%= f.label :last_name %>
+    <%= f.text_field :last_name, class: 'form-control' %>
+  </div>
+
+  <div class="field">
+    <%= f.label :phone %>
+    <%= f.text_field :phone, class: 'form-control' %>
+  </div>
+
+  <div class="field">
+    <%= f.label :date_of_birth %>
+    <%= f.date_select :date_of_birth, class: 'form-control' %>
+  </div>
+
+  <div class="field">
+    <%= f.label :gender %>
+    <%= f.select :gender, ['Male', 'Female', 'Other'], class: 'form-control' %>
+  </div>
+
+  <div class="field">
+    <%= f.label :roles %>
+    <%= f.collection_check_boxes :stay_role_ids, Stay::Role.all, :id, :name do |role_form| %>
+      <div class="checkbox">
+        <%= role_form.label for: "user_stay_role_#{role_form.object.id}" do %>
+          <%= role_form.check_box id: "user_stay_role_#{role_form.object.id}" %>
+          <%= role_form.object.name %>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>
