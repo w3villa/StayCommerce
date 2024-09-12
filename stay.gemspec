@@ -1,7 +1,7 @@
 require_relative "lib/stay/version"
 
 Gem::Specification.new do |spec|
-  spec.name        = "stay"
+  spec.name        = "stay_commerce"
   spec.version     = Stay::VERSION
   spec.authors     = [ "w3villa-vikaspal" ]
   spec.email       = [ "vikas.pal@w3villa.com" ]
