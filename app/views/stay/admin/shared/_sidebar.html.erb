@@ -107,9 +107,9 @@
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">
+            <%= button_to admin_logout_path, method: :delete, class: 'nav-link' do %>
               <i class="bi bi-box-arrow-left"></i> Logout
-            </a>
+            <%end%>
           </li>
         </ul>
       </div>

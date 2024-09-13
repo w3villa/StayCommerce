@@ -4,9 +4,28 @@ Stay::Engine.routes.draw do
     sessions: 'stay/users/sessions',
     passwords: 'stay/users/passwords'}
 
-    root to: '/'
+  namespace :admin do
+    root to: 'home#index'
+    devise_for :users,
+              class_name: "Stay::User",
+              controllers: { sessions: 'stay/admin/sessions',
+                                passwords: 'stay/admin/passwords' },
+              skip: [:unlocks, :omniauth_callbacks],
+              path_names: { sign_out: 'logout' }
 
-    namespace :admin do
+    devise_scope :user do
+      get '/authorization_failure', to: 'sessions#authorization_failure', as: :unauthorized
+      get '/login' => 'sessions#new', :as => :login
+      post '/login' => 'sessions#create', :as => :create_new_session
+      delete '/logout' => 'sessions#destroy', :as => :logout
+      get 'sign_up', to: 'registrations#new', as: :new_registration
+      post 'sign_up', to: 'registrations#create', as: :registration
+      get '/password/new' => 'passwords#new', :as => :new_password
+      post '/password' => 'passwords#create', :as => :reset_password
+      get '/password/change' => 'passwords#edit', :as => :edit_password
+      put '/password/change' => 'passwords#update', :as => :update_password
+    end
+
     get '/', to: 'dashboard#index'
     resources :addresses
     resources :roles
