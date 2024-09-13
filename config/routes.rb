@@ -4,7 +4,7 @@ Stay::Engine.routes.draw do
     sessions: 'stay/users/sessions',
     passwords: 'stay/users/passwords'}
 
-  root to: '/'
+    root to: '/'
 
     namespace :admin do
     get '/', to: 'dashboard#index'
