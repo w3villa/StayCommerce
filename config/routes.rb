@@ -5,6 +5,7 @@ Stay::Engine.routes.draw do
     passwords: 'stay/users/passwords'}
 
   namespace :admin do
+    root to: 'home#index'
     devise_for :users,
               class_name: "Stay::User",
               controllers: { sessions: 'stay/admin/sessions',

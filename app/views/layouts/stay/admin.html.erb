@@ -15,8 +15,9 @@
   <%= render 'stay/admin/shared/header' %>
   <div class="d-flex flex-column flex-lg-row h-lg-full bg-surface-secondary">
     <!-- Vertical Navbar -->
-    <%= render 'stay/admin/shared/sidebar' %>
-
+    <% if user_signed_in? %>
+      <%= render 'stay/admin/shared/sidebar' %>
+    <%end%>
   <!-- Main content -->
   <div class="h-screen flex-grow-1 overflow-y-lg-auto">
     <main class="bg-surface-secondary">
