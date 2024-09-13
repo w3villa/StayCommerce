@@ -37,7 +37,7 @@ module Stay
 
       def destroy
         @property.destroy
-        redirect_to properties_url, notice: 'Property was successfully destroyed.'
+        redirect_to admin_properties_url, notice: 'Property was successfully destroyed.'
       end
 
       private

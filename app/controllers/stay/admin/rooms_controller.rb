@@ -17,7 +17,7 @@ module Stay
       def create
         @room = Stay::Room.new(room_params)
         if @room.save
-          redirect_to @room, notice: 'Room was successfully created.'
+          redirect_to admin_room_path(@room), notice: 'Room was successfully created.'
         else
           render :new
         end
@@ -28,7 +28,7 @@ module Stay
 
       def update
         if @room.update(room_params)
-          redirect_to @room, notice: 'Room was successfully updated.'
+          redirect_to admin_room_path(@room), notice: 'Room was successfully updated.'
         else
           render :edit
         end
@@ -36,7 +36,7 @@ module Stay
 
       def destroy
         @room.destroy
-        redirect_to rooms_url, notice: 'Room was successfully destroyed.'
+        redirect_to admin_rooms_url, notice: 'Room was successfully destroyed.'
       end
 
       private
