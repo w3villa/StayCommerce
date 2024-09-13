@@ -1,5 +1,6 @@
 module Stay
   class ApplicationController < ActionController::Base
+    layout :set_layout
     protect_from_forgery with: :null_session
     before_action :authenticate_devise_api_token!
 
@@ -11,5 +12,14 @@ module Stay
       end
     end
 
+    private
+     
+    def set_layout
+      if self.class.name.start_with?('Stay::Admin::')
+        "stay/admin"
+      else
+        "stay/application"
+      end
+    end  
   end
 end
