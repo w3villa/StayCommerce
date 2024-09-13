@@ -1,5 +1,5 @@
 
-class Stay::Api::V1::BookingsController < Stay::ApplicationController
+class Stay::Api::V1::BookingsController < Stay::BaseApiController
     before_action :set_room
     before_action :set_booking , only: [:show, :update]
     

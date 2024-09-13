@@ -1,4 +1,4 @@
-class Stay::Api::V1::PropertiesController < Stay::ApplicationController
+class Stay::Api::V1::PropertiesController < Stay::BaseApiController
     before_action :set_property, only: [:show]
 
     def index
