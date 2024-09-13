@@ -1,4 +1,4 @@
-class Stay::Api::V1::RoomsController < Stay::ApplicationController
+class Stay::Api::V1::RoomsController < Stay::BaseApiController
     before_action :set_property
     before_action :set_room, only: [:show]
 

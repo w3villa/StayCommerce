@@ -1,4 +1,4 @@
-class Stay::Api::V1::ProfilesController < Stay::ApplicationController
+class Stay::Api::V1::ProfilesController < Stay::BaseApiController
     before_action :set_user, only: [:show, :update]
 
     def show
