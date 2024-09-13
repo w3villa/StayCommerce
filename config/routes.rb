@@ -36,4 +36,17 @@ Stay::Engine.routes.draw do
     resources :chats
     resources :messages
   end
+
+  namespace :api do
+    namespace :v1 do
+      resources :properties, only: [:index, :show] do
+        resources :rooms, only: [:index, :show] do
+          resources :bookings, only: [:create, :show, :update]
+        end
+      end
+      
+      resources :profiles , only: [:show, :update]
+    end
+  end
+
 end
