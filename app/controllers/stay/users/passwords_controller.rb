@@ -3,7 +3,7 @@
 class Stay::Users::PasswordsController < Devise::PasswordsController
   skip_before_action :verify_authenticity_token
   protect_from_forgery with: :null_session
-  skip_before_action :authenticate_devise_api_token!
+  # skip_before_action :authenticate_devise_api_token!
   # GET /resource/password/new
   def new
     super
