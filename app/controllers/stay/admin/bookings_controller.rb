@@ -36,7 +36,7 @@ module Stay
 
       def destroy
         @booking.destroy
-        redirect_to bookings_url, notice: 'Booking was successfully destroyed.'
+        redirect_to admin_bookings_url, notice: 'Booking was successfully destroyed.'
       end
 
       private

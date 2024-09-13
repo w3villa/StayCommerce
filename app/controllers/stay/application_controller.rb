@@ -3,7 +3,7 @@ module Stay
 
     def after_sign_in_path_for(resource)
       if resource.has_role?('admin')
-        admin_dashboard_path
+        admin_path
       else
         root_path
       end
