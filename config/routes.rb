@@ -51,5 +51,6 @@ Stay::Engine.routes.draw do
       resources :profiles , only: [:show, :update]
     end
   end
-
+  
+  root 'home#index'
 end
