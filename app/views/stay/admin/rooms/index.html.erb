@@ -22,6 +22,7 @@
     <table class="table table-hover table-nowrap">
       <thead class="table-light">
     <tr>
+      <th scope="col">Image</th>
       <th scope="col">Property</th>
       <th scope="col">Max Guests</th>
       <th scope="col">Price Per Night</th>
@@ -33,6 +34,9 @@
   <tbody>
     <% @rooms.each do |room| %>
       <tr>
+        <td>
+          <%= image_tag main_app.url_for(room.images.first), size: "60x60" if room.images.attached? %>
+        </td>
         <td><%= room.property_id %></td>
         <td><%= room.max_guests %></td>
         <td><%= room.price_per_night %></td>

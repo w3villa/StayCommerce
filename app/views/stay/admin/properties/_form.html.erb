@@ -50,6 +50,11 @@
     <%= f.number_field :address_id, class: 'form-control' %>
   </div>
 
+  <div class="field">
+    <%= f.label :images, "Upload Images" %>
+    <%= f.file_field :images, multiple: true %>
+  </div>
+
   <div class="actions">
     <%= f.submit class: 'btn btn-primary' %>
   </div>

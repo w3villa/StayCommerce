@@ -1,6 +1,11 @@
 <h1>Room Details</h1>
 
 <p>
+  <strong>Image:</strong>
+  <%= image_tag main_app.url_for(@room.images.first), size: "60x60" if @room.images.attached? %>
+</p>
+
+<p>
   <strong>Property:</strong>
   <%= @room.property_id %>
 </p>
