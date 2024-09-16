@@ -1,7 +1,7 @@
 module Stay
   class HomeController < ActionController::Base
-  #  def index
-  #   @properties = Stay::Property.all
-  #  end
+   def index
+    render layout: 'stay/application'
+   end
   end
 end
