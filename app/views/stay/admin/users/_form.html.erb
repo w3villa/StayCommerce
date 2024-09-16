@@ -42,7 +42,7 @@
 
   <div class="field">
     <%= f.label :date_of_birth %>
-    <%= f.date_select :date_of_birth, class: 'form-control' %>
+    <%= f.text_field :date_of_birth, class: 'form-control', data: { behavior: "flatpickr" }  %>
   </div>
 
   <div class="field">
