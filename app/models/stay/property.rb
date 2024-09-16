@@ -5,5 +5,6 @@ module Stay
 
     belongs_to :user, class_name: 'Stay::User', optional: true
     belongs_to :address, class_name: 'Stay::Address', optional: true
+    has_many_attached :images
   end
 end

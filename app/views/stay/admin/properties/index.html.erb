@@ -22,6 +22,7 @@
     <table class="table table-hover table-nowrap">
       <thead class="table-light">
     <tr>
+      <th scope="col"></th>
       <th scope="col">Active</th>
       <th scope="col">Title</th>
       <th scope="col">Description</th>
@@ -37,6 +38,9 @@
   <tbody>
     <% @properties.each do |property| %>
       <tr>
+        <td>
+          <%= image_tag main_app.url_for(property.images.first), size: "60x60" if property.images.attached? %>
+        </td>
         <td>
           <%= property.active %>
           <span class="badge badge-lg badge-dot <%= property.active ? 'badge-primary' : 'badge-warning' %>">
