@@ -28,5 +28,6 @@ Gem::Specification.new do |spec|
   spec.add_dependency "mysql2"
   spec.add_dependency "sassc-rails"
   spec.add_dependency "bootstrap"
+  spec.add_dependency 'activestorage'
   spec.add_development_dependency 'pry'
 end

@@ -30,6 +30,11 @@
     <%= f.number_field :room_type, class: 'form-control' %>
   </div>
 
+  <div class="field">
+    <%= f.label :images, "Upload Images" %>
+    <%= f.file_field :images, multiple: true %>
+  </div>
+
   <div class="actions">
     <%= f.submit %>
   </div>

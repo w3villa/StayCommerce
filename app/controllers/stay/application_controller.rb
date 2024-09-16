@@ -1,8 +1,10 @@
 module Stay
   class ApplicationController < ActionController::Base
+    include Rails.application.routes.url_helpers
     protect_from_forgery
     layout :set_layout
     protect_from_forgery with: :null_session
+    before_action :set_active_storage_url_options
     # before_action :authenticate_devise_api_token!
 
     def after_sign_in_path_for(resource)
@@ -21,6 +23,10 @@ module Stay
       else
         "stay/application"
       end
+    end
+
+    def set_active_storage_url_options
+      ActiveStorage::Current.url_options = {host: 'localhost', port: 3000} if Rails.env.development?
     end  
   end
 end

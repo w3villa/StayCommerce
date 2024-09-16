@@ -45,7 +45,7 @@
               <%= link_to edit_admin_booking_path(booking), class: 'btn d-inline-flex btn-sm btn-neutral mx-1' do %>
                 <i class="bi bi-pencil">Edit</i>
               <% end %>  
-              <%= link_to admin_bokking_path(booking), class: 'btn d-inline-flex btn-sm btn-neutral mx-1' do %>
+              <%= link_to admin_booking_path(booking), class: 'btn d-inline-flex btn-sm btn-neutral mx-1' do %>
                 <i class="bi bi-eye">View</i>
               <% end %>
               <%= button_to admin_booking_path(booking), method: :delete, data: { turbo_method: :delete, turbo_confirm: 'Are you sure?' }, class: 'btn btn-sm btn-neutral mx-1 text-danger-hover' do %>
