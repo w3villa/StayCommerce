@@ -20,6 +20,7 @@ PATH
       devise-api
       mysql2
       rails (>= 7.2.1)
+      ransack
       sassc-rails
 
 GEM
@@ -232,6 +233,10 @@ GEM
       zeitwerk (~> 2.6)
     rainbow (3.1.1)
     rake (13.2.1)
+    ransack (4.2.1)
+      activerecord (>= 6.1.5)
+      activesupport (>= 6.1.5)
+      i18n
     rdoc (6.7.0)
       psych (>= 4.0.0)
     regexp_parser (2.9.2)

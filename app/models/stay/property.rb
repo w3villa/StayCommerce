@@ -5,5 +5,13 @@ module Stay
 
     belongs_to :user, class_name: 'Stay::User', optional: true
     belongs_to :address, class_name: 'Stay::Address', optional: true
+
+    def self.ransackable_attributes(auth_object = nil)
+      ["id", "name", "created_at", "updated_at"]
+    end
+  
+    def self.ransackable_associations(auth_object = nil)
+      ["address"]
+    end
   end
 end

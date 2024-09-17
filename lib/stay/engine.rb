@@ -1,3 +1,5 @@
+require 'ransack'
+
 module Stay
   class Engine < ::Rails::Engine
     isolate_namespace Stay
