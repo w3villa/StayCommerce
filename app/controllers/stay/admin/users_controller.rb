@@ -5,7 +5,7 @@ module Stay
       
       # GET /Stay/admin/users
       def index
-        @users = Stay::User.all
+        @users = Stay::User.page(params[:page])
       end
 
       # GET /Stay/admin/users/1
