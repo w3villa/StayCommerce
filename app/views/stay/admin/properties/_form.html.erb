@@ -27,12 +27,12 @@
 
   <div class="field">
     <%= f.label :availability_start %>
-    <%= f.date_select :availability_start, class: 'form-control' %>
+    <%= f.date_field :availability_start, class: 'form-control' , data: { behavior: "flatpickr" } %>
   </div>
 
   <div class="field">
     <%= f.label :availability_end %>
-    <%= f.date_select :availability_end, class: 'form-control' %>
+    <%= f.date_field :availability_end, class: 'form-control', data: { behavior: "flatpickr" }  %>
   </div>
 
   <div class="field">
