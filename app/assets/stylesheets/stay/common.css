@@ -1,0 +1,81 @@
+.object_fit_cover{
+    object-fit: cover;
+}
+.icon-list {
+    list-style: none;
+    padding-left: 0;
+}
+.icon-list li {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+.icon-list li i {
+    font-size: 20px;
+    margin-right: 10px;
+}
+.host-info {
+    display: flex;
+    align-items: center;
+}
+.host-info img {
+    border-radius: 50%;
+    margin-right: 10px;
+}
+.price-section {
+    border: 1px solid #ddd;
+    padding: 20px;
+    border-radius: 10px;
+    background-color: #f8f9fa;
+}
+.price-section h4 {
+    font-size: 22px;
+}
+.price-section .reserve-btn {
+    width: 100%;
+    margin-top: 10px;
+}
+.review-badge {
+    background-color: #f7f7f7;
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+.price-breakdown {
+    font-size: 14px;
+    line-height: 1.5;
+}
+.lower-price-badge {
+    background-color: #f7eaea;
+    padding: 10px;
+    border-radius: 5px;
+    margin-top: 20px;
+}
+.heart-btn {
+    z-index: 10;
+    top: 10px;
+    right: 10px;
+    color: grey;
+  }
+.bi-heart{
+    font-size: 18px;
+}
+  
+  /* Ensure carousel indicators are circular (dots) */
+  .product-carousel .carousel-indicators [data-bs-target] {
+    width: 3px;
+    border-radius: 50%;
+    background-color: rgba(0, 0, 0, 0.6);
+  }
+  
+  .carousel-indicators .active {
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 50%;
+  }
+  
+  /* Customize the size of carousel controls (chevrons) */
+  .custom-carousel-control .carousel-control-prev-icon,
+  .custom-carousel-control .carousel-control-next-icon {
+    width: 20px;
+    height: 20px;
+    background-size: 100%;
+  }

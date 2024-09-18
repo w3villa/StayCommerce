@@ -15,6 +15,7 @@ PATH
   remote: .
   specs:
     stay (0.1.0)
+      activestorage
       bootstrap
       devise
       devise-api

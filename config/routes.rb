@@ -53,5 +53,6 @@ Stay::Engine.routes.draw do
     end
   end
   
-  root 'home#index'
+  root 'properties#index'
+  resources :properties, only: [:index, :show] 
 end
