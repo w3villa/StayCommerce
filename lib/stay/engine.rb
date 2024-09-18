@@ -5,7 +5,10 @@ module Stay
     isolate_namespace Stay
 
     initializer 'stay.assets.precompile' do |app|
-      app.config.assets.precompile += %w( stay/application.js stay/application.css )
+      # Check if the host application is not API-only
+      unless app.config.try(:api_only)
+       app.config.assets.precompile += %w( stay/application.js stay/application.css )
+      end
     end
   end
 end
