@@ -45,12 +45,20 @@ Stay::Engine.routes.draw do
     namespace :v1 do
       resources :properties, only: [:index, :show] do
         resources :rooms, only: [:index, :show] do
-          resources :bookings, only: [:create, :show, :update]
+          resources :bookings, only: [:create, :show, :update] do 
+            resources :payments, only: [:create, :show, :update]
+          end
         end
       end
       
       resources :profiles , only: [:show, :update]
     end
   end
+
+  resources :properties, only: [:index, :show] do
+    resources :rooms, only: [:index, :show] 
+  end
+  
+  resources :profiles , only: [:show, :update]
 
 end
