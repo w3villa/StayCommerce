@@ -7,6 +7,8 @@ module Stay
 
    def show 
     @property = Property.find(params[:id])
+    @average_rating = @property.average_rating
+    @reviews_count = @property.reviews_count
     render layout: 'stay/application'
    end 
   end

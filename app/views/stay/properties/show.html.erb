@@ -14,7 +14,7 @@
       <div class="row h-full">
         <% @property.images.drop(1).each_with_index do |image, index| %>
           <div class="col-6 mb-2">
-            <%= image_tag main_app.url_for(image), class: "img-fluid thumbnail-image object-fit-cover h-100", alt: "Thumbnail #{index + 1}" %>
+            <%= image_tag main_app.url_for(image), class: "img-fluid thumbnail-image object_fit_cover h-full", alt: "Thumbnail #{index + 1}" %>
           </div>
         <% end %>
       </div>
@@ -27,79 +27,107 @@
     <!-- Left Column - Hotel Info -->
     <div class="col-md-7">
       <h2><%= @property.title %></h2>
-      <p><%= @property.description %> • Shared bathroom</p>
+      <p><%= @property.description %></p>
       
       <!-- Reviews and Guest Info -->
       <div class="d-flex align-items-center">
         <div class="review-badge me-3">
           <strong>Guest favourite</strong><br>
-          One of the most loved homes on Airbnb, according to guests
+          One of the most loved homes, according to guests
         </div>
         <div class="text-center">
-          <strong><%= @property.rating %></strong> ⭐ <br>
-          <small><%= @property.reviews_count %> Reviews</small>
+          <strong><%= @average_rating.round(1) %></strong> ⭐ <br>
+          <small><%= @reviews_count %> Reviews</small>
         </div>
       </div>
 
       <!-- Host Information -->
       <div class="host-info my-4">
-        <img src="<%= @property.user.profile_image_url %>" alt="Host" width="50">
         <div>
-          <p>Stay with <%= @property.user.first_name %> <br> 
-          <small class="text-muted">Superhost • <%= @property.host.years_hosting %> years hosting</small></p>
+          <p>Superhost • <%= @property.user&.first_name %> <%= @property.user&.last_name %> <br> 
+          <small class="text-muted"><i class="bi bi-telephone"></i> Connect with host <%= @property.user&.phone %></small></p>
         </div>
       </div>
 
       <!-- Room Details -->
-      <ul class="icon-list">
-        <li><i class="bi bi-house-door"></i> <%= @property.room_type_description %></li>
-        <li><i class="bi bi-people"></i> Shared common spaces - You’ll share parts of the home with the Host.</li>
-        <li><i class="bi bi-bath"></i> Shared bathroom - You’ll share the bathroom with others.</li>
-        <li><i class="bi bi-calendar-check"></i> Free cancellation before <%= @property.cancellation_deadline %> - Get a full refund if you change your mind.</li>
-      </ul>
+      
     </div>
 
     <!-- Right Column - Price Section -->
     <div class="col-md-5">
       <div class="price-section">
-        <h4><del>₹<%= @property.original_price %></del> ₹<%= @property.discounted_price %> <small class="text-muted">/ night</small></h4>
+        <h4>₹<%= @property.rooms.first&.price_per_night %> <small class="text-muted">/ night</small></h4>
 
         <!-- Date and Guest Selection -->
         <div class="row my-3">
           <div class="col">
             <label for="check-in">Check-in</label>
-            <input type="date" class="form-control" id="check-in" value="<%= @property.check_in_date %>">
+            <input type="date" class="form-control" id="check-in" value="">
           </div>
           <div class="col">
             <label for="check-out">Check-out</label>
-            <input type="date" class="form-control" id="check-out" value="<%= @property.check_out_date %>">
+            <input type="date" class="form-control" id="check-out" value="">
           </div>
         </div>
-        <label for="guests">Guests</label>
-        <select id="guests" class="form-control mb-3">
-          <% (1..@property.max_guests).each do |guest_count| %>
-            <option><%= guest_count %> guest<%= "s" if guest_count > 1 %></option>
-          <% end %>
-        </select>
+        <div class="container-dropdown ">
+            <div class="header" onclick="toggleDropdown()">
+                <h2>GUESTS</h2>
+                <span id="guest-summary">1 guest ▼</span>
+            </div>
+            <div class="dropdown-content" id="dropdownContent">
+                <div class="guest-type">
+                    <div class="guest-info">
+                        <h3>Adults</h3>
+                        <p>Age 13+</p>
+                    </div>
+                    <div class="counter">
+                        <button onclick="updateCount('adults', -1)">-</button>
+                        <span id="adults-count">1</span>
+                        <button onclick="updateCount('adults', 1)">+</button>
+                    </div>
+                </div>
+                <div class="guest-type">
+                    <div class="guest-info">
+                        <h3>Children</h3>
+                        <p>Ages 2-12</p>
+                    </div>
+                    <div class="counter">
+                        <button onclick="updateCount('children', -1)">-</button>
+                        <span id="children-count">0</span>
+                        <button onclick="updateCount('children', 1)">+</button>
+                    </div>
+                </div>
+                <div class="guest-type">
+                    <div class="guest-info">
+                        <h3>Infants</h3>
+                        <p>Under 2</p>
+                    </div>
+                    <div class="counter">
+                        <button onclick="updateCount('infants', -1)">-</button>
+                        <span id="infants-count">0</span>
+                        <button onclick="updateCount('infants', 1)">+</button>
+                    </div>
+                </div>
+                <div class="guest-type">
+                    <div class="guest-info">
+                        <h3>Pets</h3>
+                        <p>Bringing a service animal?</p>
+                    </div>
+                    <div class="counter">
+                        <button onclick="updateCount('pets', -1)">-</button>
+                        <span id="pets-count">0</span>
+                        <button onclick="updateCount('pets', 1)">+</button>
+                    </div>
+                </div>
+                <div class="footer">
+                    If you're bringing more than 2 pets, please let your Host know.
+                </div>
+            </div>
+          </div>
 
         <!-- Reserve Button -->
         <button class="btn btn-danger reserve-btn">Reserve</button>
         <p class="text-center text-muted mt-2">You won't be charged yet</p>
-
-        <!-- Price Breakdown -->
-        <div class="price-breakdown">
-          <p>₹<%= @property.discounted_price %> x <%= @property.number_of_nights %> nights = ₹<%= @property.total_price %></p>
-          <p>Cleaning fee = ₹<%= @property.cleaning_fee %></p>
-          <p>Airbnb service fee = ₹<%= @property.service_fee %></p>
-          <hr>
-          <p><strong>Total before taxes = ₹<%= @property.total_before_taxes %></strong></p>
-        </div>
-      </div>
-
-      <!-- Lower Price Notification -->
-      <div class="lower-price-badge">
-        <strong>Lower price</strong><br>
-        Your dates are ₹<%= @property.price_difference %> less than the avg. nightly rate of the last 60 days.
       </div>
     </div>
   </div>
