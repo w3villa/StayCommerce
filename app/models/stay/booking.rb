@@ -54,7 +54,7 @@ module Stay
       self.user           = user
       self.email          = user.email if override_email
       self.created_by   ||= user
-      changes = slice(:user_id, :email, :created_by_id, :bill_address_id, :ship_address_id)
+      changes = slice(:user_id, :email, :created_by_id)
 
       # immediately persist the changes we just made, but don't use save
       # since we might have an invalid address associated
