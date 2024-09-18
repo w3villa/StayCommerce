@@ -30,5 +30,6 @@ Gem::Specification.new do |spec|
   spec.add_dependency "bootstrap"
   spec.add_dependency 'activestorage'
   spec.add_development_dependency 'pry'
+  spec.add_dependency 'state_machines-activerecord'
   spec.add_dependency 'kaminari', '~> 1.2'
 end

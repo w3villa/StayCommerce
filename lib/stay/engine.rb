@@ -1,4 +1,5 @@
 require 'active_storage/engine'
+require 'state_machines-activerecord'
 
 module Stay
   class Engine < ::Rails::Engine
