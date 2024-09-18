@@ -45,9 +45,7 @@ Stay::Engine.routes.draw do
     namespace :v1 do
       resources :properties, only: [:index, :show] do
         resources :rooms, only: [:index, :show] do
-          resources :bookings, only: [:create, :show, :update] do 
-            resources :payments, only: [:create, :show, :update]
-          end
+          resources :bookings, only: [:create, :show, :update]
         end
       end
       
@@ -56,8 +54,7 @@ Stay::Engine.routes.draw do
   end
   
   root 'properties#index'
-  resources :properties, only: [:index, :show] 
-  
+  resources :properties, only: [:index, :show]  
   resources :profiles , only: [:show, :update]
 
 end
