@@ -1,13 +1,8 @@
 <h1>Booking Details</h1>
 
 <p>
-  <strong>User:</strong>
-  <%= @booking.user_id %>
-</p>
-
-<p>
-  <strong>Room:</strong>
-  <%= @booking.room_id %>
+  <strong>Total Rooms:</strong>
+  <%= @booking.room_count %>
 </p>
 
 <p>
@@ -30,5 +25,4 @@
   <%= @booking.status %>
 </p>
 
-<%= link_to 'Edit', edit_admin_booking_path(@booking), class: 'btn btn-primary' %>
 <%= link_to 'Back', admin_bookings_path, class: 'btn btn-secondary' %>

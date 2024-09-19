@@ -35,15 +35,5 @@
   <%= @property.user_id %>
 </p>
 
-<p>
-  <strong>Room ID:</strong>
-  <%= @property.room_id %>
-</p>
-
-<p>
-  <strong>Address ID:</strong>
-  <%= @property.address_id %>
-</p>
-
 <%= link_to 'Edit', edit_admin_property_path(@property), class: 'btn btn-primary' %>
 <%= link_to 'Back', admin_properties_path, class: 'btn btn-secondary' %>

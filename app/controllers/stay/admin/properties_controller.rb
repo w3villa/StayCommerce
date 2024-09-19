@@ -47,7 +47,7 @@ module Stay
       end
 
       def property_params
-        params.require(:property).permit(:active, :title, :description, :availability_start, :availability_end, :user_id, :room_id, :address_id, images: [])
+        params.require(:property).permit(:active, :title, :description, :availability_start, :availability_end, :user_id, images: [])
       end
     end
   end
