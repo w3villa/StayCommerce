@@ -12,6 +12,7 @@ module Stay
     has_many :properties
     has_many :sent_chats, class_name: 'Stay::Chat', foreign_key: :sender_id, dependent: :destroy
     has_many :received_chats, class_name: 'Stay::Chat', foreign_key: :receiver_id, dependent: :destroy
+    has_many :addresses, class_name: 'Stay::Address'
 
     users_table_name = User.table_name
     roles_table_name = Role.table_name
@@ -25,5 +26,10 @@ module Stay
     def stay_admin?
       has_stay_role?('admin')
     end
+
+    def name
+      "#{first_name} #{last_name}"
+    end
+
   end
 end
