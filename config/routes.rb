@@ -52,5 +52,9 @@ Stay::Engine.routes.draw do
       resources :profiles , only: [:show, :update]
     end
   end
+  
+  root 'properties#index'
+  resources :properties, only: [:index, :show]  
+  resources :profiles , only: [:show, :update]
 
 end

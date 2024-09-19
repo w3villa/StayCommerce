@@ -8,11 +8,12 @@
   <!-- Bootstrap CSS -->
 
   <%= stylesheet_link_tag 'stay/application', media: 'all', 'data-turbolinks-track': 'reload' %>
-  <link href="https://unpkg.com/@webpixels/css@1.2.6/dist/index.css" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <%= javascript_include_tag 'stay/application', 'data-turbolinks-track': 'reload' %>
 </head>
 <body>
   <%= render 'stay/shared/navbar' %>
-  <%= yield %>
+  <div class="container mt-5">
+    <%= yield %>
+  </div>
 </body>
 </html>

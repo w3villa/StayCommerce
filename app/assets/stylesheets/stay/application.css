@@ -12,7 +12,11 @@
  *
  *= require_tree .
  *= require_self
- *= require stay/jquery-ui
+  *= require stay/jquery-ui
+  *= require stay/bootstrap-icons.min
+  *= require stay/bootstrap-icons_fix
+  *= require stay/webpixels
+  *= require stay/common
  *= require stay/admin/select2.min
  *= require stay/admin/flatpickr.min
  */

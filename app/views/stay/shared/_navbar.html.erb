@@ -21,7 +21,14 @@
       <!-- Right navigation -->
         <!-- Action -->
         <div class="d-flex align-items-lg-center mt-3 mt-lg-0">
-           <%= link_to "Sign in", new_user_session_path, class: "btn btn-sm btn-primary w-full w-lg-auto" %>
+          <% if user_signed_in? %>
+            <%= button_to "Log out", destroy_user_session_path, method: :delete, class: "btn btn-sm btn-danger w-full w-lg-auto me-2" %>
+          <% else %>
+          <div class="d-flex gap-2">
+            <%= link_to "Sign in", new_user_session_path, class: "btn btn-sm btn-primary w-full w-lg-auto" %>
+            <%= link_to "Register", new_user_registration_path, class: "btn btn-sm btn-primary w-full w-lg-auto" %>
+          </div>
+          <% end %>
         </div>
     </div>
   </div>
