@@ -4,10 +4,15 @@ module Stay
     STATUSES = %w[pending confirmed canceled completed].freeze
 
     belongs_to :user, class_name: 'Stay::User'
-    belongs_to :room, class_name: 'Stay::Room'
+    # belongs_to :room, class_name: 'Stay::Room'
     has_many :reviews, class_name: 'Stay::Review', dependent: :destroy
 
     has_many :payments, class_name: 'Stay::Payment', dependent: :destroy
+
+    has_many :line_items, class_name: 'Stay::LineItem', dependent: :destroy
+    has_many :rooms, through: :line_items
+    has_many :properties, through: :rooms
+
     scope :complete, -> { where.not(completed_at: nil) }
     scope :incomplete, -> { where(completed_at: nil) }
     scope :not_canceled, -> { where.not(status: 'canceled') }

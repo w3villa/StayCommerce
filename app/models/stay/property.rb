@@ -8,7 +8,9 @@ module Stay
     has_many_attached :images
 
     has_many :prices, through: :rooms
-    has_many :bookings
+
+    has_many :line_items
+    has_many :bookings, through: :line_items
 
     def has_rooms?
       rooms.any?
