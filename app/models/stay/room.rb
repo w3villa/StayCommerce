@@ -7,7 +7,6 @@ module Stay
 
     has_many :prices,
              class_name: 'Stay::Price',
-             dependent: :destroy,
-             inverse_of: :room
+             dependent: :destroy
   end
 end
