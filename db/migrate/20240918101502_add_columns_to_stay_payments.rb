@@ -12,7 +12,5 @@ class AddColumnsToStayPayments < ActiveRecord::Migration[7.2]
     add_column :stay_payments, :intent_client_key, :string
     add_column :stay_payments, :transaction_id, :string
     add_column :stay_payments, :preferences, :json
-
-    rename_column :stay_payments, :status, :state
   end
 end
