@@ -5,6 +5,7 @@ module Stay
 
     belongs_to :user, class_name: 'Stay::User'
     belongs_to :room, class_name: 'Stay::Room'
+    has_many :reviews, class_name: 'Stay::Review', dependent: :destroy
 
     has_many :payments, class_name: 'Stay::Payment', dependent: :destroy
     scope :complete, -> { where.not(completed_at: nil) }
