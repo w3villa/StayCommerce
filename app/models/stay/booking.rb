@@ -6,13 +6,14 @@ module Stay
     belongs_to :user, class_name: 'Stay::User'
     belongs_to :room, class_name: 'Stay::Room'
 
-    has_many :payments, class_name: 'Spree::Payment', dependent: :destroy
+    has_many :payments, class_name: 'Stay::Payment', dependent: :destroy
     scope :complete, -> { where.not(completed_at: nil) }
     scope :incomplete, -> { where(completed_at: nil) }
     scope :not_canceled, -> { where.not(status: 'canceled') }
-    before_create :link_by_email
+    before_create :link_by_email, :generate_number
 
     validates :status, inclusion: { in: STATUSES }
+    validates :number, uniqueness: true
 
     state_machine :status, initial: :pending do
       state :pending
@@ -61,6 +62,13 @@ module Stay
       self.class.unscoped.where(id: self).update_all(changes)
     end
 
+    def generate_number
+      loop do
+        numeric_part = rand.to_s[2..11]
+        self.number = "S#{numeric_part}"
+        break unless self.class.exists?(number: number)
+      end
+    end
 
     private
 

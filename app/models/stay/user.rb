@@ -26,5 +26,10 @@ module Stay
     def stay_admin?
       has_stay_role?('admin')
     end
+
+    def name
+      "#{first_name} #{last_name}"
+    end
+
   end
 end

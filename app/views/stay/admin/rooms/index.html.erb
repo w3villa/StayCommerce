@@ -37,10 +37,10 @@
         <td>
           <%= image_tag main_app.url_for(room.images.first), size: "60x60" if room.images.attached? %>
         </td>
-        <td><%= room.property_id %></td>
+        <td><%= room.property.title %></td>
         <td><%= room.max_guests %></td>
         <td><%= room.price_per_night %></td>
-        <td><%= room.room_type %></td>
+        <td><%= room.room_type.name %></td>
         <td class="text-end d-flex justify-content-end">
           <%= link_to edit_admin_room_path(room), class: 'btn d-inline-flex btn-sm btn-neutral mx-1' do %>
             <i class="bi bi-pencil">Edit</i>

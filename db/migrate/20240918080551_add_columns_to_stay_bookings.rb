@@ -1,5 +1,6 @@
 class AddColumnsToStayBookings < ActiveRecord::Migration[7.2]
   def change
+    add_column :stay_bookings, :number, :string
     add_column :stay_bookings, :payment_state, :string
     add_column :stay_bookings, :item_total, :decimal
     add_column :stay_bookings, :total, :decimal
