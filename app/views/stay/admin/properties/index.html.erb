@@ -28,8 +28,6 @@
       <th scope="col">Availability Start</th>
       <th scope="col">Availability End</th>
       <th scope="col">User</th>
-      <th scope="col">Room</th>
-      <th scope="col">Address</th>
       <th scope="col">Active</th>
       <th></th>
     </tr>
@@ -45,9 +43,7 @@
         <td><%= property.description %></td>
         <td><%= property.availability_start %></td>
         <td><%= property.availability_end %></td>
-        <td><%= property.user_id %></td>
-        <td><%= property.room_id %></td>
-        <td><%= property.address_id %></td>
+        <td><%= property.user.name %></td>
         <td>
           <%= property.active %>
           <span class="badge badge-lg badge-dot <%= property.active ? 'badge-primary' : 'badge-warning' %>">

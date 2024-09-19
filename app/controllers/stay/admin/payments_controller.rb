@@ -56,7 +56,7 @@ module Stay
 
       # Only allow a list of trusted parameters through.
       def payment_params
-        params.require(:payment).permit(:booking_id, :payment_method_id, :amount, :status)
+        params.require(:payment).permit(:booking_id, :payment_method_id, :amount, :state)
       end
     end
   end

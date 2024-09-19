@@ -46,7 +46,7 @@ module Stay
       end
 
       def booking_params
-        params.require(:booking).permit(:user_id, :room_id, :check_in_date, :check_out_date, :number_of_guests, :status)
+        params.require(:booking).permit(:user_id, :check_in_date, :check_out_date, :number_of_guests, :status)
       end
     end
   end

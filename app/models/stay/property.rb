@@ -7,6 +7,18 @@ module Stay
     belongs_to :address, class_name: 'Stay::Address', optional: true
     has_many_attached :images
 
+    has_many :prices, through: :rooms
+
+    has_many :line_items
+    has_many :bookings, through: :line_items
+
+    def has_rooms?
+      rooms.any?
+    end
+
+    def deleted?
+      !!deleted_at
+    end
 
     def average_rating
       all_reviews = Stay::Review.joins(booking: :room).where(stay_rooms: { property_id: id })
@@ -19,6 +31,6 @@ module Stay
     def reviews_count
       Stay::Review.joins(booking: :room).where(stay_rooms: { property_id: id }).count
     end
-
+    
   end
 end
