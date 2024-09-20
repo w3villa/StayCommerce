@@ -10,7 +10,12 @@ Stay::Engine.routes.draw do
     get '/', to: 'dashboard#index'
     resources :addresses
     resources :roles
-    resources :users
+    resources :users do
+      member do
+        get :addresses
+        put :addresses
+      end
+    end
     resources :properties
     resources :rooms
     resources :bookings
@@ -19,6 +24,16 @@ Stay::Engine.routes.draw do
     resources :reviews
     resources :chats
     resources :messages
+    resources :countries do
+      member do
+        get :states
+      end
+    end
+    resources :states, only: [] do
+      member do
+        get :cities
+      end
+    end
     devise_for :users,
               class_name: "Stay::User",
               controllers: { sessions: 'stay/admin/sessions',
