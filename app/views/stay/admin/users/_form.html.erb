@@ -1,68 +1,86 @@
-<%= form_with(model: [:admin, user], local: true) do |f| %>
-  <% if user.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(user.errors.count, "error") %> prohibited this user from being saved:</h2>
-      <ul>
-        <% user.errors.full_messages.each do |message| %>
-          <li><%= message %></li>
+<%= form_with(model: [:admin, user], local: true, class: 'needs-validation', novalidate: true) do |f| %>
+        <% if user.errors.any? %>
+          <div id="error_explanation" class="alert alert-danger">
+            <h4><%= pluralize(user.errors.count, "error") %> prohibited this user from being saved:</h4>
+            <ul>
+              <% user.errors.full_messages.each do |message| %>
+                <li><%= message %></li>
+              <% end %>
+            </ul>
+          </div>
         <% end %>
-      </ul>
-    </div>
-  <% end %>
 
-  <div class="field">
-    <%= f.label :email %>
-    <%= f.email_field :email, class: 'form-control' %>
-  </div>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group mb-3">
+              <%= f.label :first_name, class: 'form-label' %>
+              <%= f.text_field :first_name, class: 'form-control', required: true %>
+            </div>
 
-  <div class="field">
-    <%= f.label :password %>
-    <%= f.text_field :password, class: 'form-control' %>
-  </div>
+            <div class="form-group mb-3">
+              <%= f.label :last_name, class: 'form-label' %>
+              <%= f.text_field :last_name, class: 'form-control', required: true %>
+            </div>
 
-  <div class="field">
-    <%= f.label :password_confirmation %>
-    <%= f.text_field :password_confirmation, class: 'form-control' %>
-  </div>
+            <div class="form-group mb-3">
+              <%= f.label :email, class: 'form-label' %>
+              <%= f.email_field :email, class: 'form-control', required: true %>
+            </div>
 
-  <div class="field">
-    <%= f.label :first_name %>
-    <%= f.text_field :first_name, class: 'form-control' %>
-  </div>
+            <div class="form-group mb-3">
+              <%= f.label :password, class: 'form-label' %>
+              <%= f.password_field :password, class: 'form-control' %>
+            </div>
 
-  <div class="field">
-    <%= f.label :last_name %>
-    <%= f.text_field :last_name, class: 'form-control' %>
-  </div>
+            <div class="form-group mb-3">
+              <%= f.label :password_confirmation, class: 'form-label' %>
+              <%= f.password_field :password_confirmation, class: 'form-control' %>
+            </div>
+          </div>
 
-  <div class="field">
-    <%= f.label :phone %>
-    <%= f.text_field :phone, class: 'form-control' %>
-  </div>
+          <div class="col-md-6">
+            <div class="form-group mb-3">
+              <%= f.label :phone, class: 'form-label' %>
+              <%= f.telephone_field :phone, class: 'form-control', required: true %>
+            </div>
 
-  <div class="field">
-    <%= f.label :date_of_birth %>
-    <%= f.date_field :date_of_birth, class: 'form-control', data: { behavior: "flatpickr" }  %>
-  </div>
+            <div class="form-group mb-3">
+              <%= f.label :date_of_birth, class: 'form-label' %>
+              <%= f.date_field :date_of_birth, class: 'form-control', data: { behavior: "flatpickr" } %>
+            </div>
 
-  <div class="field">
-    <%= f.label :gender %>
-    <%= f.select :gender, ['Male', 'Female', 'Other'], class: 'form-control' %>
-  </div>
+            <div class="form-group mb-3">
+              <%= f.label :gender, class: 'form-label' %>
+              <div>
+                <div class="form-check">
+                  <%= f.radio_button :gender, 'Male', class: 'form-check-input' %>
+                  <%= f.label :gender_male, 'Male', class: 'form-check-label' %>
+                </div>
+                <div class="form-check">
+                  <%= f.radio_button :gender, 'Female', class: 'form-check-input' %>
+                  <%= f.label :gender_female, 'Female', class: 'form-check-label' %>
+                </div>
+                <div class="form-check">
+                  <%= f.radio_button :gender, 'Other', class: 'form-check-input' %>
+                  <%= f.label :gender_other, 'Other', class: 'form-check-label' %>
+                </div>
+              </div>
+            </div>
 
-  <div class="field">
-    <%= f.label :roles %>
-    <%= f.collection_check_boxes :stay_role_ids, Stay::Role.all, :id, :name do |role_form| %>
-      <div class="checkbox">
-        <%= role_form.label for: "user_stay_role_#{role_form.object.id}" do %>
-          <%= role_form.check_box id: "user_stay_role_#{role_form.object.id}" %>
-          <%= role_form.object.name %>
-        <% end %>
-      </div>
-    <% end %>
-  </div>
+            <div class="form-group mb-3">
+              <%= f.label :roles, class: 'form-label d-block' %>
+              <%= f.collection_check_boxes :stay_role_ids, Stay::Role.all, :id, :name do |role_form| %>
+                <div class="form-check">
+                  <%= role_form.check_box class: 'form-check-input' %>
+                  <%= role_form.label class: 'form-check-label' %>
+                </div>
+              <% end %>
+            </div>
 
-  <div class="actions">
-    <%= f.submit %>
-  </div>
+          </div>
+        </div>
+
+        <div class="form-group mt-4">
+          <%= f.submit user.persisted? ? 'Update User' : 'Create User', class: 'btn btn-primary' %>
+        </div>
 <% end %>
