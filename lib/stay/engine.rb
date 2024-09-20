@@ -1,6 +1,7 @@
 require 'active_storage/engine'
 require 'state_machines-activerecord'
 
+require 'stripe'
 module Stay
   class Engine < ::Rails::Engine
     isolate_namespace Stay
