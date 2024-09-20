@@ -5,7 +5,7 @@ module Stay
       
       # GET /Stay/admin/users
       def index
-        @users = Stay::User.all
+        @users = Stay::User.page(params[:page])
       end
 
       # GET /Stay/admin/users/1
@@ -58,7 +58,7 @@ module Stay
 
         # Only allow a list of trusted parameters through.
         def user_params
-          params.require(:user).permit(:first_name, :last_name, :email, :phone, :date_of_birth, :gender, :password, :password_confirmation, Stay_role_ids: [])
+          params.require(:user).permit(:first_name, :last_name, :email, :phone, :date_of_birth, :gender, :password, :password_confirmation, stay_role_ids: [])
         end
     end
   end

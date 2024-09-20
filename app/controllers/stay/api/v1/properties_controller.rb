@@ -12,21 +12,12 @@ class Stay::Api::V1::PropertiesController < Stay::BaseApiController
 
     def search
 
-      @search = Stay::Property.joins(:address).ransack(
-        address_city_name_cont: params[:q]
-      )
-      
-      # Fetch results with pagination
-      @properties = @search.result.page(params[:page]).per(20)
-  
-  # 
-      
-      properties = properties = Stay::Property.joins(:address).ransack(address_city_cont: params[:q]).result
+      @q = Stay::Property.ransack(params[:q])
+      @properties = @q.result.includes(address: [:city, :state, :country]).distinct
 
-
-      if properties.any?
+      if @properties.any?
         render json: {
-          properties: properties}, status: :ok
+          properties: @properties}, status: :ok
       else
         render json: { message: 'No properties found' }, status: :not_found
       end

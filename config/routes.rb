@@ -6,10 +6,24 @@ Stay::Engine.routes.draw do
 
   namespace :admin do
     root to: 'home#index'
+
+    get '/', to: 'dashboard#index'
+    resources :addresses
+    resources :roles
+    resources :users
+    resources :properties
+    resources :rooms
+    resources :bookings
+    resources :payment_methods
+    resources :payments
+    resources :reviews
+    resources :chats
+    resources :messages
     devise_for :users,
               class_name: "Stay::User",
               controllers: { sessions: 'stay/admin/sessions',
-                                passwords: 'stay/admin/passwords' },
+                                passwords: 'stay/admin/passwords',
+                                 registrations: 'stay/admin/registrations'},
               skip: [:unlocks, :omniauth_callbacks],
               path_names: { sign_out: 'logout' }
 
@@ -25,24 +39,16 @@ Stay::Engine.routes.draw do
       get '/password/change' => 'passwords#edit', :as => :edit_password
       put '/password/change' => 'passwords#update', :as => :update_password
     end
-
-    get '/', to: 'dashboard#index'
-    resources :addresses
-    resources :roles
-    resources :users
-    resources :properties
-    resources :rooms
-    resources :bookings
-    resources :payment_methods
-    resources :payments
-    resources :reviews
-    resources :chats
-    resources :messages
   end
 
   namespace :api do
     namespace :v1 do
       resources :properties, only: [:index, :show] do
+
+        collection do
+          get 'search', to: 'properties#search'
+        end
+
         resources :rooms, only: [:index, :show] do
           resources :bookings, only: [:create, :show, :update]
         end
@@ -51,5 +57,9 @@ Stay::Engine.routes.draw do
       resources :profiles , only: [:show, :update]
     end
   end
+  
+  root 'properties#index'
+  resources :properties, only: [:index, :show]  
+  resources :profiles , only: [:show, :update]
 
 end

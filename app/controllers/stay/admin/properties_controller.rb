@@ -29,7 +29,7 @@ module Stay
 
       def update
         if @property.update(property_params)
-          redirect_to admin_property_path(@property), notice: 'Property was successfully updated.'
+          redirect_to admin_properties_path, notice: 'Property was successfully updated.'
         else
           render :edit
         end
@@ -47,7 +47,7 @@ module Stay
       end
 
       def property_params
-        params.require(:property).permit(:active, :title, :description, :availability_start, :availability_end, :user_id, :room_id, :address_id)
+        params.require(:property).permit(:active, :title, :description, :availability_start, :availability_end, :user_id, images: [])
       end
     end
   end

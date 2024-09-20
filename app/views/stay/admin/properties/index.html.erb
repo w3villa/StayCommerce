@@ -22,14 +22,13 @@
     <table class="table table-hover table-nowrap">
       <thead class="table-light">
     <tr>
-      <th scope="col">Active</th>
+      <th scope="col">Image</th>
       <th scope="col">Title</th>
       <th scope="col">Description</th>
       <th scope="col">Availability Start</th>
       <th scope="col">Availability End</th>
       <th scope="col">User</th>
-      <th scope="col">Room</th>
-      <th scope="col">Address</th>
+      <th scope="col">Active</th>
       <th></th>
     </tr>
   </thead>
@@ -38,18 +37,19 @@
     <% @properties.each do |property| %>
       <tr>
         <td>
-          <%= property.active %>
-          <span class="badge badge-lg badge-dot <%= property.active ? 'badge-primary' : 'badge-warning' %>">
-            <i class="<%= property.active ? 'bg-primary' : 'bg-warning' %>"></i>
-          </span>
+          <%= image_tag main_app.url_for(property.images.first), size: "60x60" if property.images.attached? %>
         </td>
         <td><%= property.title %></td>
         <td><%= property.description %></td>
         <td><%= property.availability_start %></td>
         <td><%= property.availability_end %></td>
-        <td><%= property.user_id %></td>
-        <td><%= property.room_id %></td>
-        <td><%= property.address_id %></td>
+        <td><%= property.user.name %></td>
+        <td>
+          <%= property.active %>
+          <span class="badge badge-lg badge-dot <%= property.active ? 'badge-primary' : 'badge-warning' %>">
+            <i class="<%= property.active ? 'bg-primary' : 'bg-warning' %>"></i>
+          </span>
+        </td>
         <td class="text-end d-flex justify-content-end">
           <%= link_to edit_admin_property_path(property), class: 'btn d-inline-flex btn-sm btn-neutral mx-1' do %>
             <i class="bi bi-pencil">Edit</i>

@@ -27,12 +27,12 @@
 
   <div class="field">
     <%= f.label :availability_start %>
-    <%= f.date_select :availability_start, class: 'form-control' %>
+    <%= f.date_field :availability_start, class: 'form-control' , data: { behavior: "flatpickr" } %>
   </div>
 
   <div class="field">
     <%= f.label :availability_end %>
-    <%= f.date_select :availability_end, class: 'form-control' %>
+    <%= f.date_field :availability_end, class: 'form-control', data: { behavior: "flatpickr" }  %>
   </div>
 
   <div class="field">
@@ -41,13 +41,8 @@
   </div>
 
   <div class="field">
-    <%= f.label :room_id %>
-    <%= f.number_field :room_id, class: 'form-control' %>
-  </div>
-
-  <div class="field">
-    <%= f.label :address_id %>
-    <%= f.number_field :address_id, class: 'form-control' %>
+    <%= f.label :images, "Upload Images" %>
+    <%= f.file_field :images, multiple: true %>
   </div>
 
   <div class="actions">

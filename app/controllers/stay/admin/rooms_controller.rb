@@ -46,7 +46,7 @@ module Stay
       end
 
       def room_params
-        params.require(:room).permit(:property_id, :max_guests, :price_per_night, :room_type)
+        params.require(:room).permit(:property_id, :max_guests, :price_per_night, :room_type_id, images: [])
       end
     end
   end
