@@ -34,10 +34,11 @@ Stay::Engine.routes.draw do
       delete '/logout' => 'sessions#destroy', :as => :logout
       get 'sign_up', to: 'registrations#new', as: :new_registration
       post 'sign_up', to: 'registrations#create', as: :registration
-      get '/password/new' => 'passwords#new', :as => :new_password
-      post '/password' => 'passwords#create', :as => :reset_password
-      get '/password/change' => 'passwords#edit', :as => :edit_password
-      put '/password/change' => 'passwords#update', :as => :update_password
+      get '/password/new', to: 'passwords#new', as: :new_password
+      post '/password', to: 'passwords#create', as: :password
+      get '/password/edit', to: 'passwords#edit', as: :edit_password
+      put '/password', to: 'passwords#update'
+      patch '/password', to: 'passwords#update'
     end
   end
 
