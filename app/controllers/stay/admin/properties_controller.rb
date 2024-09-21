@@ -5,18 +5,18 @@ module Stay
       before_action :set_property, only: %i[show edit update destroy]
 
       def index
-        @properties = current_user.properties.all
+        @properties = Stay::Property.all
       end
 
       def show
       end
 
       def new
-        @property = current_user.properties.new
+        @property = Stay::Property.new
       end
 
       def create
-        @property = current_user.properties.new(property_params)
+        @property = Stay::Property.new(property_params)
         if @property.save
           redirect_to admin_property_path(@property), notice: 'Property was successfully created.'
         else
@@ -43,7 +43,7 @@ module Stay
       private
 
       def set_property
-        @property = current_user.properties.find_by(id: params[:id])
+        @property = Stay::Property.find_by(id: params[:id])
       end
 
       def property_params
