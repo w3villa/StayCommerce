@@ -38,8 +38,9 @@
       </a>
       <div class="dropdown-divider"></div>
       <a href="#!" class="dropdown-item">
-        <i class="ni ni-user-run"></i>
-        <span>Logout</span>
+        <%= button_to admin_logout_path, method: :delete, class: 'nav-link' do %>
+              <i class="bi bi-box-arrow-left"></i> Logout
+        <%end%>
       </a>
     </div>
   </div>
