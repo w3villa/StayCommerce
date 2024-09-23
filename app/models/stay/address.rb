@@ -4,7 +4,7 @@ module Stay
     belongs_to :state, class_name: 'Stay::State'
     belongs_to :country, class_name: 'Stay::Country'
     belongs_to :user, class_name: 'Stay::Address', optional: true
-    geocoded_by :full_address
+    # geocoded_by :full_address
     after_validation :geocode, if: ->(obj){ obj.address1.present? && obj.zipcode.present? }
 
     def full_address

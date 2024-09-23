@@ -14,3 +14,4 @@ gem 'devise-api', github: 'nejdetkadir/devise-api', branch: 'main'
 
 # Start debugger with binding.b [https://github.com/ruby/debug]
 # gem "debug", ">= 1.0.0"
+gem 'rails-erd'
