@@ -10,7 +10,12 @@ Stay::Engine.routes.draw do
     get '/', to: 'dashboard#index'
     resources :addresses
     resources :roles
-    resources :users
+    resources :users do
+      member do
+        get :addresses
+        put :addresses
+      end
+    end
     resources :properties
     resources :rooms
     resources :bookings
@@ -19,6 +24,16 @@ Stay::Engine.routes.draw do
     resources :reviews
     resources :chats
     resources :messages
+    resources :countries do
+      member do
+        get :states
+      end
+    end
+    resources :states, only: [] do
+      member do
+        get :cities
+      end
+    end
     devise_for :users,
               class_name: "Stay::User",
               controllers: { sessions: 'stay/admin/sessions',
@@ -34,10 +49,11 @@ Stay::Engine.routes.draw do
       delete '/logout' => 'sessions#destroy', :as => :logout
       get 'sign_up', to: 'registrations#new', as: :new_registration
       post 'sign_up', to: 'registrations#create', as: :registration
-      get '/password/new' => 'passwords#new', :as => :new_password
-      post '/password' => 'passwords#create', :as => :reset_password
-      get '/password/change' => 'passwords#edit', :as => :edit_password
-      put '/password/change' => 'passwords#update', :as => :update_password
+      get '/password/new', to: 'passwords#new', as: :new_password
+      post '/password', to: 'passwords#create', as: :password
+      get '/password/edit', to: 'passwords#edit', as: :edit_password
+      put '/password', to: 'passwords#update'
+      patch '/password', to: 'passwords#update'
     end
   end
 
