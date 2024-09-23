@@ -43,7 +43,7 @@
         <td><%= property.description %></td>
         <td><%= property.availability_start %></td>
         <td><%= property.availability_end %></td>
-        <td><%= property.user.name %></td>
+        <td><%= property.user&.name %></td>
         <td>
           <%= property.active %>
           <span class="badge badge-lg badge-dot <%= property.active ? 'badge-primary' : 'badge-warning' %>">

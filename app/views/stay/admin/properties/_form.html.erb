@@ -10,37 +10,63 @@
     </div>
   <% end %>
 
-  <div class="field">
-    <%= f.label :active %>
-    <%= f.check_box :active %>
+  <div class="row">
+     <div class="col-md-6">
+      <div class="field">
+        <%= f.label :title, class:"form-label" %>
+        <%= f.text_field :title, class: 'form-control' %>
+      </div>
+    </div>
+
+     <div class="col-md-6">
+      <div class="field">
+        <%= f.label :availability_start, class:"form-label"%>
+        <%= f.date_field :availability_start, class: 'form-control', data: { behavior: "flatpickr" } %>
+      </div>
+    </div>
+
   </div>
 
-  <div class="field">
-    <%= f.label :title %>
-    <%= f.text_field :title, class: 'form-control' %>
+  <div class="row">
+    <div class="col-md-6">
+      <div class="field">
+        <%= f.label :description, class:"form-label" %>
+        <%= f.text_area :description, class: 'form-control' %>
+      </div>
+    </div>
+
+     <div class="col-md-6">
+      <div class="field">
+        <%= f.label :availability_end, class:"form-label" %>
+        <%= f.date_field :availability_end, class: 'form-control', data: { behavior: "flatpickr" } %>
+      </div>
+    </div>
+
+   
   </div>
 
-  <div class="field">
-    <%= f.label :description %>
-    <%= f.text_area :description, class: 'form-control' %>
+  <div class="row">
+    <div class="col-md-6">
+      <div class="field">
+        <%= f.label :images, "Upload Images", class:"form-label" %>
+        <%= f.file_field :images, multiple: true, class:"form-control" %>
+      </div>
+    </div>
+    
+     <div class="col-md-6">
+      <div class="field">
+        <%= f.label :active, class:"form-label" %>
+        <%= f.check_box :active %>
+      </div>
+    </div>
+    
   </div>
 
-  <div class="field">
-    <%= f.label :availability_start %>
-    <%= f.date_field :availability_start, class: 'form-control' , data: { behavior: "flatpickr" } %>
-  </div>
-
-  <div class="field">
-    <%= f.label :availability_end %>
-    <%= f.date_field :availability_end, class: 'form-control', data: { behavior: "flatpickr" }  %>
-  </div>
-
-  <div class="field">
-    <%= f.label :images, "Upload Images" %>
-    <%= f.file_field :images, multiple: true %>
-  </div>
-
-  <div class="actions">
-    <%= f.submit class: 'btn btn-primary' %>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="form-group mt-4">
+        <%= f.submit property.persisted? ? 'Update Property' : 'Create Property', class: 'btn btn-primary' %>
+      </div>
+    </div>
   </div>
 <% end %>

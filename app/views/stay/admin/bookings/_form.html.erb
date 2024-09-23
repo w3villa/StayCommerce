@@ -10,32 +10,50 @@
     </div>
   <% end %>
 
-  <div class="field">
-    <%= f.label :user_id %>
-    <%= f.number_field :user_id, class: 'form-control' %>
+  <div class="row">
+    <div class="col-md-6">
+      <div class="field">
+        <%= f.label :user_id %>
+        <%= f.number_field :user_id, class: 'form-control' %>
+      </div>
+    </div>
+    
+     <div class="col-md-6">
+     <div class="field">
+        <%= f.label :number_of_guests %>
+        <%= f.number_field :number_of_guests, class: 'form-control' %>
+      </div>
+    </div>
+    
   </div>
 
-  <div class="field">
-    <%= f.label :check_in_date %>
-    <%= f.date_field :check_in_date, class: 'form-control' %>
+   <div class="row">
+    <div class="col-md-6">
+      <div class="field">
+        <%= f.label :check_in_date %>
+        <%= f.date_field :check_in_date, class: 'form-control' %>
+      </div>
+    </div>
+    
+     <div class="col-md-6">
+     <div class="field">
+        <%= f.label :check_out_date %>
+        <%= f.date_field :check_out_date, class: 'form-control' %>
+      </div>
+    </div>
+    
   </div>
 
-  <div class="field">
-    <%= f.label :check_out_date %>
-    <%= f.date_field :check_out_date, class: 'form-control' %>
+  <div class="row">
+    <div class="col-md-6">
+      <div class="field">
+        <%= f.label :status %>
+        <%= f.text_field :status, class: 'form-control' %>
+      </div>
+    </div>   
   </div>
 
-  <div class="field">
-    <%= f.label :number_of_guests %>
-    <%= f.number_field :number_of_guests, class: 'form-control' %>
-  </div>
-
-  <div class="field">
-    <%= f.label :status %>
-    <%= f.text_field :status, class: 'form-control' %>
-  </div>
-
-  <div class="actions">
-    <%= f.submit %>
+  <div class="form-group mt-4">
+    <%= f.submit booking.persisted? ? 'Update Booking' : 'Create Booking', class: 'btn btn-primary' %>
   </div>
 <% end %>
