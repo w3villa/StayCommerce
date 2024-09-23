@@ -42,7 +42,7 @@ module Stay
       private
 
       def set_booking
-        @booking = Stay::Booking.find(params[:id])
+        @booking = Stay::Booking.find_by(id: params[:id])
       end
 
       def booking_params
