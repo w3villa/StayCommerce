@@ -43,7 +43,7 @@ module Stay
       private
 
       def set_property
-        @property = Stay::Property.find(params[:id])
+        @property = Stay::Property.find_by(id: params[:id])
       end
 
       def property_params

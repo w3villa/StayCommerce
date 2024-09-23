@@ -14,6 +14,8 @@ module Stay
     has_many :received_chats, class_name: 'Stay::Chat', foreign_key: :receiver_id, dependent: :destroy
     has_many :addresses, class_name: 'Stay::Address'
 
+    accepts_nested_attributes_for :addresses, allow_destroy: true
+    
     users_table_name = User.table_name
     roles_table_name = Role.table_name
 
