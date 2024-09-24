@@ -1,0 +1,90 @@
+    <div class="container booking-container">
+        <h1 class="mb-4"><a href="#" class="text-dark text-decoration-none"></a>Confirm and pay</h1>
+        
+        <div class="row">
+            <div class="col-md-7">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h2 class="card-title">Your trip</h2>
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div>
+                                <h6 class="mb-0">Dates</h6>
+                                <p class="mb-0">27 Sep - 6 Oct</p>
+                            </div>
+                            <a href="#" class="edit-link">Edit</a>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="mb-0">Guests</h6>
+                                <p class="mb-0">1 guest</p>
+                            </div>
+                            <a href="#" class="edit-link">Edit</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-body">
+                        <h2 class="card-title mb-4">Pay with</h2>
+                        <div class="mb-3">
+                            <select class="form-select form-control form-select-lg mb-3">
+                                <option selected>Credit or debit card</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <input type="text" class="form-control" placeholder="Card number">
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col">
+                                <input type="text" class="form-control" placeholder="Expiration">
+                            </div>
+                            <div class="col">
+                                <input type="text" class="form-control" placeholder="CVV">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <input type="text" class="form-control" placeholder="Cardholder name">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-4">
+                 <%= button_to "Confirm and Pay", "",class: "btn btn-sm btn-danger w-full w-lg-auto me-2" %>
+                </div>    
+            </div>
+            
+            <div class="col-md-5">
+                <div class="card">
+                    <div class="card-body">
+                        <img src="/api/placeholder/400/200" alt="Room" class="room-image mb-3">
+                        <h5 class="card-title">Camus Room, Parisian Charm</h5>
+                        <p class="card-text">Room in townhouse</p>
+                        <p class="card-text">
+                            <small class="text-muted">
+                                <span class="fa fa-star"></span> 4.65 (190 reviews) • Superhost
+                            </small>
+                        </p>
+                        
+                        <h3 class="mt-4">Price details</h3>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>₹6,901.55 x 9 nights</span>
+                            <span>₹62,113.95</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Cleaning fee</span>
+                            <span>₹4,920.84</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Taxes</span>
+                            <span>₹2,172.59</span>
+                        </div>
+                        <hr>
+                        <div class="d-flex justify-content-between">
+                            <strong>Total (INR)</strong>
+                            <strong>₹69,207.38</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>

@@ -10,32 +10,52 @@
     </div>
   <% end %>
 
-  <div class="field">
-    <%= f.label :property_id %>
-    <%= f.number_field :property_id, class: 'form-control' %>
+  <div class="row">
+    <div class="col-md-6">
+      <div class="field">
+        <%= f.label :property_id, class:"form-label"%>
+        <%= f.number_field :property_id, class: 'form-control' %>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="field">
+        <%= f.label :max_guests, class:"form-label" %>
+        <%= f.number_field :max_guests, class: 'form-control' %>
+      </div>
+    </div>
   </div>
 
-  <div class="field">
-    <%= f.label :max_guests %>
-    <%= f.number_field :max_guests, class: 'form-control' %>
+  <div class="row">
+    <div class="col-md-6">
+      <div class="field">
+        <%= f.label :price_per_night, class:"form-label" %>
+        <%= f.number_field :price_per_night, class: 'form-control' %>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="field">
+        <%= f.label :room_type, class:"form-label" %>
+        <%= f.number_field :room_type_id, class: 'form-control' %>
+      </div>
+    </div>
   </div>
 
-  <div class="field">
-    <%= f.label :price_per_night %>
-    <%= f.number_field :price_per_night, class: 'form-control' %>
+  <div class="row">
+    <div class="col-md-6">
+      <div class="field">
+        <%= f.label :images, "Upload Images", class:"form-label" %>
+        <%= f.file_field :images, multiple: true, class:"form-control" %>
+      </div>
+    </div>
   </div>
 
-  <div class="field">
-    <%= f.label :room_type %>
-    <%= f.number_field :room_type_id, class: 'form-control' %>
-  </div>
-
-  <div class="field">
-    <%= f.label :images, "Upload Images" %>
-    <%= f.file_field :images, multiple: true %>
-  </div>
-
-  <div class="actions">
-    <%= f.submit %>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="form-group mt-4">
+        <%= f.submit room.persisted? ? 'Update Room' : 'Create Room', class: 'btn btn-primary' %>
+      </div>
+    </div>
   </div>
 <% end %>

@@ -1,3 +1,4 @@
+require 'ransack'
 require 'active_storage/engine'
 require 'state_machines-activerecord'
 
