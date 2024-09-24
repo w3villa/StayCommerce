@@ -36,7 +36,6 @@ module Stay
       end
 
       def destroy
-        binding.pry
         @room.destroy
         redirect_to admin_property_rooms_path(@property), notice: 'Room was successfully destroyed.'
       end
