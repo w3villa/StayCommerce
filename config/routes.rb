@@ -77,5 +77,6 @@ Stay::Engine.routes.draw do
   root 'properties#index'
   resources :properties, only: [:index, :show]  
   resources :profiles , only: [:show, :update]
+  resources :bookings, only: [:index, :show] 
 
 end
