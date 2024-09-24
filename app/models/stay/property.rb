@@ -5,12 +5,26 @@ module Stay
 
     belongs_to :user, class_name: 'Stay::User', optional: true
     belongs_to :address, class_name: 'Stay::Address', optional: true
+
     has_many_attached :images
 
     has_many :prices, through: :rooms
 
     has_many :line_items
     has_many :bookings, through: :line_items
+
+    # def self.ransackable_attributes(auth_object = nil)
+    #   ["id", "name", "created_at", "updated_at"]
+    # end
+    def self.ransackable_attributes(auth_object = nil)
+      ["active", "address_id", "availability_end", "availability_start"]
+    end
+  
+
+    def self.ransackable_associations(auth_object = nil)
+      ["address"]
+    end
+  
 
     def has_rooms?
       rooms.any?
