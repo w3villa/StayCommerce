@@ -15,6 +15,19 @@ module Stay
     after_create :create_default_room
     after_destroy :destroy_default_room
 
+    # def self.ransackable_attributes(auth_object = nil)
+    #   ["id", "name", "created_at", "updated_at"]
+    # end
+    def self.ransackable_attributes(auth_object = nil)
+      ["active", "address_id", "availability_end", "availability_start"]
+    end
+  
+
+    def self.ransackable_associations(auth_object = nil)
+      ["address"]
+    end
+  
+
     def has_rooms?
       rooms.any?
     end

@@ -62,6 +62,11 @@ Stay::Engine.routes.draw do
   namespace :api do
     namespace :v1 do
       resources :properties, only: [:index, :show] do
+
+        collection do
+          get 'search', to: 'properties#search'
+        end
+
         resources :rooms, only: [:index, :show] do
           resources :bookings, only: [:create, :show, :update]
         end
