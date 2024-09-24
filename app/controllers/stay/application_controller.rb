@@ -6,6 +6,9 @@ module Stay
     protect_from_forgery with: :null_session
     before_action :set_active_storage_url_options
     # before_action :authenticate_devise_api_token!
+    # before_action :authorize_admin
+
+  
 
     def after_sign_in_path_for(resource)
       if resource.has_stay_role?('admin')
@@ -14,6 +17,8 @@ module Stay
         root_path
       end
     end
+
+
 
     private
 

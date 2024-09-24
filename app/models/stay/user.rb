@@ -23,6 +23,10 @@ module Stay
 
     scope :admin, -> { includes(:stay_roles).where("#{roles_table_name}.name" => "admin") }
 
+    def roles
+      stay_roles
+    end
+
     def has_stay_role?(role_name)
       stay_roles.exists?(name: role_name)
     end
