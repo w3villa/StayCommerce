@@ -1,6 +1,6 @@
 module Stay
   module Admin
-    class RoomsController < ApplicationController
+    class RoomsController < Stay::Admin::BaseController
       before_action :set_room, only: %i[show edit update destroy]
 
       def index

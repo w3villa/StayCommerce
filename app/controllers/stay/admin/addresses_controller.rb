@@ -1,6 +1,6 @@
 module Stay
   module Admin
-    class AddressesController < ApplicationController
+    class AddressesController < Stay::Admin::BaseController
       before_action :set_address, only: %i[show edit update destroy]
 
       # GET /Stay/admin/addresses
