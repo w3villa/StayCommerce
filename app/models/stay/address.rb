@@ -6,7 +6,6 @@ module Stay
     has_many :properties, class_name: 'Stay::Property'
 
     belongs_to :user, class_name: 'Stay::Address', optional: true
-    belongs_to :property, class_name: 'Stay::Property'
 
     # geocoded_by :full_address
     # after_validation :geocode, if: ->(obj){ obj.address1.present? && obj.zipcode.present? }
