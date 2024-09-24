@@ -1,6 +1,6 @@
 module Stay
   module Admin
-    class BookingsController < ApplicationController
+    class BookingsController < Stay::Admin::BaseController
       before_action :set_booking, only: %i[show edit update destroy]
 
       def index
