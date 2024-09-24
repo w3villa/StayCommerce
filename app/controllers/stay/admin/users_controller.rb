@@ -1,6 +1,6 @@
 module Stay
   module Admin
-    class UsersController < ApplicationController
+    class UsersController < Stay::Admin::BaseController
       before_action :set_user, only: [:show, :edit, :update, :destroy, :addresses]
       
       # GET /Stay/admin/users

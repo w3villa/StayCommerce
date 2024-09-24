@@ -1,7 +1,7 @@
 # app/controllers/properties_controller.rb
 module Stay
   module Admin
-    class PropertiesController < ApplicationController
+    class PropertiesController < Stay::Admin::BaseController
       before_action :set_property, only: %i[show edit update destroy]
 
       def index
@@ -28,7 +28,9 @@ module Stay
       end
 
       def update
-        if @property.update(property_params)
+        filtered_params = property_params
+        filtered_params.delete(:images)  if filtered_params[:images].empty?
+        if @property.update(filtered_params)
           redirect_to admin_properties_path, notice: 'Property was successfully updated.'
         else
           render :edit
@@ -47,7 +49,12 @@ module Stay
       end
 
       def property_params
-        params.require(:property).permit(:active, :title, :description, :availability_start, :availability_end, :user_id, images: [])
+        params.require(:property).permit(:active, :title, :description, :availability_start, :availability_end, :user_id, images: []).tap do |params|
+          # Remove any empty image string ("")
+          if params[:images]
+            params[:images].reject!(&:blank?)
+          end
+        end 
       end
     end
   end
