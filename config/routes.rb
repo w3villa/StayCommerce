@@ -16,7 +16,9 @@ Stay::Engine.routes.draw do
         put :addresses
       end
     end
-    resources :properties
+    resources :properties do
+      resources :rooms
+    end
     resources :rooms
     resources :bookings
     resources :payment_methods

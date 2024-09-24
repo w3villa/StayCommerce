@@ -1,23 +1,25 @@
 module Stay
   module Admin
     class RoomsController < Stay::Admin::BaseController
+
+      before_action :set_property
       before_action :set_room, only: %i[show edit update destroy]
 
       def index
-        @rooms = Stay::Room.all
+        @rooms = @property.rooms
       end
 
       def show
       end
 
       def new
-        @room = Stay::Room.new
+        @room = @property.rooms.new
       end
 
       def create
-        @room = Stay::Room.new(room_params)
+        @room = @property.rooms.build(room_params)
         if @room.save
-          redirect_to admin_room_path(@room), notice: 'Room was successfully created.'
+          redirect_to admin_property_rooms_path(@property), notice: 'Room was successfully created.'
         else
           render :new
         end
@@ -28,7 +30,7 @@ module Stay
 
       def update
         if @room.update(room_params)
-          redirect_to admin_room_path(@room), notice: 'Room was successfully updated.'
+          redirect_to admin_property_room_path(@property), notice: 'Room was successfully updated.'
         else
           render :edit
         end
@@ -36,13 +38,17 @@ module Stay
 
       def destroy
         @room.destroy
-        redirect_to admin_rooms_url, notice: 'Room was successfully destroyed.'
+        redirect_to admin_property_rooms_path(@property), notice: 'Room was successfully destroyed.'
       end
 
       private
 
+      def set_property
+        @property = Stay::Property.find(params[:property_id])
+      end
+
       def set_room
-        @room = Stay::Room.find(params[:id])
+        @room = @property.rooms.find(params[:id])
       end
 
       def room_params
