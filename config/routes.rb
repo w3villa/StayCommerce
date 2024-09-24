@@ -24,6 +24,7 @@ Stay::Engine.routes.draw do
     resources :reviews
     resources :chats
     resources :messages
+    resources :room_types
     resources :countries do
       member do
         get :states
