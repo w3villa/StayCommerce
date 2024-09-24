@@ -12,8 +12,8 @@
           <p><strong>Price Per Night: </strong><%= @room.price_per_night %></p>
           <p><strong>Room Type: </strong><%= @room.room_type.name%></p>
           <div class="d-flex mt-4 p-4 justify-content-center">  
-            <%= link_to 'Edit', edit_admin_room_path(@room), class: 'btn btn-warning me-3' %> 
-            <%= link_to 'Back', admin_rooms_path, class: 'btn btn-secondary' %>
+            <%= link_to 'Edit', edit_admin_property_room_path(@property, @room), class: 'btn btn-warning me-3' %> 
+            <%= link_to 'Back', admin_property_rooms_path(@property), class: 'btn btn-secondary' %>
           </div>
         </div>
       </div>

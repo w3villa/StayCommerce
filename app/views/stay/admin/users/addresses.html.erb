@@ -1,0 +1,52 @@
+<h1><%= @user.name%></h1>
+
+<%= form_for @user, url: addresses_admin_user_path(@user), method: :put do |f| %>
+  <div id="addresses">
+    <%= f.fields_for :addresses do |address_form| %>
+      <div class="address-fields">
+        <%= address_form.hidden_field :id %>
+
+        <div class="field">
+          <%= address_form.label :address1 %>
+          <%= address_form.text_field :address1 %>
+        </div>
+        <div class="field">
+          <%= address_form.label :address2 %>
+          <%= address_form.text_field :address2 %>
+        </div>
+        <div class="field">
+          <%= address_form.label :country %>
+          <%= address_form.collection_select :country_id, Stay::Country.all, :id, :name, { prompt: "Select Country" }, { class: 'form-control', id: 'country_select', selected: address_form.object.country_id }%>
+        </div>
+        <div class="field">
+          <%= address_form.label :state_id %>
+          <%= address_form.select :state_id, [], { prompt: "Select State" }, class: 'form-control', id: 'state_select' %>
+        </div>
+        <div class="field">
+          <%= address_form.label :city_id %>
+          <%= address_form.select :city_id, [], { prompt: "Select City" }, class: 'form-control', id: 'city_select' %>
+        </div>
+
+        <div class="field">
+          <%= address_form.label :zipcode %>
+          <%= address_form.text_field :zipcode %>
+        </div>
+
+        <div class="field">
+          <%= address_form.label :latitude %>
+          <%= address_form.text_field :latitude %>
+        </div>
+
+        <div class="field">
+          <%= address_form.label :longitude %>
+          <%= address_form.text_field :longitude %>
+        </div>
+        <hr />
+      </div>
+    <% end %>
+  </div>
+
+  <div class="actions">
+    <%= f.submit 'Update Addresses' %>
+  </div>
+<% end %>

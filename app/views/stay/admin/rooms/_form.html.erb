@@ -1,4 +1,4 @@
-<%= form_with(model: [:admin, room], local: true) do |f| %>
+<%= form_with(model: [:admin, @property, room], local: true) do |f| %>
   <% if room.errors.any? %>
     <div id="error_explanation">
       <h2><%= pluralize(room.errors.count, "error") %> prohibited this room from being saved:</h2>
@@ -11,13 +11,6 @@
   <% end %>
 
   <div class="row">
-    <div class="col-md-6">
-      <div class="field">
-        <%= f.label :property_id, class:"form-label"%>
-        <%= f.number_field :property_id, class: 'form-control' %>
-      </div>
-    </div>
-
     <div class="col-md-6">
       <div class="field">
         <%= f.label :max_guests, class:"form-label" %>
@@ -37,7 +30,7 @@
     <div class="col-md-6">
       <div class="field">
         <%= f.label :room_type, class:"form-label" %>
-        <%= f.number_field :room_type_id, class: 'form-control' %>
+        <%= f.select :room_type_id, Stay::RoomType.all.collect { |rt| [rt.name, rt.id] }, { include_blank: 'Select Room Type' }, class: 'form-control' %>
       </div>
     </div>
   </div>

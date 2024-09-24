@@ -8,7 +8,7 @@
       <!-- Actions -->
       <div class="col-sm-6 col-12 text-sm-end">
           <div class="mx-n1">
-          <%= link_to new_admin_room_path, class:"btn d-inline-flex btn-sm btn-primary mx-1" do %>
+          <%= link_to new_admin_property_room_path(@property), class:"btn d-inline-flex btn-sm btn-primary mx-1" do %>
               <span class=" pe-2">
               <i class="bi bi-plus"></i>
               </span>
@@ -42,13 +42,13 @@
         <td><%= room.price_per_night %></td>
         <td><%= room.room_type&.name %></td>
         <td class="text-end d-flex justify-content-end">
-          <%= link_to edit_admin_room_path(room), class: 'btn d-inline-flex btn-sm btn-neutral mx-1' do %>
+          <%= link_to edit_admin_property_room_path(@property, room), class: 'btn d-inline-flex btn-sm btn-neutral mx-1' do %>
             <i class="bi bi-pencil">Edit</i>
           <% end %>  
-          <%= link_to admin_room_path(room), class: 'btn d-inline-flex btn-sm btn-neutral mx-1' do %>
+          <%= link_to admin_property_room_path(@property, room), class: 'btn d-inline-flex btn-sm btn-neutral mx-1' do %>
             <i class="bi bi-eye">View</i>
           <% end %>
-          <%= button_to admin_room_path(room), method: :delete, data: { turbo_method: :delete, turbo_confirm: 'Are you sure?' }, class: 'btn btn-sm btn-neutral mx-1 text-danger-hover' do %>
+          <%= button_to admin_property_room_path(@property, room), method: :delete, data: { turbo_method: :delete, turbo_confirm: 'Are you sure?' }, class: 'btn btn-sm btn-neutral mx-1 text-danger-hover' do %>
             <i class="bi bi-trash">Destroy</i>
           <% end %>                
         </td>
