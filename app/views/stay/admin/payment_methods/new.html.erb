@@ -1,5 +1,14 @@
-<h1>New Payment Method</h1>
-
-<%= render 'form', payment_method: @payment_method %>
-
-<%= link_to 'Back', admin_payment_methods_path, class: 'btn btn-secondary' %>
+<div class="container mx-auto p-4">
+<div class="row mt-4">
+<div class="col-10">
+            <div class="card">
+                <div class="card-header">
+                <h2 class="text-xl font-semibold">New Payment Method </h2>
+                </div>
+                <div class="card-body">
+                    <%= render 'form', payment_method: @payment_method %>
+                </div>    
+            </div>   
+</div>
+</div>
+</div>

@@ -10,6 +10,18 @@ class Stay::Api::V1::PropertiesController < Stay::BaseApiController
       render json: { property: @property }
     end
 
+    def search
+
+      @q = Stay::Property.ransack(params[:q])
+      @properties = @q.result.includes(address: [:city, :state, :country]).distinct
+
+      if @properties.any?
+        render json: {
+          properties: @properties}, status: :ok
+      else
+        render json: { message: 'No properties found' }, status: :not_found
+      end
+    end
     private
 
     def set_property
