@@ -1,5 +1,5 @@
 module Stay
-  class Admin::DashboardController < ApplicationController
+  class Admin::DashboardController < Stay::Admin::BaseController
     # before_action :authenticate_user!
 
     def index

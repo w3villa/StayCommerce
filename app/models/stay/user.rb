@@ -5,6 +5,8 @@ module Stay
     devise :database_authenticatable, :registerable,
            :recoverable, :rememberable, :validatable,:api
 
+    after_create :assign_default_role       
+
     has_many :role_users, class_name: 'Stay::RoleUser', dependent: :destroy
     has_many :stay_roles, through: :role_users, class_name: 'Stay::Role', source: :role
     has_many :bookings
@@ -35,6 +37,12 @@ module Stay
 
     def name
       "#{first_name} #{last_name}"
+    end
+
+    private 
+
+    def assign_default_role
+      Stay::RoleUser.create(user: self, role: Stay::Role.where(name: Stay::Role::USER).first_or_create) unless stay_roles.exists?
     end
 
   end

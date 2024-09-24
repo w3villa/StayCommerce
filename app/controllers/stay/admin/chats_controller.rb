@@ -1,6 +1,6 @@
 module Stay
   module Admin
-    class ChatsController < ApplicationController
+    class ChatsController < Stay::Admin::BaseController
       before_action :set_chat, only: %i[show edit update destroy]
 
       def index

@@ -1,6 +1,6 @@
 module Stay
   module Admin
-    class MessagesController < ApplicationController
+    class MessagesController < Stay::Admin::BaseController
       before_action :set_message, only: %i[show edit update destroy]
 
       def index
