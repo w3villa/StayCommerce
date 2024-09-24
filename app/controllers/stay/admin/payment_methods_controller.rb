@@ -1,6 +1,6 @@
 module Stay
   module Admin
-    class PaymentMethodsController < ApplicationController
+    class PaymentMethodsController < Stay::Admin::BaseController
       before_action :set_payment_method, only: %i[show edit update destroy]
 
       def index

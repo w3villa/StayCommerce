@@ -1,7 +1,7 @@
 # app/controllers/properties_controller.rb
 module Stay
   module Admin
-    class PropertiesController < ApplicationController
+    class PropertiesController < Stay::Admin::BaseController
       before_action :set_property, only: %i[show edit update destroy]
 
       def index
