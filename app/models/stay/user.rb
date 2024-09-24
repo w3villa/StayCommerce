@@ -42,7 +42,7 @@ module Stay
     private 
 
     def assign_default_role
-      Stay::RoleUser.create(user: self, role: Stay::Role.find_by(name: 'user')) unless stay_roles.exists?
+      Stay::RoleUser.create(user: self, role: Stay::Role.where(name: Stay::Role::USER).first_or_create) unless stay_roles.exists?
     end
 
   end
