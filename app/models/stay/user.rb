@@ -23,6 +23,8 @@ module Stay
 
     scope :admin, -> { includes(:stay_roles).where("#{roles_table_name}.name" => "admin") }
 
+    attr_accessor :updating_password
+
     def roles
       stay_roles
     end
@@ -39,6 +41,10 @@ module Stay
       "#{first_name} #{last_name}"
     end
 
+    def password_required?
+      updating_password || super
+    end
+    
     private 
 
     def assign_default_role
