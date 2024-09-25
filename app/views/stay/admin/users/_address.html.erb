@@ -1,0 +1,46 @@
+<%= address_form.hidden_field :id if address_form.object.persisted? %>
+<div class="row">
+  <div class="col-md-6">
+    <div class="form-group mb-3">
+      <%= address_form.label :address1, class: 'form-label' %>
+      <%= address_form.text_field :address1, class: 'form-control'%>
+    </div>
+
+    <div class="form-group mb-3">
+      <%= address_form.label :address2, class: 'form-label' %>
+      <%= address_form.text_field :address2, class: 'form-control' %>
+    </div>
+
+    <div class="form-group mb-3">
+      <%= address_form.label :country, class: 'form-label' %>
+      <%= address_form.collection_select :country_id, Stay::Country.all, :id, :name, { prompt: "Select Country" }, { class: 'form-control', id: 'country_select' } %>
+    </div>
+
+    <div class="form-group mb-3">
+      <%= address_form.label :state_id, class: 'form-label' %>
+      <%= address_form.select :state_id, [], { prompt: "Select State" }, class: 'form-control', id: 'state_select' %>
+    </div>
+
+    <div class="form-group mb-3">
+      <%= address_form.label :city_id, class: 'form-label' %>
+      <%= address_form.select :city_id, [], { prompt: "Select City" }, class: 'form-control', id: 'city_select' %>
+    </div>
+  </div>
+
+  <div class="col-md-6">
+    <div class="form-group mb-3">
+      <%= address_form.label :zipcode, class: 'form-label' %>
+      <%= address_form.text_field :zipcode, class: 'form-control' %>
+    </div>
+
+    <div class="form-group mb-3">
+      <%= address_form.label :latitude, class: 'form-label' %>
+      <%= address_form.text_field :latitude, class: 'form-control' %>
+    </div>
+
+    <div class="form-group mb-3">
+      <%= address_form.label :longitude, class: 'form-label' %>
+      <%= address_form.text_field :longitude, class: 'form-control' %>
+    </div>
+  </div>
+</div>
