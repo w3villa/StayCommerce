@@ -5,12 +5,14 @@ module Stay
 
     belongs_to :user, class_name: 'Stay::User', optional: true
     belongs_to :address, class_name: 'Stay::Address', optional: true
+
     has_many_attached :images
 
     has_many :prices, through: :rooms
 
     has_many :line_items
     has_many :bookings, through: :line_items
+
     after_create :create_default_room
     after_destroy :destroy_default_room
 
@@ -47,8 +49,8 @@ module Stay
     
     def reviews_count
       Stay::Review.joins(booking: { rooms: :property }).where(stay_properties: { id: self.id }).count
-    end
-
+    end  
+    
     def default_room
       rooms.find_by(is_master: true)
     end

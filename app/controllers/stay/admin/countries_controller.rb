@@ -1,7 +1,7 @@
 module Stay
   module Admin
     class CountriesController < Stay::Admin::BaseController
-      before_action :set_country, only: [:edit, :update, :destroy]
+      before_action :set_country, only: [:edit, :update, :destroy, :show]
 
       def index
         @countries = Stay::Country.all
@@ -23,6 +23,9 @@ module Stay
       def edit
       end
 
+      def show
+      end
+
       def update
         if @country.update(country_params)
           redirect_to admin_countries_path, notice: 'Country was successfully updated.'
@@ -36,11 +39,6 @@ module Stay
         redirect_to admin_countries_path, notice: 'Country was successfully deleted.'
       end
 
-      def states
-        @states = Stay::State.where(country_id: params[:id])
-        render json: @states
-      end
-      
       private
 
       def set_country

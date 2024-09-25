@@ -28,14 +28,10 @@ Stay::Engine.routes.draw do
     resources :messages
     resources :room_types
     resources :countries do
-      member do
-        get :states
-      end
+      resources :states
     end
     resources :states, only: [] do
-      member do
-        get :cities
-      end
+      resources :cities
     end
     devise_for :users,
               class_name: "Stay::User",
