@@ -13,6 +13,9 @@ module Stay
     has_many :line_items
     has_many :bookings, through: :line_items
 
+    after_create :create_default_room
+    after_destroy :destroy_default_room
+
     # def self.ransackable_attributes(auth_object = nil)
     #   ["id", "name", "created_at", "updated_at"]
     # end
@@ -48,5 +51,18 @@ module Stay
       Stay::Review.joins(booking: { rooms: :property }).where(stay_properties: { id: self.id }).count
     end  
     
+    def default_room
+      rooms.find_by(is_master: true)
+    end
+
+    private
+
+    def create_default_room
+      rooms.create(is_master: true, property_id: self.id, max_guests: 2, price_per_night: 0.0, room_type_id: Stay::RoomType.first.id, status: 'available')
+    end
+
+    def destroy_default_room
+      default_room&.destroy
+    end
   end
 end
