@@ -1,5 +1,5 @@
 module Stay
-  class Admin::RoomTypesController < ApplicationController
+  class Admin::RoomTypesController < Stay::Admin::BaseController
     before_action :set_room_type, only: %i[show edit update destroy]
 
     # GET /admin/room_types

@@ -1,6 +1,6 @@
 module Stay
   module Admin
-    class CountriesController < ApplicationController
+    class CountriesController < Stay::Admin::BaseController
       before_action :set_country, only: [:edit, :update, :destroy]
 
       def index
