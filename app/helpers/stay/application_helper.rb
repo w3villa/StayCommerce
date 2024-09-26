@@ -1,5 +1,5 @@
 module Stay
   module ApplicationHelper
-    include Stay::CurrencyHelper
+    include CurrencyHelper
   end
 end
