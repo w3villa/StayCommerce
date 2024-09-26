@@ -13,17 +13,18 @@
 
     <div class="form-group mb-3">
       <%= address_form.label :country, class: 'form-label' %>
-      <%= address_form.collection_select :country_id, Stay::Country.all, :id, :name, { prompt: "Select Country" }, { class: 'form-control', id: 'country_select' } %>
+      <%= address_form.collection_select :country_id, Stay::Country.all, :id, :name, { prompt: "Select Country" , selected: address_form.object.country_id}, { class: 'form-control', id: 'country_select' } %>
     </div>
 
     <div class="form-group mb-3">
       <%= address_form.label :state_id, class: 'form-label' %>
-      <%= address_form.select :state_id, [], { prompt: "Select State" }, class: 'form-control', id: 'state_select' %>
+       <%= address_form.select :state_id,Stay::State.where(country_id: address_form.object.country_id).pluck(:name, :id),
+          { prompt: "Select State", selected: address_form.object.state_id }, class: 'form-control', id: 'state_select' %>
     </div>
 
     <div class="form-group mb-3">
-      <%= address_form.label :city_id, class: 'form-label' %>
-      <%= address_form.select :city_id, [], { prompt: "Select City" }, class: 'form-control', id: 'city_select' %>
+      <%= address_form.label :city, class: 'form-label' %>
+      <%= address_form.text_field :city, class: 'form-control' %>
     </div>
   </div>
 
