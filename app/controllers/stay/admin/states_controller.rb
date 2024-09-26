@@ -4,7 +4,7 @@ class Stay::Admin::StatesController < Stay::Admin::BaseController
 
   # GET /admin/countries/:country_id/states
   def index
-    @states = @country.states
+    @states = @country.states.page(params[:page])
     respond_to do |format|
       format.html
       format.json { render json: @states }

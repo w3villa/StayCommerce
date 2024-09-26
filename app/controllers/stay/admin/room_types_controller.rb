@@ -4,7 +4,7 @@ module Stay
 
     # GET /admin/room_types
     def index
-      @room_types = Stay::RoomType.all
+      @room_types = Stay::RoomType.page(params[:page])
     end
 
     # GET /admin/room_types/new

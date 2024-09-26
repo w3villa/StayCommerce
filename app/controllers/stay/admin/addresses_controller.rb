@@ -6,7 +6,7 @@ module Stay
       # GET /Stay/admin/addresses
       # GET /Stay/admin/addresses.json
       def index
-        @addresses = Stay::Address.all
+        @addresses = Stay::Address.page(params[:page])
       end
 
       # GET /Stay/admin/addresses/1
