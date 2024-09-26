@@ -35,13 +35,13 @@
         <td><%= room_type.description %></td>
         <td class="text-end d-flex justify-content-end">
           <%= link_to edit_admin_room_type_path(room_type), class: 'btn d-inline-flex btn-sm btn-neutral mx-1' do %>
-            <i class="bi bi-pencil">Edit</i>
+            <i class="bi bi-pencil"></i>
           <% end %>  
           <%= link_to admin_room_type_path(room_type), class: 'btn d-inline-flex btn-sm btn-neutral mx-1' do %>
-            <i class="bi bi-eye">View</i>
+            <i class="bi bi-eye"></i>
           <% end %>
           <%= button_to admin_room_type_path(room_type), method: :delete, data: { turbo_method: :delete, turbo_confirm: 'Are you sure?' }, class: 'btn btn-sm btn-neutral mx-1 text-danger-hover' do %>
-            <i class="bi bi-trash">Destroy</i>
+            <i class="bi bi-trash"></i>
           <% end %>                
         </td>
       </tr>
@@ -49,8 +49,8 @@
   </tbody>
 </table>
 </div>
-
-  <div class="card-footer border-0 py-5">
-    <span class="text-muted text-sm">Showing 10 items out of 250 results found</span>
-  </div>
 </div>  
+
+<div class="d-flex justify-content-center">
+      <%= paginate @room_types %>
+</div>

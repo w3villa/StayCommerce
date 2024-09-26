@@ -5,7 +5,7 @@ module Stay
       before_action :set_role, only: %i[show edit update destroy]
 
       def index
-        @roles = Stay::Role.all
+        @roles = Stay::Role.page(params[:page])
       end
 
       def show

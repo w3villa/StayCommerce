@@ -4,7 +4,7 @@ module Stay
       before_action :set_payment_method, only: %i[show edit update destroy]
 
       def index
-        @payment_methods = Stay::PaymentMethod.all
+        @payment_methods = Stay::PaymentMethod.page(params[:page])
       end
 
       def show
