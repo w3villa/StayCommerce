@@ -7,9 +7,7 @@ class Stay::Api::V1::PaymentsController < Stay::BaseApiController
     def create
         begin
             customer = create_or_retrieve_customer
-            payment_method =  'pm_card_visa' # create_payment_method 
-
-            payment_intent = @booking.payment_intent_id ? get_payment_intent : create_payment_intent(payment_method).tap { |pi| @booking.update(payment_intent_id: pi.id) }
+            payment_intent = @booking.payment_intent_id ? get_payment_intent : create_payment_intent.tap { |pi| @booking.update(payment_intent_id: pi.id) }
             if params[:confirm]
                 if payment_intent.status == 'succeeded'
                     render json: { message: "Payment successful", payment_intent: payment_intent }, status: :ok

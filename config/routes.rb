@@ -74,8 +74,16 @@ Stay::Engine.routes.draw do
   end
   
   root 'properties#index'
-  resources :properties, only: [:index, :show]  
+  resources :properties, only: [:index, :show] do
+    resources :bookings, only: [:new, :create, :show, :update] do
+      resources :payments, only: [:new, :create] do
+        collection do
+          post :confirm 
+        end
+      end
+    end
+  end
+
   resources :profiles , only: [:show, :update]
-  resources :bookings, only: [:index, :show] 
 
 end
