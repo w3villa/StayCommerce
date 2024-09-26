@@ -31,6 +31,7 @@ module Stay
         filtered_params = property_params
         filtered_params.delete(:images)  if filtered_params[:images].empty?
         if @property.update(filtered_params)
+          @property.master.update(price_per_night: @property.price_per_night)
           redirect_to admin_properties_path, notice: 'Property was successfully updated.'
         else
           render :edit
@@ -49,7 +50,7 @@ module Stay
       end
 
       def property_params
-        params.require(:property).permit(:active, :title, :description, :availability_start, :availability_end, :user_id, images: []).tap do |params|
+        params.require(:property).permit(:active, :title, :description, :availability_start, :availability_end, :user_id, :price_per_night, images: []).tap do |params|
           # Remove any empty image string ("")
           if params[:images]
             params[:images].reject!(&:blank?)

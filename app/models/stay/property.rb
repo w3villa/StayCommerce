@@ -1,5 +1,8 @@
 module Stay
   class Property < ApplicationRecord
+    include CurrencyHelper
+
+    has_one :master, -> { where is_master: true }, class_name: 'Stay::Room', dependent: :destroy
     has_many :rooms, class_name: 'Stay::Room', dependent: :destroy
     has_many :chats, class_name: 'Stay::Chat', dependent: :destroy
 
@@ -13,8 +16,9 @@ module Stay
     has_many :line_items
     has_many :bookings, through: :line_items
 
+    attr_accessor :price_per_night
     after_create :create_default_room
-    after_destroy :destroy_default_room
+    after_update :update_prices
 
     # def self.ransackable_attributes(auth_object = nil)
     #   ["id", "name", "created_at", "updated_at"]
@@ -50,19 +54,24 @@ module Stay
     def reviews_count
       Stay::Review.joins(booking: { rooms: :property }).where(stay_properties: { id: self.id }).count
     end  
-    
+
     def default_room
-      rooms.find_by(is_master: true)
+      master
+    end
+
+    def price
+      master&.price_per_night.to_f || 0
     end
 
     private
 
     def create_default_room
-      rooms.create(is_master: true, property_id: self.id, max_guests: 2, price_per_night: 0.0, room_type_id: Stay::RoomType.first.id, status: 'available')
+      master_room = rooms.create(is_master: true, property_id: self.id, max_guests: 2, price_per_night: price_per_night, room_type_id: Stay::RoomType.first&.id, status: 'available')
+      master_room.prices.create(amount: master_room.price_per_night, currency: current_currency)
     end
 
-    def destroy_default_room
-      default_room&.destroy
+    def update_prices
+      master.prices&.update(amount: master.price_per_night)
     end
   end
 end
