@@ -2,7 +2,6 @@ module Stay
   class Payment < ApplicationRecord
     belongs_to :booking, class_name: 'Stay::Booking'
     belongs_to :payment_method, class_name: 'Stay::PaymentMethod'
-    belongs_to :source, polymorphic: true 
 
     validates :payment_method, presence: true
     validates :amount, numericality: true
