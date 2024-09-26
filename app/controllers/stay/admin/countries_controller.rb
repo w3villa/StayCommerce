@@ -4,7 +4,7 @@ module Stay
       before_action :set_country, only: [:edit, :update, :destroy, :show]
 
       def index
-        @countries = Stay::Country.all
+        @countries = Stay::Country.page(params[:page])
       end
 
       def new

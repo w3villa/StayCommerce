@@ -5,7 +5,7 @@ module Stay
 
       # GET /reviews
       def index
-        @reviews = Stay::Review.all
+        @reviews = Stay::Review.page(params[:page])
       end
 
       # GET /reviews/1

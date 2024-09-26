@@ -5,7 +5,7 @@ module Stay
       before_action :set_property, only: %i[show edit update destroy]
 
       def index
-        @properties = Stay::Property.all
+        @properties = Stay::Property.page(params[:page])
       end
 
       def show
