@@ -1,11 +1,11 @@
 # app/controllers/Stay/admin/role_controller.rb
 module Stay
   module Admin
-    class RolesController < ApplicationController
+    class RolesController < Stay::Admin::BaseController
       before_action :set_role, only: %i[show edit update destroy]
 
       def index
-        @roles = Stay::Role.all
+        @roles = Stay::Role.page(params[:page])
       end
 
       def show

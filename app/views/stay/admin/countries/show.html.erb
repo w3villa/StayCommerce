@@ -1,0 +1,23 @@
+<div class="container mx-auto p-4">
+  <div class="row mt-4 justify-content-center">
+    <div class="col-md-8 col-lg-10"> 
+      <div class="card">
+        <div class="card-header">
+          <h2 class="text-xl font-semibold mb-0">Country Details</h2> 
+        </div>
+        <div class="card-body">
+          <p><strong>Name: </strong><%= @country.name %></p>
+          <p><strong>Iso Name: </strong><%= @country.iso_name %></p> 
+          <p><strong>Iso Alpha-2: </strong><%= @country.iso %></p> 
+          <p><strong>Iso Alpha-3: </strong><%= @country.iso3 %></p> 
+          <p><strong>Iso Alpha-3: </strong><%= @country.iso3 %></p> 
+          <p><strong>States Required: </strong><%= @country.states_required %></p> 
+          <div class="d-flex mt-4 p-4 justify-content-center">  
+            <%= link_to 'Edit', edit_admin_country_path(@country), class: 'btn btn-warning me-3' %> 
+            <%= link_to 'Back', admin_countries_path, class: 'btn btn-secondary' %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

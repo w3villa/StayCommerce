@@ -1,6 +1,6 @@
 module Stay
   module Admin
-    class UsersController < ApplicationController
+    class UsersController < Stay::Admin::BaseController
       before_action :set_user, only: [:show, :edit, :update, :destroy, :addresses]
       
       # GET /Stay/admin/users
@@ -35,6 +35,13 @@ module Stay
       # PATCH/PUT /Stay/admin/users/1
       # PATCH/PUT /Stay/admin/users/1.json
       def update
+        if params[:user][:password].blank? && params[:user][:password_confirmation].blank?
+          params[:user].delete(:password)
+          params[:user].delete(:password_confirmation)
+        end
+
+        @user.updating_password = params[:user][:password].present?
+
         if @user.update(user_params)
           redirect_to admin_user_path(@user), notice: 'User was successfully updated.'
         else
@@ -70,7 +77,7 @@ module Stay
 
         def user_params
           params.require(:user).permit(:first_name, :last_name, :email, :phone, :date_of_birth, :gender, :password, :password_confirmation, stay_role_ids: [], addresses_attributes: [:id, :address1, :address2, :city, :state, :country, 
-                                :zipcode, :longitude, :latitude, :city_id, :state_id, :country_id])
+                                :zipcode, :longitude, :latitude, :state_id, :country_id])
         end
     end
   end

@@ -1,12 +1,12 @@
 module Stay
   module Admin
-    class AddressesController < ApplicationController
+    class AddressesController < Stay::Admin::BaseController
       before_action :set_address, only: %i[show edit update destroy]
 
       # GET /Stay/admin/addresses
       # GET /Stay/admin/addresses.json
       def index
-        @addresses = Stay::Address.all
+        @addresses = Stay::Address.page(params[:page])
       end
 
       # GET /Stay/admin/addresses/1

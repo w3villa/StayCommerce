@@ -1,6 +1,6 @@
 module Stay
   module Admin
-    class PaymentsController < ApplicationController
+    class PaymentsController < Stay::Admin::BaseController
       before_action :set_payment, only: %i[show edit update destroy]
 
       # GET /payments

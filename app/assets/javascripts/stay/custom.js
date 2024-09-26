@@ -38,3 +38,18 @@ function updateArrow() {
   const isOpen = document.getElementById('dropdownContent').classList.contains('open');
   summary.textContent = summary.textContent.replace(/[▼▲]/, isOpen ? '▲' : '▼');
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+  const flashMessages = document.querySelectorAll('.alert');
+  
+  flashMessages.forEach(function(flashMessage) {
+    setTimeout(function() {
+      flashMessage.style.transition = 'opacity 0.5s ease';
+      flashMessage.style.opacity = '0';
+      
+      setTimeout(function() {
+        flashMessage.remove();
+      }, 500);
+    }, 2000);
+  });
+});

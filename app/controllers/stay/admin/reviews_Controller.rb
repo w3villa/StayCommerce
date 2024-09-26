@@ -1,11 +1,11 @@
 module Stay
   module Admin
-    class ReviewsController < ApplicationController
+    class ReviewsController < Stay::Admin::BaseController
       before_action :set_review, only: %i[show edit update destroy]
 
       # GET /reviews
       def index
-        @reviews = Stay::Review.all
+        @reviews = Stay::Review.page(params[:page])
       end
 
       # GET /reviews/1
