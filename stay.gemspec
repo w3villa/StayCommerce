@@ -34,4 +34,5 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'state_machines-activerecord'
   spec.add_dependency 'kaminari', '~> 1.2'
   spec.add_dependency 'geocoder'
+  spec.add_dependency 'carmen'
 end
