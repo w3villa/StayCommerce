@@ -65,7 +65,13 @@ Stay::Engine.routes.draw do
         end
 
         resources :rooms, only: [:index, :show] do
-          resources :bookings, only: [:create, :show, :update]
+          resources :bookings, only: [:create, :show, :update] do
+            resources :payments, only: [:new, :create] do
+              collection do
+                post :confirm
+              end
+            end
+          end
         end
       end
       

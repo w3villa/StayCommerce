@@ -2,7 +2,6 @@ class Stay::Api::V1::PaymentsController < Stay::BaseApiController
     include StripeConcern
 
     before_action :set_booking
-    # before_action :validate_payment_params, only: :create
     
     def create
         begin
@@ -12,7 +11,7 @@ class Stay::Api::V1::PaymentsController < Stay::BaseApiController
                 if payment_intent.status == 'succeeded'
                     render json: { message: "Payment successful", payment_intent: payment_intent }, status: :ok
                 elsif payment_intent.status == 'requires_action'
-                    render json: { message: "Payment requires further action", client_secret: payment_intent.client_secret }, status: :ok
+                    render json: { message: "Payment requires further action", client_secret: payment_intent.client_secret, payment_intent_id: payment_intent["id"] }, status: :ok
                 else
                     render json: { message: "Payment failed", error: payment_intent.last_payment_error }, status: :unprocessable_entity
                 end
@@ -26,39 +25,18 @@ class Stay::Api::V1::PaymentsController < Stay::BaseApiController
         end
     end
   
-  
-    def complete
-      payment_intent = retrieve_payment_intent_from_params
-      if payment_intent.status == 'succeeded' 
-          if @payment
-              @payment.update(payment_status: payment_intent.status, payment_date: Time.zone.now, amount: payment_intent.amount, payment_method: payment_intent.payment_method_types[0])
-          else 
-              finalize_payment(payment_intent)
-              @payment.update(payment_status: payment_intent.status, payment_date: Time.zone.now, amount: payment_intent.amount, payment_method: payment_intent.payment_method_types[0])
-              @payment.booking.update(status: 'booked')
-          end
-  
-        redirect_to root_path, notice: 'Payment completed successfully!'
+    def confirm
+      payment_intent = get_payment_intent
+      if payment_intent.status == 'succeeded'
+        @booking.update(status: 'completed')
+        render json: { success: true, redirect_url: params[:redirect_url] }
       else
-        redirect_to order_failure_path, alert: 'Payment failed or was not completed.'
+        render json: { error: payment_intent.last_payment_error.message }, status: 422
       end
-  
-    rescue Stripe::StripeError => e
-      flash[:error] = e.message
-      redirect_to new_payment_path
     end
 
-  
     private
 
-    def validate_payment_params
-      required_params = [:amount, :currency, :payment_method_id, :customer_email]
-      required_params.each do |param|
-        unless payment_params[param].present?
-          render json: { error: "#{param} is required" }, status: :unprocessable_entity
-        end
-      end
-    end
   
     def payment_params
       params.require(:payment).permit(:amount, :currency, :payment_method_id, :description, :customer_email)
