@@ -56,8 +56,11 @@
 
     <div class="col-md-6">
       <div class="field">
-        <%= f.label :price_per_night, class:"form-label" %>
-        <%= f.number_field :price_per_night, class:"form-control" %>
+        <%= f.label :price_per_night, class: "form-label" %>
+        <div class="input-group">
+          <span class="input-group-text"><%= currency_symbol %></span>
+          <%= f.number_field :price_per_night, value: @property.master&.price_per_night || '', class: "form-control" %>
+        </div>
       </div>
     </div>
     

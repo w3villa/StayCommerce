@@ -1,5 +1,7 @@
 module Stay
   class Property < ApplicationRecord
+    include CurrencyHelper
+
     has_one :master, -> { where is_master: true }, class_name: 'Stay::Room', dependent: :destroy
     has_many :rooms, class_name: 'Stay::Room', dependent: :destroy
     has_many :chats, class_name: 'Stay::Chat', dependent: :destroy
@@ -16,6 +18,7 @@ module Stay
 
     attr_accessor :price_per_night
     after_create :create_default_room
+    after_update :update_prices
 
     # def self.ransackable_attributes(auth_object = nil)
     #   ["id", "name", "created_at", "updated_at"]
@@ -64,7 +67,11 @@ module Stay
 
     def create_default_room
       master_room = rooms.create(is_master: true, property_id: self.id, max_guests: 2, price_per_night: price_per_night, room_type_id: Stay::RoomType.first&.id, status: 'available')
-      master_room.prices.create(amount: master_room.price_per_night, currency: "USD")
+      master_room.prices.create(amount: master_room.price_per_night, currency: current_currency)
+    end
+
+    def update_prices
+      master.prices&.update(amount: master.price_per_night)
     end
   end
 end
