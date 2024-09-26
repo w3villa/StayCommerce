@@ -1,6 +1,7 @@
 module Stay
   class ApplicationController < ActionController::Base
     include Rails.application.routes.url_helpers
+    include CurrencyHelper
     protect_from_forgery
     layout "stay/application"
     protect_from_forgery with: :null_session

@@ -39,8 +39,7 @@
         </td>
         <td><%= room.property.title %></td>
         <td><%= room.max_guests %></td>
-        <td><%= room.price_per_night %></td>
-
+        <td><%= currency_symbol %> <%= room.price_per_night %></td>
         <td><%= room.room_type&.name %></td>
         <td class="text-end d-flex justify-content-end">
           <%= link_to edit_admin_property_room_path(@property, room), class: 'btn d-inline-flex btn-sm btn-neutral mx-1' do %>
