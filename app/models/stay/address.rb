@@ -24,11 +24,11 @@ module Stay
     ].freeze
     
     def self.ransackable_associations(auth_object = nil)
-      ["city", "country", "properties", "state", "user"]
+      [ "properties", "user"]
     end
 
     def self.ransackable_attributes(auth_object = nil)
-      ["address1", "address2", "city_id", "state_id", "country_id", "zipcode"]
+      ["address1", "address2", "city", "state", "country", "zipcode"]
     end
 
     def full_address

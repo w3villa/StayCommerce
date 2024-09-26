@@ -1,0 +1,127 @@
+<script src="https://js.stripe.com/v3/"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var stripe = Stripe('<%= API_CONFIG['stripe_publishable_key'] %>');
+    var elements = stripe.elements();
+    var card = elements.create('card');
+    card.mount('#card-element');
+
+    var csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+    function loadPaymentMethods() {
+        var paymentMethodSelect = document.getElementById('payment_method');
+        var paymentMethods = [
+            { id: 'pm_card_visa', label: 'Visa Card' },
+            { id: 'pm_card_mastercard', label: 'MasterCard' }
+        ];
+
+        paymentMethodSelect.innerHTML = '';
+
+        paymentMethods.forEach(function(method) {
+            var option = document.createElement('option');
+            option.value = method.id;
+            option.text = method.label;
+            paymentMethodSelect.appendChild(option);
+        });
+    }
+
+    loadPaymentMethods();
+
+    var form = document.getElementById('payment-form');
+    form.addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        stripe.createPaymentMethod({
+            type: 'card',
+            card: card
+        }).then(function(result) {
+            if (result.error) {
+                document.getElementById('card-errors').textContent = result.error.message;
+            } else {
+                submitPayment(result.paymentMethod.id);
+            }
+        });
+    });
+
+    function submitPayment(paymentMethodId) {
+        var formData = new FormData(form);
+        var jsonData = {};
+
+        for (var [key, value] of formData.entries()) {
+            jsonData[key] = value;
+        }
+
+        jsonData['payment_method_id'] = paymentMethodId;
+        fetch(form.action, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-Token': csrfToken
+            },
+            body: JSON.stringify(jsonData),
+        }).then(function(response) {
+            return response.json();
+        }).then(function(paymentResult) {
+            if (paymentResult.client_secret) {
+                handleRequiresAction(paymentResult.client_secret);
+            } else if (paymentResult.success) {
+                window.location.href = paymentResult.redirect_url;
+            } else {
+                document.getElementById('card-errors').textContent = paymentResult.error;
+            }
+        });
+    }
+
+    function handleRequiresAction(clientSecret) {
+        const customerAddress = {
+            line1: "<%= booking.user.addresses.last&.address1 || ""%>",
+            city: "<%= booking.user.addresses.last&.city&.name || ""%>",
+            state: "<%= booking.user.addresses.last&.state&.name || ""%>",
+            postal_code: "<%= booking.user.addresses.last&.zipcode || ""%>",
+            country: "<%= booking.user.addresses.last&.country&.iso || ""%>"
+        };
+
+        stripe.confirmCardPayment(clientSecret, {
+            payment_method: {
+                card: card, 
+                billing_details: {
+                    name: "<%= booking.user.first_name %>" || "test",
+                    address: customerAddress
+                }
+            }
+        }).then(function(result) {
+            if (result.error) {
+                document.getElementById('card-errors').textContent = result.error.message;
+            } else {
+                confirmPaymentIntent(result.paymentIntent.id);
+            }
+        });
+    }
+
+    function confirmPaymentIntent(paymentIntentId) {
+        const url = "<%= confirm_property_booking_payments_path(property_id: @property.id, booking_id: booking.id) %>";
+        
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-Token': csrfToken
+            },
+            body: JSON.stringify({ payment_intent_id: paymentIntentId, redirect_url: document.getElementById('redirect_url').value }),
+        })
+        .then(function(response) {
+            return response.json();
+        })
+        .then(function(result) {
+            if (result.success) {
+                window.location.href = result.redirect_url;
+            } else {
+                document.getElementById('card-errors').textContent = result.error;
+            }
+        })
+        .catch(function(error) {
+            document.getElementById('card-errors').textContent = 'An error occurred while confirming the payment.';
+        });
+    }
+});
+</script>

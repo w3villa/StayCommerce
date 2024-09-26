@@ -1,5 +1,5 @@
 class Stay::PaymentsController < ApplicationController
-  include StripeConcern
+  include Stay::StripeConcern
 
   before_action :authenticate_user!
   before_action :set_property_and_booking
@@ -34,8 +34,10 @@ class Stay::PaymentsController < ApplicationController
       payment_intent = get_payment_intent
       if payment_intent.status == 'succeeded'
         @booking.update(status: 'completed')
+        flash[:notice] = 'Payment Completed Successfully'
         render json: { success: true, redirect_url: params[:redirect_url] }
       else
+        flash[:alert] = payment_intent.last_payment_error.message
         render json: { error: payment_intent.last_payment_error.message }, status: 422
       end
     end
