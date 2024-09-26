@@ -33,6 +33,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'pry'
   spec.add_dependency 'state_machines-activerecord'
   spec.add_dependency 'kaminari', '~> 1.2'
+  spec.add_dependency 'stripe', '~> 5.32.0'
   spec.add_dependency 'geocoder'
   spec.add_dependency 'carmen'
 end

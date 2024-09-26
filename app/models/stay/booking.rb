@@ -76,6 +76,26 @@ module Stay
       end
     end
 
+    def add_rooms_and_calculate(selected_rooms, booking_params, property)
+      total_price = 0
+      total_guests = 0
+  
+      selected_rooms.each do |room_id|
+        room = property.rooms.find(room_id.to_i)
+        number_of_guests = booking_params[:bookings][room_id][:number_of_guests].to_i
+        price = room.price_per_night * (check_out_date - check_in_date).to_i
+  
+        line_items.build(room: room, quantity: number_of_guests, price: price)
+  
+        total_price += price
+        total_guests += number_of_guests
+      end
+  
+      self.total = total_price
+      self.number_of_guests = total_guests
+    end
+
+
     private
 
     def link_by_email

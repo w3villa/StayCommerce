@@ -1,0 +1,187 @@
+<title>Payment Form</title>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Payment Form</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 20px;
+  }
+
+  h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333;
+  }
+
+  #payment-form {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    background-color: #fff;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  }
+
+  .form-group {
+    margin-bottom: 20px;
+  }
+
+  .form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #555;
+  }
+
+  .form-group input,
+  .form-group select,
+  #card-element {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    box-sizing: border-box;
+    font-size: 16px;
+  }
+
+  #card-element {
+    height: 50px;
+    line-height: 50px;
+  }
+
+  .error {
+    color: #d9534f;
+    margin-top: 8px;
+    font-size: 14px;
+  }
+
+  .success {
+    color: #5bc0de;
+    margin-top: 8px;
+    font-size: 14px;
+  }
+
+  button {
+    display: block;
+    width: 100%;
+    padding: 15px;
+    background-color: #5cb85c;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+
+  button:hover {
+    background-color: #4cae4c;
+  }
+</style>
+</head>
+<body>
+
+<div class="container booking-container">
+<h1 class="mb-4"><a href="#" class="text-dark text-decoration-none"></a>Confirm and pay</h1>
+
+<div class="row">
+    <div class="col-md-7">
+        <div class="card mb-4">
+            <div class="card-body">
+                <h2 class="card-title">Your trip</h2>
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div>
+                        <h6 class="mb-0">Dates</h6>
+                        <p class="mb-0"><%= "#{@booking.check_in_date} to #{@booking.check_out_date}"%></p>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="mb-0">Total Guests</h6>
+                        <p class="mb-0"><%=@booking.number_of_guests%></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-body">
+            <%= form_with url: property_booking_payments_path(@property, @booking), local: true, method: :post, id: 'payment-form' do %>
+                <div class="mb-3">
+                    <div class="form-group">
+                        <label for="amount">Amount</label>
+                        <input type="text" name="amount" id="amount" value="<%= @booking.total %>" required>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <div class="form-group">
+                        <label for="payment_method">Payment Method</label>
+                        <select id="payment_method" name="payment_method_id" required>
+                        <!-- Options will be populated by JavaScript -->
+                        </select>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <div class="form-group">
+                        <label for="card-element">Card Details</label>
+                        <div id="card-element"><!-- A Stripe Element will be inserted here. --></div>
+                        <div id="card-errors" class="error"></div>
+                    </div>
+                </div>
+                  <input type="hidden" id="confirm" name="confirm" value=true />
+                  <input type="hidden" id="redirect_url" name="redirect_url" value="<%= API_CONFIG['host_url'] + root_path %>" />
+                <button type="submit">Pay</button>
+            <%end%>
+            </div>
+        </div>  
+    </div>
+    
+    <div class="col-md-5">
+        <div class="card">
+          <div class="card-body">
+            <% @booking.line_items.each do |item| %>
+                <h5 class="card-title"><%= item.room.room_type.name %></h5>
+                <p class="card-text">Room in <%=@property.address.city%></p>
+                <p class="card-text">
+                    <small class="text-muted">
+                        <span class="fa fa-star"></span> 4.65 (190 reviews) • Superhost
+                    </small>
+                </p>
+                
+                <h3 class="mt-4">Price details</h3>
+                <div class="d-flex justify-content-between mb-2">
+                    <span>₹<%= item.room.price_per_night%> x <%=(@booking.check_out_date - @booking.check_in_date).to_i%> nights</span>
+                    <span>₹<%= item.room.price_per_night * (@booking.check_out_date - @booking.check_in_date).to_i%></span>
+                </div>
+                <div class="d-flex justify-content-between mb-2">
+                    <span>Cleaning fee</span>
+                    <span>₹0.0</span>
+                </div>
+                <div class="d-flex justify-content-between mb-2">
+                    <span>Taxes</span>
+                    <span>₹0.0</span>
+                </div>
+                <div class="d-flex justify-content-between">
+                  <strong>Total (INR)</strong>
+                  <strong>₹<%= item.room.price_per_night * (@booking.check_out_date - @booking.check_in_date).to_i%></strong>
+                </div>
+                <hr>
+              <%end%>
+              <h3 class="mt-4">Total Booking Price</h3>
+              <div class="d-flex justify-content-between">
+                <strong><%=@booking.line_items.count%> rooms X <%= (@booking.check_out_date - @booking.check_in_date).to_i%> nights</strong>
+                <strong>₹<%= @booking.total%></strong>
+              </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<%=render partial: 'payment',formats: [:js], :locals => { :booking => @booking }%>
+</body>

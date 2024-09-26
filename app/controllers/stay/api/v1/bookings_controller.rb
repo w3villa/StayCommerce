@@ -4,12 +4,13 @@ class Stay::Api::V1::BookingsController < Stay::BaseApiController
     before_action :set_booking , only: [:show, :update]
     
     def create 
-        @booking = @room.bookings.new(booking_params.merge(user: current_devise_api_user, status: 'pending'))
+        @booking = Stay::Booking.new(booking_params.merge(user: current_devise_api_user, status: 'pending'))
 
         if @booking.save
-        render json: { booking: @booking }, status: :created
+            @room.line_items.create(booking: @booking)
+            render json: { booking: @booking }, status: :created
         else
-        render json: { error: @booking.errors.full_messages }, status: :unprocessable_entity
+            render json: { error: @booking.errors.full_messages }, status: :unprocessable_entity
         end
     end
 
@@ -27,7 +28,7 @@ class Stay::Api::V1::BookingsController < Stay::BaseApiController
     
     private
     def booking_params
-        params.require(:booking).permit(:check_in_date, :check_out_date, :number_of_guests)
+        params.require(:booking).permit(:check_in_date, :check_out_date, :number_of_guests, :total_amount)
     end
 
     def set_room

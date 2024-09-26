@@ -17,15 +17,31 @@ function toggleDropdown() {
   updateArrow();
 }
 
-function updateCount(type, change) {
-  const countElement = document.getElementById(`${type}-count`);
-  let count = parseInt(countElement.textContent);
-  count = Math.max(0, count + change);
-  if (type === 'adults') count = Math.max(1, count);
-  countElement.textContent = count;
-  updateTotalGuests();
-}
+function updateCount(change, maxGuests, button) {
+  const counterDiv = button.closest('td').querySelector('.counter');
+  const countSpan = counterDiv.querySelector('.number-of-guests-count');
+  const countInput = counterDiv.querySelector('.number-of-guests-input');
+  const maxGuestMessage = button.closest('td').querySelector('.max-guest-message');
 
+  let currentCount = parseInt(countSpan.textContent);
+
+  // Calculate new count
+  const newCount = currentCount + change;
+
+  // Check limits
+  if (newCount < 1) {
+      return; // Prevent going below 1 guest
+  } else if (newCount > maxGuests) {
+      maxGuestMessage.style.display = 'block'; // Show message
+      return; // Prevent going above max guests
+  } else {
+      maxGuestMessage.style.display = 'none'; // Hide message if within limits
+  }
+
+  // Update displayed count and hidden input
+  countSpan.textContent = newCount;
+  countInput.value = newCount;
+}
 function updateTotalGuests() {
   const adults = parseInt(document.getElementById('adults-count').textContent);
   const children = parseInt(document.getElementById('children-count').textContent);
