@@ -5,7 +5,7 @@ class Stay::Admin::SessionsController < Devise::SessionsController
     if user && user.roles.pluck(:name).map(&:downcase).include?(Stay::Role::ADMIN.downcase)
       super
     else
-      flash[:error] = user ? 'Access Denied, User must have admin role' : 'User not found'
+      flash[:alert] = user ? 'Access Denied, User must have admin role' : 'User not found'
       redirect_to admin_login_path
     end
   end 

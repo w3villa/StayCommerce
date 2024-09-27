@@ -13,12 +13,7 @@
 <body>
   <%= render 'stay/shared/navbar' %>
   <div class="container mt-5">
-    <% if flash[:error] %>
-      <div class="alert alert-danger">
-        <%= flash[:error] %>
-      </div>
-    <% end %>
-
+  
     <% if flash[:alert] %>
       <div class="alert alert-danger">
         <%= flash[:alert] %>
