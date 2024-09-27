@@ -71,7 +71,7 @@ module Stay
     end
 
     def update_prices
-      master.prices&.update(amount: master.price_per_night)
+      master&.prices&.update(amount: master.price_per_night)
     end
   end
 end
