@@ -5,5 +5,6 @@ module Stay
     validates :name, presence: true
 
     USER = 'user'.freeze
+    ADMIN = 'admin'.freeze
   end
 end

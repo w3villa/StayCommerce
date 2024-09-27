@@ -1,5 +1,15 @@
 class Stay::Admin::SessionsController < Devise::SessionsController
 
+  def create
+    user = Stay::User.find_by(email: params[:user][:email])
+    if user && user.stay_admin?
+      super
+    else
+      flash[:alert] = user ? 'Access Denied, User must have admin role' : 'User not found'
+      redirect_to admin_login_path
+    end
+  end 
+
 	protected
 
 	def respond_to_on_destroy
