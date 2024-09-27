@@ -1,13 +1,13 @@
 class Stay::Admin::SessionsController < Devise::SessionsController
 
   def create
-    roles = Stay::User.find_by_email(params[:user][:email]).roles.pluck(:name)
-    if roles.include? Stay::Role::ADMIN
+    user = Stay::User.find_by(email: params[:user][:email])
+    if user && user.roles.pluck(:name).map(&:downcase).include?(Stay::Role::ADMIN.downcase)
       super
-    else 
-      flash[:error] = 'Access Denied, User must have admin role'
+    else
+      flash[:error] = user ? 'Access Denied, User must have admin role' : 'User not found'
       redirect_to admin_login_path
-    end 
+    end
   end 
 
 	protected
