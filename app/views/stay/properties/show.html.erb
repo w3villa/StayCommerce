@@ -23,7 +23,7 @@
   <div class="row">
     <div class="col-md-7">
       <h2><%= @property.title %></h2>
-      <p><%= @property.description %></p>
+      <p><%= raw(@property.description) %></p>
       
       <div class="d-flex align-items-center">
         <div class="review-badge me-3">
