@@ -75,7 +75,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function handleRequiresAction(clientSecret) {
         const customerAddress = {
             line1: "<%= booking.user.addresses.last&.address1 || ""%>",
-            city: "<%= booking.user.addresses.last&.city&.name || ""%>",
+            city: "<%= booking.user.addresses.last&.city || ""%>",
             state: "<%= booking.user.addresses.last&.state&.name || ""%>",
             postal_code: "<%= booking.user.addresses.last&.zipcode || ""%>",
             country: "<%= booking.user.addresses.last&.country&.iso || ""%>"

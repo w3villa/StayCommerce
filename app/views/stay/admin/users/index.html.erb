@@ -38,7 +38,7 @@
         <td><%= user.first_name %></td>
         <td><%= user.last_name %></td>
         <td><%= user.phone %></td>
-        <td><%= user.date_of_birth.strftime("%Y-%m-%d") %></td>
+        <td><%= user.date_of_birth&.strftime("%Y-%m-%d") %></td>
         <td><%= user.gender %></td>
         <td class="text-end d-flex justify-content-end">
           <%= link_to edit_admin_user_path(user), class: 'btn d-inline-flex btn-sm btn-neutral mx-1' do %>

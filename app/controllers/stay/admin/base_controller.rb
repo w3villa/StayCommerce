@@ -3,7 +3,7 @@ module Stay
     class BaseController < ApplicationController
       layout "stay/admin"
       before_action :authenticate_user!
-      before_action :ensure_admin
+      before_action :ensure_admin, if: -> { current_user.present? }
 
       private
 
