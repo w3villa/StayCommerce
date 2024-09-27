@@ -77,7 +77,7 @@ module Stay
 
         def user_params
           params.require(:user).permit(:first_name, :last_name, :email, :phone, :date_of_birth, :gender, :password, :password_confirmation, stay_role_ids: [], addresses_attributes: [:id, :address1, :address2, :city, :state, :country, 
-                                :zipcode, :longitude, :latitude, :state_id, :country_id])
+                                :zipcode, :longitude, :latitude, :state_id, :country_id, :firstname, :lastname, :phone, :alternative_phone])
         end
     end
   end
