@@ -134,7 +134,6 @@
                     </div>
                 </div>
                   <input type="hidden" id="confirm" name="confirm" value=true />
-                  <input type="hidden" id="redirect_url" name="redirect_url" value="<%= API_CONFIG['host_url'] + root_path %>" />
                 <button type="submit">Pay</button>
             <%end%>
             </div>
@@ -146,7 +145,7 @@
           <div class="card-body">
             <% @booking.line_items.each do |item| %>
                 <h5 class="card-title"><%= item.room.room_type.name %></h5>
-                <p class="card-text">Room in <%=@property.address.city%></p>
+                <p class="card-text">Room in <%=@property.address&.city%></p>
                 <p class="card-text">
                     <small class="text-muted">
                         <span class="fa fa-star"></span> 4.65 (190 reviews) • Superhost
