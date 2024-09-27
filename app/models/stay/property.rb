@@ -66,12 +66,13 @@ module Stay
     private
 
     def create_default_room
+      return unless Stay::RoomType.first.present?
       master_room = rooms.create(is_master: true, property_id: self.id, max_guests: 2, price_per_night: price_per_night, room_type_id: Stay::RoomType.first&.id, status: 'available')
       master_room.prices.create(amount: master_room.price_per_night, currency: current_currency)
     end
 
     def update_prices
-      master.prices&.update(amount: master.price_per_night)
+      master&.prices&.update(amount: master.price_per_night)
     end
   end
 end
