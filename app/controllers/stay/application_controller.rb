@@ -8,6 +8,7 @@ module Stay
     before_action :set_active_storage_url_options
     # before_action :authenticate_devise_api_token!
     # before_action :authorize_admin
+    before_action :authenticate_user!
 
   
 
