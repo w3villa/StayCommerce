@@ -1,4 +1,5 @@
 class Stay::Admin::RegistrationsController < Devise::RegistrationsController
+  layout 'stay/admin'
 
   protected
 

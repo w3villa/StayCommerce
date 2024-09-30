@@ -1,5 +1,7 @@
 class Stay::Admin::SessionsController < Devise::SessionsController
 
+  layout 'stay/admin'
+
   def create
     user = Stay::User.find_by(email: params[:user][:email])
     if user && user.stay_admin?
