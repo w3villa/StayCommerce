@@ -11,6 +11,9 @@ module Stay
              class_name: 'Stay::Price',
              dependent: :destroy
 
+    has_many :room_amenities
+    has_many :amenities, through: :room_amenities         
+
     after_create :set_price
     after_update :update_price, if: :saved_change_to_price_per_night?
 
