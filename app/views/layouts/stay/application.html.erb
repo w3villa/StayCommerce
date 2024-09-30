@@ -12,20 +12,21 @@
 </head>
 <body>
   <%= render 'stay/shared/navbar' %>
-  <div class="container mt-5">
-  
-    <% if flash[:alert] %>
-      <div class="alert alert-danger">
-        <%= flash[:alert] %>
+  <div class="container mt-5">  
+   <% flash.each do |type, msg| %>
+      <div class="flash">
+        <div class="flash-content">
+          <i class="bi <%= type == 'alert' ? 'bi-exclamation-lg' : 'bi-check-lg' %> check"></i>
+          <div class="message">
+            <span class="text text-1"><%= type.capitalize %></span>
+            <span class="text text-2"><%= msg %></span>
+          </div>
+        </div>
+        <i class="bi bi-x close"></i>
+        <div class="progress"></div>
       </div>
     <% end %>
-
-    <% if flash[:notice] %>
-      <div class="alert alert-success">
-        <%= flash[:notice] %>
-      </div>
-    <% end %>
-   </div>
+  </div>
   <div class="container mt-5">
     <%= yield %>
   </div>

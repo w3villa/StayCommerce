@@ -19,4 +19,5 @@
   *= require stay/common
  *= require stay/admin/select2.min
  *= require stay/admin/flatpickr.min
+ *= require stay/admin/index
  */
