@@ -21,12 +21,12 @@ module Stay
                 email: user.email,
                 name: "#{user.first_name} #{user.last_name}",
                 address: {
-                    city: user.addresses&.last&.city,
-                    state: user.addresses&.last&.state.&name,
-                    country: user.addresses&.last&.country.&name,
-                    line1: user.addresses&.last&.address1,
-                    line2: user.addresses&.last&.address2,
-                    postal_code: user.addresses&.last&.zipcode
+                    city: user.addresses.last&.city,
+                    state: user.addresses.last&.state.name,
+                    country: user.addresses.last&.country.name,
+                    line1: user.addresses.last&.address1,
+                    line2: user.addresses.last&.address2,
+                    postal_code: user.addresses.last&.zipcode
                 },
                 metadata: { order_id: user.id }
             })
