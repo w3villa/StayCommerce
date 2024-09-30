@@ -1,5 +1,5 @@
 module Stay
-  class BookingsController < ActionController::Base
+  class BookingsController < ApplicationController
     before_action :set_property, only: [:create]
    def new
     render layout: 'stay/application'
