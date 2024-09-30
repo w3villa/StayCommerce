@@ -8,4 +8,5 @@
 //= require stay/admin/flatpickr.min
 //= require stay/custom
 //= require stay/admin/address.js
+//= require stay/admin/index
 //= require stay/ckeditor
