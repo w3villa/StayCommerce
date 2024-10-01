@@ -1,0 +1,34 @@
+<div class="card mb-4">
+  <div class="card-header">
+    <h5 class="card-title mb-0 h6">
+      Email
+    </h5>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <div class="field">
+        <%= f.label :mail_from_address, class:"form-label" %>
+        <%= f.text_field :mail_from_address, class: 'form-control' %>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-6">
+      <div class="field">
+        <%= f.label :customer_support_email, class:"form-label" %>
+        <%= f.text_field :customer_support_email, class: 'form-control' %>
+      </div>
+    </div>
+  </div>
+
+   <div class="row">
+    <div class="col-md-6">
+      <div class="field">
+        <%= f.label :new_order_notifications_email, class:"form-label" %>
+        <%= f.text_field :new_order_notifications_email, class: 'form-control' %>
+      </div>
+    </div>
+  </div>
+</div>
+

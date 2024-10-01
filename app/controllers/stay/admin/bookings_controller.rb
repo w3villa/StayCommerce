@@ -4,7 +4,7 @@ module Stay
       before_action :set_booking, only: %i[show edit update destroy]
 
       def index
-        @bookings = Stay::Booking.page(params[:page])
+        @bookings = Stay::Booking.order(created_at: :desc).page(params[:page])
       end
 
       def show

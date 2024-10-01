@@ -5,18 +5,18 @@ module Stay
       before_action :set_property, only: %i[show edit update destroy]
 
       def index
-        @properties = Stay::Property.page(params[:page])
+        @properties = current_store.properties.page(params[:page])
       end
 
       def show
       end
 
       def new
-        @property = Stay::Property.new
+        @property = current_store.properties.build
       end
 
       def create
-        @property = Stay::Property.new(property_params)
+        @property = current_store.properties.build(property_params)
         if @property.save
           redirect_to admin_property_path(@property), notice: 'Property was successfully created.'
         else

@@ -63,6 +63,9 @@
           <div class="collapse" id="generalSettings">
             <ul class="navbar-nav ms-3">
               <li class="nav-item">
+                <%= link_to 'Stores', admin_stores_path, class: 'nav-link' %>
+              </li>
+              <li class="nav-item">
                 <%= link_to 'Room Type', admin_room_types_path, class: 'nav-link' %>
               </li>
               <li class="nav-item">
@@ -89,9 +92,9 @@
       <!-- User (md) -->
       <ul class="navbar-nav">
         <li class="nav-item">
-          <a class="nav-link" href="#">
+          <%= link_to edit_admin_user_path(current_user), class: 'nav-link' do %>
             <i class="bi bi-person-square"></i> Account
-          </a>
+          <% end %>
         </li>
         <li class="nav-item">
           <%= button_to admin_logout_path, method: :delete, class: 'nav-link' do %>

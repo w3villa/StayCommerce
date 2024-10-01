@@ -16,7 +16,7 @@ module Stay
           # StoreCreditCategories.call
 
           # # store & stock location
-          # Stores.call
+          Stores.call
           # StockLocations.call
 
           # # add store resources
