@@ -14,6 +14,8 @@ module Stay
       default_scope { unscope(where: :deleted_at) }
     end
 
+    acts_as_paranoid
+
     has_many :bookings, class_name: 'Stay::Booking'
     has_many :line_items, through: :bookings, class_name: 'Stay::LineItem'
     has_many :payments, through: :bookings, class_name: 'Stay::Payment'
@@ -21,7 +23,7 @@ module Stay
     has_many :properties, through: :store_properties, class_name: 'Stay::Property'
     has_many :rooms, through: :properties, class_name: 'Stay::Room', source: :rooms_including_master
 
-    validates :code, uniqueness: { case_sensitive: false}
+    validates :code, uniqueness: { case_sensitive: false, conditions: -> { with_deleted }}
 
     default_scope { order(created_at: :asc) }
 

@@ -17,8 +17,8 @@ module Stay
           classes = nil
           icon = svg_icon name: 'circle.svg', width: '18', height: '18'
         end
-        link_to icon + store.unique_name, admin_url(host: store.formatted_url),
-                class: "#{classes} py-3 px-4 dropdown-item rounded", id: store.code, data: { turbo: false }
+        url = store.default? ? '#' : set_default_admin_store_path(store)
+        button_to icon + store.unique_name, url, method: :put, class: "#{classes} py-3 px-4 dropdown-item rounded", id: store.code, form: { data: { turbo: false } }
       end
     end
   end

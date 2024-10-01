@@ -35,3 +35,4 @@ en:
     add_store: Add Store
     say_no: 'No'
     say_yes: 'Yes'
+    store_set_default_button: 'Set Default'

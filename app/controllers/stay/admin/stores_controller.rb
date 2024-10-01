@@ -11,7 +11,7 @@ module Stay
       before_action :set_default_country_id, only: :new
       before_action :load_all_countries, only: [:new, :edit, :update, :create]
       # before_action :load_all_zones, only: [:new, :edit, :update, :create]
-      before_action :set_store, only: [:show, :edit, :update, :destroy]
+      before_action :set_store, only: [:show, :edit, :update, :destroy, :set_default]
 
       # GET /admin/stores
       def index
@@ -56,9 +56,21 @@ module Stay
 
       # DELETE /admin/stores/:id
       def destroy
-        @store.destroy
-        flash[:success] = "Store deleted Successfully"
+        if @store.destroy
+          flash[:success] = "Store deleted successfully."
+        else
+          flash[:error] = "Failed to delete the store. Please try again."
+        end
         redirect_to admin_stores_path
+      end
+
+      def set_default
+        Stay::Store.update_all(default: false)
+        if @store.update(default: true)
+          redirect_to admin_stores_path, notice: 'Store successfully set as default.'
+        else
+          redirect_to admin_stores_path, alert: 'Failed to set store as default.'
+        end
       end
 
       private

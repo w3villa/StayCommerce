@@ -43,9 +43,13 @@
           <%= link_to edit_admin_store_path(store), class: 'btn d-inline-flex btn-sm btn-neutral mx-1' do %>
             <i class="bi bi-pencil">Edit</i>
           <% end %>  
-          <%= link_to admin_store_path(store), class: 'btn d-inline-flex btn-sm btn-neutral mx-1' do %>
-            <i class="bi bi-eye">View</i>
-          <% end %>
+
+          <% btn_url = store.default? ? '#' : set_default_admin_store_path(store) %>
+          <% btn_class = store.default? ? 'outline-secondary disabled' : 'warning' %>
+          <% btn_label = store.default? ? nil : I18n.t('admin.store_set_default_button') %>
+
+          <%= button_to_with_icon('save.svg', btn_label, btn_url, method: store.default? ? nil : :put, class: "btn btn-#{btn_class} btn-sm with-tip", aria: { disabled: store.default? }) %>
+
           <%= button_to admin_store_path(store), method: :delete, data: { turbo_method: :delete, turbo_confirm: 'Are you sure?' }, class: 'btn btn-sm btn-neutral mx-1 text-danger-hover' do %>
             <i class="bi bi-trash">Destroy</i>
           <% end %>                
