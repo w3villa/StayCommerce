@@ -1,0 +1,20 @@
+<tr class="room_amenity fields" data-hook="room_amenity">
+  <td>
+    <%= f.collection_select :stay_amenity_id, Stay::Amenity.all, :id, :name, { prompt: "Select Amenity" }, { class: 'form-select custom-select-box', id: 'amenity_select' } %>
+  </td>
+
+  <td>
+    <%= f.text_area :description, class: 'form-control' %>
+  </td>
+
+  <td>
+    <%= f.number_field :position, class: 'form-control' %>
+  </td>
+
+  <td>
+    <%= f.check_box :active  %>
+  </td>
+  <td>
+    <%= f.number_field :extra_charge, class: 'form-control', step: '0.01' %>
+  </td>
+</tr>
