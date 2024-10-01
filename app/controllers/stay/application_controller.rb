@@ -13,7 +13,7 @@ module Stay
     # before_action :authenticate_devise_api_token!
     # before_action :authorize_admin
     helper_method :current_store
-  
+    before_action :authenticate_user!
 
     def after_sign_in_path_for(resource)
       if resource.has_stay_role?('admin')
