@@ -5,6 +5,7 @@ module Stay
     has_one :master, -> { where is_master: true }, class_name: 'Stay::Room', dependent: :destroy
     has_many :rooms, class_name: 'Stay::Room', dependent: :destroy
     has_many :chats, class_name: 'Stay::Chat', dependent: :destroy
+    belongs_to :cancellation_policy, class_name: "Stay::CancellationPolicy", optional: :true
 
     belongs_to :user, class_name: 'Stay::User', optional: true
     belongs_to :address, class_name: 'Stay::Address', optional: true
