@@ -18,6 +18,8 @@ module Stay
     scope :incomplete, -> { where(completed_at: nil) }
     scope :not_canceled, -> { where.not(status: 'canceled') }
     before_create :link_by_email, :generate_number
+    before_validation :ensure_store_presence
+
 
     validates :status, inclusion: { in: STATUSES }
     validates :number, uniqueness: true
@@ -96,6 +98,9 @@ module Stay
       self.number_of_guests = total_guests
     end
 
+    def ensure_store_presence
+      self.store ||= Stay::Store.default
+    end
 
     private
 
