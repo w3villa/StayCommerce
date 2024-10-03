@@ -27,7 +27,7 @@ module Stay
     has_many :stores, through: :store_properties, class_name: 'Stay::Store'
 
     attr_accessor :price_per_night
-    # after_create :create_default_room
+    after_create :create_default_room
     after_update :update_prices
     after_create :create_store_property
 
