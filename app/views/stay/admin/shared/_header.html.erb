@@ -5,15 +5,15 @@
     <span class="navbar-toggler-icon"></span>
   </button>
   <!-- Logo -->
-  <div id="storeSwitcherDropdown" class="col-auto text-center text-lg-left align-items-center dropdown">
-    <%= render partial: 'stay/admin/shared/store_switcher' %>
-  </div>
   <%# <a class="navbar-brand" href="#">
     <!-- <img src="https://preview.webpixels.io/web/img/logos/clever-light.svg" class="h-8" alt="..."> -->
     Stay
   </a> %>
   <!-- Avatar -->
   <% if user_signed_in? %>
+  <div id="storeSwitcherDropdown" class="col-auto text-center text-lg-left align-items-center dropdown">
+    <%= render partial: 'stay/admin/shared/store_switcher' %>
+  </div>
     <div class="dropdown order order-lg-3 ms-lg-4">
       <a class="d-block" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         <div class="avatar avatar-sm bg-warning rounded-circle text-white">
