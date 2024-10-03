@@ -46,7 +46,7 @@ module Stay
       private
 
       def set_property
-        @property = Stay::Property.find_by(id: params[:id])
+        @property = current_store.properties.find_by(id: params[:id])
       end
 
       def property_params
