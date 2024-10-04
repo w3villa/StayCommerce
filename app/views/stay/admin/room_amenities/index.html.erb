@@ -8,7 +8,7 @@
       <!-- Actions -->
       <div class="col-sm-6 col-12 text-sm-end">
           <div class="mx-n1">
-          <%= link_to "", class:"btn d-inline-flex btn-sm btn-primary mx-1" do %>
+          <%= link_to new_admin_property_room_room_amenity_path, class:"btn d-inline-flex btn-sm btn-primary mx-1" do %>
               <span class=" pe-2">
               <i class="bi bi-plus"></i>
               </span>
@@ -18,8 +18,7 @@
       </div>
     </div>  
   </div>
-  <%= form_for @room, url: admin_property_room_path(@property, @room), method: :put do |f| %>
-   <fieldset>
+  
     <div class="table-responsive" id="room_amenities_container" >
       <table class="table table-hover table-nowrap">
         <thead class="table-light">
@@ -33,12 +32,20 @@
           </tr>
         </thead>
         <tbody id="room_amenities_list">
-          <%= f.fields_for :room_amenities do |ra_form| %>
-            <%= render 'room_amenity_fields', f: ra_form %>
+          <% @room_amenities.each do |ra| %>
+            <tr>
+              <td><%= ra.amenity.name %></td>
+              <td><%= ra.description%></td>
+              <td><%= ra.position %></td>
+              <td><%= ra.active %></td>
+              <td><%= ra.extra_charge %></td>
+              <td><%= button_to admin_property_room_room_amenity_path(@property, @room , ra), method: :delete, data: { turbo_method: :delete, turbo_confirm: 'Are you sure?' }, class: 'btn btn-sm btn-neutral mx-1 text-danger-hover' do %>
+                 <i class="bi bi-trash"></i>
+                <% end %>
+              </td>
+            </tr>
           <% end %>
         </tbody>
       </table>
     </div>
-   </fieldset>
-  <% end %>
 </div>  

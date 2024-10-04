@@ -1,0 +1,47 @@
+<%= form_with(model: [:admin, @property, @room, @room_amenity], local: true) do |f| %>
+  <% if room_amenity.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(room_amenity.errors.count, "error") %> prohibited this review from being saved:</h2>
+      <ul>
+        <% room_amenity.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="row">
+    <div class="col-md-6">
+      <%= f.label :stay_amenity_id, class:"form-label" %>
+     <%= f.collection_select :stay_amenity_id, Stay::Amenity.all, :id, :name, { prompt: "Select Amenity" }, { class: 'form-select custom-select-box', id: 'amenity_select' } %>
+    </div>
+
+    <div class="col-md-6">
+     <%= f.label :description, class:"form-label" %>
+     <%= f.text_area :description, class: 'form-control' %>
+    </div>
+
+  </div>
+
+  <div class="row">
+    <div class="col-md-6">
+     <%= f.label :position, class:"form-label" %>
+     <%= f.number_field :position, class: 'form-control' %>
+    </div>
+
+    <div class="col-md-6">
+     <%= f.label :active, class:"form-label" %>
+     <%= f.check_box :active  %>
+    </div>
+
+    <div class="col-md-6">
+     <%= f.label :extra_charge, class:"form-label" %>
+     <%= f.number_field :extra_charge, class: 'form-control', step: '0.01' %>
+    </div>
+
+  </div>
+
+  <div class="form-group mt-4">
+    <%= f.submit 'Add', class: 'btn btn-primary' %>
+  </div>
+<% end %>

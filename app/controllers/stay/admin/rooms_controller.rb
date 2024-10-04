@@ -30,7 +30,7 @@ module Stay
 
       def update
         filtered_params = room_params
-        filtered_params.delete(:images)  if filtered_params[:images].empty?
+        filtered_params.delete(:images)  if filtered_params[:images]&.empty?
         if @room.update(filtered_params)
           redirect_to admin_property_room_path(@property), notice: 'Room was successfully updated.'
         else
