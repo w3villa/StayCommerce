@@ -12,11 +12,14 @@ module Stay
     has_many :line_items, class_name: 'Stay::LineItem', dependent: :destroy
     has_many :rooms, through: :line_items
     has_many :properties, through: :rooms
+    belongs_to :store, class_name: 'Stay::Store'
 
     scope :complete, -> { where.not(completed_at: nil) }
     scope :incomplete, -> { where(completed_at: nil) }
     scope :not_canceled, -> { where.not(status: 'canceled') }
     before_create :link_by_email, :generate_number
+    before_validation :ensure_store_presence
+
 
     validates :status, inclusion: { in: STATUSES }
     validates :number, uniqueness: true
@@ -95,6 +98,9 @@ module Stay
       self.number_of_guests = total_guests
     end
 
+    def ensure_store_presence
+      self.store ||= Stay::Store.default
+    end
 
     private
 

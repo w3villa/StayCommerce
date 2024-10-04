@@ -9,7 +9,7 @@
           <p><strong>Image: </strong><%= image_tag main_app.url_for(@room.images.first), size: "60x60" if @room.images.attached? %></p>
           <p><strong>Property: </strong><%= @room.property&.title %></p>
           <p><strong>Max Guests: </strong><%= @room.max_guests %></p> 
-          <p><strong>Price Per Night: </strong><%= currency_symbol%> <%= @room.price_per_night %></p>
+          <p><strong>Price Per Night: </strong><%= currency_symbol(current_currency)%> <%= @room.price_per_night %></p>
           <p><strong>Room Type: </strong><%= @room.room_type.name%></p>
           <div class="d-flex mt-4 p-4 justify-content-center">  
             <%= link_to 'Edit', edit_admin_property_room_path(@property, @room), class: 'btn btn-warning me-3' %> 

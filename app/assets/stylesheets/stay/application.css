@@ -17,6 +17,7 @@
   *= require stay/bootstrap-icons_fix
   *= require stay/webpixels
   *= require stay/common
+  *= require stay/badges
  *= require stay/admin/select2.min
  *= require stay/admin/flatpickr.min
  *= require stay/admin/index
