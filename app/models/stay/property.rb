@@ -1,5 +1,6 @@
 module Stay
   class Property < ApplicationRecord
+    include Rails.application.routes.url_helpers
     include CurrencyHelper
     has_one :master, -> { where is_master: true }, class_name: 'Stay::Room', dependent: :destroy
     has_many :rooms, class_name: 'Stay::Room', dependent: :destroy
@@ -79,6 +80,14 @@ module Stay
 
     def price
       master&.price_per_night.to_f || 0
+    end
+
+    def place_images_urls
+      place_images.map { |image| Rails.application.routes.url_helpers.url_for(image) }
+    end
+
+    def cover_image_url
+      cover_image.attached? ? url_for(cover_image) : nil
     end
 
     private
