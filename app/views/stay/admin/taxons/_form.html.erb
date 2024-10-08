@@ -1,0 +1,74 @@
+<div data-hook="admin_inside_taxon_form">
+  <div class="row">
+    <div class="col-12 col-md-8">
+      <%= f.label :name, raw('name' + required_span_tag) %>
+      <%= text_field :taxon, :name, class: 'form-control', required: true %>
+    </div>
+
+    <div class="col-12 col-md-4">
+      <%= f.check_box :hide_from_nav, class: 'custom-control-input' %>
+      <%= f.label :hide_from_nav, 'hide from subcategories nav', class: 'custom-control-label' %>
+    </div>
+
+    <div class="col-12 col-md-8">
+      <% unless @taxon.new_record? %>
+        <%= label_tag :permalink_part, raw('permalink' + required_span_tag) %>
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <span class="input-group-text">
+              <%= [Stay::Config.storefront_taxons_path, @parent_permalink].join('/') %>
+            </span>
+          </div>
+          <%= text_field_tag :permalink_part, @permalink_part, class: 'form-control', required: true %>
+        </div>
+      <% end %>
+    </div>
+
+    <div class="col-12 col-md-4">
+      <% disabled = !@taxon.new_record? && @taxon.root? %>
+      <%= f.label :parent_id, 'Nested under' %>
+      <%= f.select :parent_id, nested_set_options(@taxonomy.taxons, @taxon) { |i| "#{'-' * i.level} #{i.name}" }, { include_blank: false }, { class: 'select2', disabled: disabled } %>
+      <small class="form-text text-muted">
+        "Quickly nest your Menu Item if you already know where it needs to be"
+      </small>
+    </div>
+  </div>
+
+  <% unless @taxon.new_record? %>
+    <div class="row">
+      <div class="col-12">
+        <hr>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-12 col-md-8">
+        <%= f.label :description, 'Description' %>
+        <%= f.text_area :description, class: "form-control #{'spree-rte' }", rows: 14 %>
+      </div>
+
+      <div class="col-12 col-md-4">
+        <%= render 'assets_form', f: f %>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-12">
+        <hr>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-12">
+        <%= f.label :meta_title, 'Meta Title' %>
+        <%= f.text_field :meta_title, class: 'form-control', rows: 6 %>
+
+        <%= f.label :meta_description, 'Meta Description' %>
+        <%= f.text_area :meta_description, class: 'form-control', rows: 6 %>
+
+        <%= f.label :meta_keywords, 'Meta Keywords' %>
+        <%= f.text_field :meta_keywords, class: 'form-control', rows: 6 %>
+      </div>
+    </div>
+  <% end %>
+</div>

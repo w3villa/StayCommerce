@@ -1,0 +1,22 @@
+<div class="col-sm-6 col-12 mb-4 mb-sm-0">
+    <!-- Title -->
+    <h1 class="h3 mb-0 ls-tight">Taxons</h1>
+</div>
+
+<div class="taxon-products-view">
+  <div id="taxonSearch" class="form-group">
+     <%= select_tag :taxon_id, options_from_collection_for_select(Stay::Taxon.all, :id, :pretty_name),
+      include_blank: 'Select a Taxon',
+      class: 'form-control d-block w-100',
+      data: { 
+          autocomplete_url_value: 'taxons_api_v2',
+          autocomplete_return_attr_value: 'pretty_name',
+          autocomplete_multiple_value: true 
+        } %>
+  </div>
+  </div>
+
+  <ul id="taxon_properties" class="taxon row"></ul>
+
+  <%= render partial: "stay/admin/properties/autocomplete", formats: :js %>
+</div>

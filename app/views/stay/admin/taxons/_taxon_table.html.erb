@@ -1,0 +1,25 @@
+<div class="table-responsive border rounded bg-white">
+  <table class="table table-condensed border rounded">
+    <thead class="text-muted">
+      <tr data-hook="taxons_header">
+        <th> name </th>
+        <th> path </th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% taxons.each do |taxonp| %>
+        <tr id="<%= stay_dom_id(taxon) %>" data-hook="taxons_row">
+          <td><%= taxon.name %></td>
+          <td><%= taxon_path taxon %></td>
+          <td class="actions">
+            <%= link_to taxon, url: remove_admin_property_taxon_path(@property, taxon), name: icon('delete.svg') + ' ' + 'remove' %>
+          </td>
+        </tr>
+      <% end %>
+      <% if taxons.empty? %>
+        <tr data-hook="taxons_none"><td colspan="3"> none.</td></tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

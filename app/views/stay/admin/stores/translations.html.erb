@@ -1,8 +1,8 @@
 <% content_for :page_title do %>
-  <%= Spree.t(:store) %>
-  <%= render partial: 'spree/admin/stores/tabs', locals: {current: :translations} %>
+  Store
+  <%= render partial: 'stay/admin/stores/tabs', locals: {current: :translations} %>
 <% end %>
 
 <div class="row" style="display: block">
-  <%= render 'spree/admin/translations/form', resource: @store %>
+  <%= render 'stay/admin/translations/form', resource: @store %>
 </div>

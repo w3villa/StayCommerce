@@ -37,9 +37,23 @@
           <% end %>
         </li>
         <li class="nav-item">
-          <%= link_to admin_properties_path, class: 'nav-link' do %>
-            <i class="bi bi-bookmarks"></i> Properties
-          <% end %>
+          <a class="nav-link collapsed" data-bs-toggle="collapse" href="#generalSettings" role="button" aria-expanded="false" aria-controls="generalSettings">
+            <i class="bi bi-gear"></i> Properties
+          </a>
+          <div class="collapse" id="generalSettings">
+            <ul class="navbar-nav ms-3">
+              <li class="nav-item">
+                <%= link_to admin_properties_path, class: 'nav-link' do %>
+                  <i></i> Properties
+                <% end %>
+              </li>
+              <li class="nav-item">
+                <%= link_to admin_taxonomies_path, class: 'nav-link' do%>
+                <i></i>Taxonomies
+                <%end%>
+              </li>
+            </ul>
+          </div>
         </li>
         <li class="nav-item">
           <%= link_to admin_bookings_path, class: 'nav-link' do %>
@@ -63,7 +77,9 @@
           <div class="collapse" id="generalSettings">
             <ul class="navbar-nav ms-3">
               <li class="nav-item">
-                <%= link_to 'Stores', admin_stores_path, class: 'nav-link' %>
+                <%= link_to admin_stores_path, class: 'nav-link' do%>
+                <i></i> Stores
+                <%end%>
               </li>
               <li class="nav-item">
                 <%= link_to 'Room Type', admin_room_types_path, class: 'nav-link' %>
