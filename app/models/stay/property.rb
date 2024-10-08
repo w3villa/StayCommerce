@@ -1,7 +1,6 @@
 module Stay
   class Property < ApplicationRecord
     include CurrencyHelper
-
     has_one :master, -> { where is_master: true }, class_name: 'Stay::Room', dependent: :destroy
     has_many :rooms, class_name: 'Stay::Room', dependent: :destroy
     has_many :chats, class_name: 'Stay::Chat', dependent: :destroy
@@ -9,28 +8,47 @@ module Stay
     belongs_to :user, class_name: 'Stay::User', optional: true
     belongs_to :address, class_name: 'Stay::Address', optional: true
 
-    has_many_attached :images
-
+    has_one_attached :cover_image
+    has_many_attached :place_images
     has_many :prices, through: :rooms
 
     has_many :line_items
     has_many :bookings, through: :line_items
 
-    attr_accessor :price_per_night
-    after_create :create_default_room
-    after_update :update_prices
+    belongs_to :property_category, class_name: "Stay::PropertyCategory", optional: true
+    has_one :room_type, through: :property_category, class_name: "Stay::RoomType"   
+    has_one :property_type, through: :property_category, class_name: "Stay::PropertyType"
+    has_many :property_amenities, class_name: "Stay::PropertyAmenity", dependent: :destroy
+    has_many :amenities, through: :property_amenities, class_name: "Stay::Amenity"
+    has_many :additional_rules, class_name: "Stay::AdditionalRule", dependent: :destroy
+    has_many :property_house_rules, class_name: "Stay::PropertyHouseRule", dependent: :destroy
+    has_many :house_rules, through: :property_house_rules, class_name: "Stay::HouseRule"
+
+
+    # nested_attributes
+    accepts_nested_attributes_for :property_amenities, allow_destroy: true
+    accepts_nested_attributes_for :additional_rules, allow_destroy: true
+    accepts_nested_attributes_for :rooms, allow_destroy: true
+    accepts_nested_attributes_for :property_house_rules, allow_destroy: true
+
+
+
+    # attr_accessor :price_per_night
+    # after_create :create_default_room
+    # after_update :update_prices
 
     # def self.ransackable_attributes(auth_object = nil)
     #   ["id", "name", "created_at", "updated_at"]
     # end
+
     def self.ransackable_attributes(auth_object = nil)
-      ["active", "address_id", "availability_end", "availability_start"]
+      ["active", "address", "availability_end", "availability_start"]
     end
   
 
-    def self.ransackable_associations(auth_object = nil)
-      ["address"]
-    end
+    # def self.ransackable_associations(auth_object = nil)
+    #   ["address"]
+    # end
   
 
     def has_rooms?

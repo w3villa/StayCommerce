@@ -36,4 +36,6 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'stripe', '~> 5.32.0'
   spec.add_dependency 'geocoder'
   spec.add_dependency 'carmen'
+  spec.add_dependency 'active_model_serializers'
+  spec.add_dependency 'rack-cors'
 end

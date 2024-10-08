@@ -58,7 +58,10 @@ Stay::Engine.routes.draw do
 
   namespace :api do
     namespace :v1 do
-      resources :properties, only: [:index, :show] do
+      resources :property_categories,  only: [:index, :show]
+      resources :amenity,  only: [:index]
+      resources :property_types,  only: [:index, :show]
+      resources :properties, only: [:index, :show, :create, :update] do
 
         collection do
           get 'search', to: 'properties#search'
