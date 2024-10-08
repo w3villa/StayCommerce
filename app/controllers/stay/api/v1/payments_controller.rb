@@ -1,5 +1,5 @@
 class Stay::Api::V1::PaymentsController < Stay::BaseApiController
-    include StripeConcern
+  include Stay::StripeConcern
 
     before_action :set_booking
     
