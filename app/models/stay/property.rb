@@ -43,10 +43,10 @@ module Stay
     has_many :store_properties, class_name: 'Stay::StoreProperty', dependent: :destroy
     has_many :stores, through: :store_properties, class_name: 'Stay::Store'
 
-    attr_accessor :price_per_night
-    after_create :create_default_room
-    after_update :update_prices
-    after_create :create_store_property
+    # attr_accessor :price_per_night
+    # after_create :create_default_room
+    # after_update :update_prices
+    # after_create :create_store_property
 
     # def self.ransackable_attributes(auth_object = nil)
     #   ["id", "name", "created_at", "updated_at"]
