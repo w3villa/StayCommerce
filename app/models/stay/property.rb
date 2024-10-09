@@ -2,8 +2,16 @@ module Stay
   class Property < ApplicationRecord
     include Rails.application.routes.url_helpers
     include CurrencyHelper
+    include Stay::ControllerHelpers::Currency
+    include Stay::ControllerHelpers::Store
+
     has_one :master, -> { where is_master: true }, class_name: 'Stay::Room', dependent: :destroy
     has_many :rooms, class_name: 'Stay::Room', dependent: :destroy
+    has_many :rooms_including_master,
+         inverse_of: :property,
+         class_name: 'Stay::Room',
+         dependent: :destroy
+
     has_many :chats, class_name: 'Stay::Chat', dependent: :destroy
 
     belongs_to :user, class_name: 'Stay::User', optional: true
@@ -13,7 +21,7 @@ module Stay
     has_many_attached :place_images
     has_many :prices, through: :rooms
 
-    has_many :line_items
+    has_many :line_items, through: :variants_including_master
     has_many :bookings, through: :line_items
 
     belongs_to :property_category, class_name: "Stay::PropertyCategory", optional: true
@@ -32,11 +40,13 @@ module Stay
     accepts_nested_attributes_for :rooms, allow_destroy: true
     accepts_nested_attributes_for :property_house_rules, allow_destroy: true
 
+    has_many :store_properties, class_name: 'Stay::StoreProperty', dependent: :destroy
+    has_many :stores, through: :store_properties, class_name: 'Stay::Store'
 
-
-    # attr_accessor :price_per_night
-    # after_create :create_default_room
-    # after_update :update_prices
+    attr_accessor :price_per_night
+    after_create :create_default_room
+    after_update :update_prices
+    after_create :create_store_property
 
     # def self.ransackable_attributes(auth_object = nil)
     #   ["id", "name", "created_at", "updated_at"]
@@ -92,14 +102,20 @@ module Stay
 
     private
 
+    def create_store_property
+      return unless current_store.present?
+      StoreProperty.create(store_id: current_store.id, property_id: self.id)
+    end
+
     def create_default_room
       return unless Stay::RoomType.first.present?
-      master_room = rooms.create(is_master: true, property_id: self.id, max_guests: 2, price_per_night: price_per_night, room_type_id: Stay::RoomType.first&.id, status: 'available')
-      master_room.prices.create(amount: master_room.price_per_night, currency: current_currency)
+      master_room = rooms.create!(is_master: true, property_id: self.id, max_guests: 2, price_per_night: price_per_night, room_type_id: Stay::RoomType.first&.id, status: 'available')
+      master_room.prices.create(amount: master_room.price_per_night, currency: Stay::Store.default.default_currency)
     end
 
     def update_prices
-      master&.prices&.update(amount: master.price_per_night)
+      master&.prices&.update(amount: master.price_per_night, currency: Stay::Store.default.default_currency)
     end
+
   end
 end

@@ -21,11 +21,11 @@ module Stay
     private
 
     def set_price
-      prices.create(amount: price_per_night, currency: current_currency) if price_per_night.present? && !is_master
+      prices.create(amount: price_per_night, currency: Stay::Store.default.default_currency) if price_per_night.present? && !is_master
     end
 
     def update_price
-      price = prices.find_or_initialize_by(currency: current_currency)
+      price = prices.find_or_initialize_by(currency: Stay::Store.default.default_currency)
       price.amount = price_per_night
       price.save
     end

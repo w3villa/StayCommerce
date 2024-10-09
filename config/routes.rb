@@ -33,6 +33,11 @@ Stay::Engine.routes.draw do
     resources :states, only: [] do
       resources :cities
     end
+    resources :stores do
+      member do
+        put :set_default
+      end
+    end
     devise_for :users,
               class_name: "Stay::User",
               controllers: { sessions: 'stay/admin/sessions',

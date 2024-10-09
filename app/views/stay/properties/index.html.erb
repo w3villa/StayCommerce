@@ -46,7 +46,7 @@
               <p class="hosted-by text-truncate">
                 Hosted by <%= property.user&.first_name || "Unknown" %> <%= property.user&.last_name || "" %>
               </p>
-              <p class="card-text-status"><%= property.availability_start.strftime("%B %d, %Y") %></p>
+              <p class="card-text-status"><%= property.availability_start&.strftime("%B %d, %Y") %></p>
             </div>
           </div>
         </a>

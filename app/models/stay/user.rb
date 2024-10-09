@@ -19,6 +19,9 @@ module Stay
 
     accepts_nested_attributes_for :addresses, allow_destroy: true
     
+    store_accessor :preferences, :whatsapp_notification, :sms_notification
+    after_initialize :set_default_preferences, if: :new_record?
+
     users_table_name = User.table_name
     roles_table_name = Role.table_name
 
@@ -46,6 +49,11 @@ module Stay
       updating_password || super
     end
     
+    def set_default_preferences
+      self.whatsapp_notification = false if whatsapp_notification.nil?
+      self.sms_notification = false if sms_notification.nil?
+    end
+
     private 
 
     def assign_default_role
