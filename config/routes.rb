@@ -63,6 +63,8 @@ Stay::Engine.routes.draw do
 
   namespace :api do
     namespace :v1 do
+      resources :users, only: [:destroy]
+
       resources :properties, only: [:index, :show] do
 
         collection do
