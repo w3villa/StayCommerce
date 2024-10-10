@@ -11,6 +11,9 @@ module Stay
              class_name: 'Stay::Price',
              dependent: :destroy
 
+    has_many :room_amenities, foreign_key: 'stay_room_id', class_name: 'Stay::RoomAmenity'
+    has_many :amenities, through: :room_amenities, source: :amenity     
+
     after_create :set_price
     after_update :update_price, if: :saved_change_to_price_per_night?
 

@@ -17,7 +17,9 @@ Stay::Engine.routes.draw do
       end
     end
     resources :properties do
-      resources :rooms
+      resources :rooms do
+        resources :room_amenities
+      end  
     end
     resources :rooms
     resources :bookings
@@ -27,6 +29,7 @@ Stay::Engine.routes.draw do
     resources :chats
     resources :messages
     resources :room_types
+    resources :amenities
     resources :countries do
       resources :states
     end
