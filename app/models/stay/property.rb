@@ -45,8 +45,8 @@ module Stay
 
     has_many :store_properties, class_name: 'Stay::StoreProperty', dependent: :destroy
     has_many :stores, through: :store_properties, class_name: 'Stay::Store'
-    validates :latitude, format: { with: /\A-?([1-8]?\d(?:\.\d{1,})?|90(?:\.0{1,6})?)\z/ }
-    validates :longitude, format: { with: /\A-?((?:1[0-7]|[1-9])?\d(?:\.\d{1,})?|180(?:\.0{1,})?)\z/ }
+    # validates :latitude, format: { with: /\A-?([1-8]?\d(?:\.\d{1,})?|90(?:\.0{1,6})?)\z/ }
+    # validates :longitude, format: { with: /\A-?((?:1[0-7]|[1-9])?\d(?:\.\d{1,})?|180(?:\.0{1,})?)\z/ }
 
     # attr_accessor :price_per_night
     # after_create :create_default_room
@@ -57,9 +57,9 @@ module Stay
     #   ["id", "name", "created_at", "updated_at"]
     # end
 
-    def full_address
-      [address].compact.join(' ')
-    end
+    # def full_address
+    #   [address].compact.join(' ')
+    # end
 
     def self.ransackable_attributes(auth_object = nil)
       ["active", "address", "availability_end", "availability_start", "title", "extra_guest", "total_rooms", "total_bathrooms", "latitude", "longitude"]

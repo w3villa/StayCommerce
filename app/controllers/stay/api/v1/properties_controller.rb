@@ -1,5 +1,5 @@
 class Stay::Api::V1::PropertiesController < Stay::BaseApiController
-    before_action :set_property, only: [:show, :update, :property_amenities]
+    before_action :set_property, only: [:show, :update]
 
     def index
       begin
@@ -52,9 +52,9 @@ class Stay::Api::V1::PropertiesController < Stay::BaseApiController
       @q = Stay::Property.ransack(params[:q])
       @properties = @q.result.includes(:rooms).distinct
     
-      if @properties.any? && params[:q][:latitude].present? && params[:q][:longitude].present?
-        @properties = @properties.near([params[:q][:latitude], params[:q][:longitude]], params[:distance] || 50)
-      end
+      # if @properties.any? && params[:q][:latitude].present? && params[:q][:longitude].present?
+      #   @properties = @properties.near([params[:q][:latitude], params[:q][:longitude]], params[:distance] || 50)
+      # end
       @properties = @properties.page(params[:page]).per(params[:per_page] || 10)
     
       if @properties.any?
