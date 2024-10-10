@@ -1,0 +1,59 @@
+<%= form_with(model: [:admin, booking], local: true) do |f| %>
+  <% if booking.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(booking.errors.count, "error") %> prohibited this booking from being saved:</h2>
+      <ul>
+        <% booking.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="row">
+    <div class="col-md-6">
+      <div class="field">
+        <%= f.label :user_id, class:"form-label" %>
+        <%= f.number_field :user_id, class: 'form-control' %>
+      </div>
+    </div>
+    
+     <div class="col-md-6">
+     <div class="field">
+        <%= f.label :number_of_guests, class:"form-label" %>
+        <%= f.number_field :number_of_guests, class: 'form-control' %>
+      </div>
+    </div>
+    
+  </div>
+
+   <div class="row">
+    <div class="col-md-6">
+      <div class="field">
+        <%= f.label :check_in_date, class:"form-label" %>
+        <%= f.date_field :check_in_date, class: 'form-control' %>
+      </div>
+    </div>
+    
+     <div class="col-md-6">
+     <div class="field">
+        <%= f.label :check_out_date, class:"form-label" %>
+        <%= f.date_field :check_out_date, class: 'form-control' %>
+      </div>
+    </div>
+    
+  </div>
+
+  <div class="row">
+    <div class="col-md-6">
+      <div class="field">
+        <%= f.label :status, class:"form-label" %>
+        <%= f.text_field :status, class: 'form-control' %>
+      </div>
+    </div>   
+  </div>
+
+  <div class="form-group mt-4">
+    <%= f.submit booking.persisted? ? 'Update Booking' : 'Create Booking', class: 'btn btn-primary' %>
+  </div>
+<% end %>

@@ -1,0 +1,56 @@
+<h2>Properties Listing</h2>
+<div class="container mt-5">
+  <div class="row">
+    <% @properties.each do |property| %>
+      <div class="col-md-3">
+        <!-- Wrap the card in a link to the show action -->
+        <a href="<%= property_path(property) %>" class="text-decoration-none">
+          <div class="card product-card shadow-sm position-relative">
+            <!-- Carousel Start -->
+            <div id="productCarousel-<%= property.id %>" class="product-carousel carousel slide" data-bs-ride="carousel">
+              <div class="carousel-inner">
+                <!-- Use dummy images placeholder -->
+                <% property_images = ["https://via.placeholder.com/400x300", "https://via.placeholder.com/400x300", "https://via.placeholder.com/400x300"] %>
+                <% property_images.each_with_index do |image, index| %>
+                  <div class="carousel-item <%= 'active' if index == 0 %>">
+                      <img src="<%= image.respond_to?(:url) ? image.url : image %>" class="d-block w-100" alt="Room Image <%= index + 1 %>">
+                  </div>
+                <% end %>
+              </div>
+
+              <!-- Carousel Controls (Left and Right) -->
+              <button class="carousel-control-prev custom-carousel-control" type="button" data-bs-target="#productCarousel-<%= property.id %>" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+              </button>
+              <button class="carousel-control-next custom-carousel-control" type="button" data-bs-target="#productCarousel-<%= property.id %>" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+              </button>
+
+              <!-- Carousel Indicators (Dots) -->
+              <div class="carousel-indicators">
+                <% property_images.each_with_index do |_, index| %>
+                  <button type="button" data-bs-target="#productCarousel-<%= property.id %>" data-bs-slide-to="<%= index %>" class="<%= 'active' if index == 0 %>" aria-current="true" aria-label="Slide <%= index + 1 %>"></button>
+                <% end %>
+              </div>
+            </div>
+            <!-- Carousel End -->
+
+            <!-- Heart Button -->
+            <div class="heart-btn position-absolute">
+              <i class="bi bi-heart"></i>
+            </div>
+
+            <!-- Card Body -->
+            <div class="card-body">
+              <h5 class="card-title text-truncate"><%= property.title %></h5>
+              <p class="hosted-by text-truncate">
+                Hosted by <%= property.user&.first_name || "Unknown" %> <%= property.user&.last_name || "" %>
+              </p>
+              <p class="card-text-status"><%= property.availability_start&.strftime("%B %d, %Y") %></p>
+            </div>
+          </div>
+        </a>
+      </div>
+    <% end %>
+  </div>
+</div>

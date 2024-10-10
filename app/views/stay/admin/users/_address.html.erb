@@ -1,0 +1,57 @@
+<%= address_form.hidden_field :id if address_form.object.persisted? %>
+<div class="row">
+  <div class="col-md-6">
+    <div class="form-group mb-3">
+      <%= address_form.label :first_name, class: 'form-label' %>
+      <%= address_form.text_field :firstname, class: 'form-control'%>
+    </div>
+
+    <div class="form-group mb-3">
+      <%= address_form.label :address1, class: 'form-label' %>
+      <%= address_form.text_field :address1, class: 'form-control'%>
+    </div>
+
+    <div class="form-group mb-3">
+      <%= address_form.label :country, class: 'form-label' %>
+      <%= address_form.collection_select :country_id, Stay::Country.all, :id, :name, { prompt: "Select Country" }, { class: 'form-select custom-select-box', id: 'country_select' } %>
+    </div>
+
+    <div class="form-group mb-3">
+      <%= address_form.label :city, class: 'form-label' %>
+      <%= address_form.text_field :city, class: 'form-control' %>
+    </div>
+
+    <div class="form-group mb-3">
+      <%= address_form.label :phone, class: 'form-label' %>
+      <%= address_form.text_field :phone, class: 'form-control' %>
+    </div>
+
+  </div>
+  <div class="col-md-6">
+    <div class="form-group mb-3">
+      <%= address_form.label :last_name, class: 'form-label' %>
+      <%= address_form.text_field :lastname, class: 'form-control'%>
+    </div>
+
+    <div class="form-group mb-3">
+      <%= address_form.label :address2, class: 'form-label' %>
+      <%= address_form.text_field :address2, class: 'form-control' %>
+    </div>
+
+    <div class="form-group mb-3">
+      <%= address_form.label :state_id, class: 'form-label' %>
+     <%= address_form.select :state_id,Stay::State.where(country_id: address_form.object.country_id).pluck(:name, :id),{ prompt: "Select State", selected: address_form.object.state_id }, class: 'form-control custom-select-box', id: 'state_select' %>
+    </div>
+
+    <div class="form-group mb-3">
+      <%= address_form.label :zipcode, class: 'form-label' %>
+      <%= address_form.text_field :zipcode, class: 'form-control' %>
+    </div>
+
+     <div class="form-group mb-3">
+      <%= address_form.label :alternate_phone, class: 'form-label' %>
+      <%= address_form.text_field :alternative_phone, class: 'form-control' %>
+    </div>
+
+  </div>
+</div>

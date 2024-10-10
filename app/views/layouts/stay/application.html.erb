@@ -5,13 +5,30 @@
   <%= csrf_meta_tags %>
   <%= csp_meta_tag %>
 
-  <%= yield :head %>
+  <!-- Bootstrap CSS -->
 
-  <%= stylesheet_link_tag    "stay/application", media: "all" %>
+  <%= stylesheet_link_tag 'stay/application', media: 'all', 'data-turbolinks-track': 'reload' %>
+  <%= javascript_include_tag 'stay/application', 'data-turbolinks-track': 'reload' %>
 </head>
 <body>
-
-<%= yield %>
-
+  <%= render 'stay/shared/navbar' %>
+  <div class="container mt-5">  
+   <% flash.each do |type, msg| %>
+      <div class="flash">
+        <div class="flash-content">
+          <i class="bi <%= type == 'alert' ? 'bi-exclamation-lg' : 'bi-check-lg' %> check"></i>
+          <div class="message">
+            <span class="text text-1"><%= type.capitalize %></span>
+            <span class="text text-2"><%= msg %></span>
+          </div>
+        </div>
+        <i class="bi bi-x close"></i>
+        <div class="progress"></div>
+      </div>
+    <% end %>
+  </div>
+  <div class="container mt-5">
+    <%= yield %>
+  </div>
 </body>
 </html>

@@ -1,0 +1,57 @@
+<%= form_with(model: [:admin, @property, room], local: true) do |f| %>
+  <% if room.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(room.errors.count, "error") %> prohibited this room from being saved:</h2>
+      <ul>
+        <% room.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="row">
+    <div class="col-md-6">
+      <div class="field">
+        <%= f.label :max_guests, class:"form-label" %>
+        <%= f.number_field :max_guests, class: 'form-control' %>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+     <div class="col-md-6">
+      <div class="field">
+        <%= f.label :price_per_night, class: "form-label" %>
+        <div class="input-group">
+          <span class="input-group-text"><%= currency_symbol(current_currency) %></span>
+          <%= f.number_field :price_per_night, class: "form-control" %>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="field">
+        <%= f.label :room_type, class:"form-label" %>
+        <%= f.select :room_type_id, Stay::RoomType.all.collect { |rt| [rt.name, rt.id] }, { include_blank: 'Select Room Type' }, class: 'form-control' %>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-6">
+      <div class="field">
+        <%= f.label :images, "Upload Images", class:"form-label" %>
+        <%= f.file_field :images, multiple: true, class:"form-control" %>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      <div class="form-group mt-4">
+        <%= f.submit room.persisted? ? 'Update Room' : 'Create Room', class: 'btn btn-primary' %>
+      </div>
+    </div>
+  </div>
+<% end %>

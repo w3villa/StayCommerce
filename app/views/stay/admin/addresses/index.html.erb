@@ -1,0 +1,68 @@
+<div class="card mb-7">
+  <div class="card-header">
+    <div class="row align-items-center">
+      <div class="col-sm-6 col-12 mb-4 mb-sm-0">
+          <!-- Title -->
+          <h1 class="h3 mb-0 ls-tight">Addresses</h1>
+      </div>
+      <!-- Actions -->
+      <div class="col-sm-6 col-12 text-sm-end">
+          <div class="mx-n1">
+          <%= link_to new_admin_address_path, class:"btn d-inline-flex btn-sm btn-primary mx-1" do %>
+              <span class=" pe-2">
+              <i class="bi bi-plus"></i>
+              </span>
+              <span>Create New</span>
+          <%end%>
+          </div>
+      </div>
+    </div>  
+  </div>
+  <div class="table-responsive">
+    <table class="table table-hover table-nowrap">
+      <thead class="table-light">
+        <tr>
+          <th scope="col">Address1</th>
+          <th scope="col">Address2</th>
+          <th scope="col">City</th>
+          <th scope="col">State</th>
+          <th scope="col">Country</th>
+          <th scope="col">Zipcode</th>
+          <th scope="col">Longitude</th>
+          <th scope="col">Latitude</th>
+          <th></th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <% @addresses.each do |address| %>
+          <tr>
+            <td><%= address.address1 %></td>
+            <td><%= address.address2 %></td>
+            <td><%= address.city %></td>
+            <td><%= address.state %></td>
+            <td><%= address.country %></td>
+            <td><%= address.zipcode %></td>
+            <td><%= address.longitude %></td>
+            <td><%= address.latitude %></td>            
+            <td class="text-end d-flex justify-content-end">
+              <%= link_to edit_admin_address_path(address), class: 'btn d-inline-flex btn-sm btn-neutral mx-1' do %>
+                <i class="bi bi-pencil"></i>
+              <% end %>  
+              <%= link_to admin_address_path(address), class: 'btn d-inline-flex btn-sm btn-neutral mx-1' do %>
+                <i class="bi bi-eye"></i>
+              <% end %>
+              <%= button_to admin_address_path(address), method: :delete, data: { turbo_method: :delete, turbo_confirm: 'Are you sure?' }, class: 'btn btn-sm btn-neutral mx-1 text-danger-hover' do %>
+                <i class="bi bi-trash"></i>
+              <% end %>                
+           </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>  
+
+<div class="d-flex justify-content-center">
+      <%= paginate @addresses %>
+</div>

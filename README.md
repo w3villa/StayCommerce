@@ -25,14 +25,27 @@ $ gem install stay
 To make the engine's functionality accessible from within an application, it needs to be mounted in that application's config/routes.rb file:
 ```
 mount Stay::Engine, at: "/stay"
-
 ```
+
 To copy these migrations into the application run the following command from the application's root:
 Or install it yourself as:
 ```bash
-	$ bin/rails stay:install:migrations
-
+$ bin/rails stay:install:migrations
+$ rails db:migrate
 ```
+
+## Accessing the Admin Panel
+To access the admin panel, navigate to the following route in your application:
+```ruby
+/stay/admin
+```
+
+Asset Configuration
+Add the following line to your app/assets/config/manifest.js file:
+```ruby
+//= link stay/application.css
+```
+
 ## Contributing
 Contribution directions go here.
 

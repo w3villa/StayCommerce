@@ -1,0 +1,49 @@
+<div data-hook="stay_admin_address_form_fields">
+  <%= form_with(model: [:admin, address], local: true) do |f| %>
+    
+    <div class="field">
+      <%= f.label :address1, 'Address 1' %>
+      <%= f.text_field :address1, class: 'form-control' %>
+    </div>
+
+    <div class="field">
+      <%= f.label :address2, 'Address 2' %>
+      <%= f.text_field :address2, class: 'form-control' %>
+    </div>
+
+    <div class="field">
+      <%= f.label :city, 'City' %>
+      <%= f.text_field :city, class: 'form-control' %>
+    </div>
+
+    <div class="field">
+      <%= f.label :state, 'State' %>
+      <%= f.text_field :state, class: 'form-control' %>
+    </div>
+
+    <div class="field">
+      <%= f.label :country, 'Country' %>
+      <%= f.text_field :country, class: 'form-control' %>
+    </div>
+
+    <div class="field">
+      <%= f.label :zipcode, 'Zipcode' %>
+      <%= f.text_field :zipcode, class: 'form-control' %>
+    </div>
+
+    <div class="field">
+      <%= f.label :longitude, 'Longitude' %>
+      <%= f.text_field :longitude, class: 'form-control' %>
+    </div>
+
+    <div class="field">
+      <%= f.label :latitude, 'Latitude' %>
+      <%= f.text_field :latitude, class: 'form-control' %>
+    </div>
+
+    <div class="actions">
+      <%= f.submit 'Save', class: 'btn btn-primary' %>
+    </div>
+    
+  <% end %>
+</div>

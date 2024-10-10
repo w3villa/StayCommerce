@@ -1,0 +1,22 @@
+<%= form_with(model: [:admin, payment_method], local: true) do |form| %>
+  <% if payment_method.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(payment_method.errors.count, "error") %> prohibited this payment method from being saved:</h2>
+      <ul>
+        <% payment_method.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="row">
+    <div class="col-md-6">
+      <%= form.label :name , class: 'form-label'%>
+      <%= form.text_field :name, class: "form-control", placeholder:"Payment Method Name" %>
+    </div>
+  </div>
+  <div class="form-group mt-4">
+    <%= form.submit payment_method.persisted? ? 'Update' : 'Create', class: 'btn btn-primary' %>
+  </div>
+<% end %>

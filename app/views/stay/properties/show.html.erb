@@ -1,0 +1,137 @@
+<div class="container mt-5">
+  <div class="row">
+    <div class="col-md-8">
+      <% if @property.images.attached? %>
+        <%= image_tag main_app.url_for(@property.images.first), class: "img-fluid main-image", alt: "Main Hotel Image" %>
+      <% else %>
+        <%= image_tag "https://via.placeholder.com/600x300", class: "img-fluid main-image", alt: "Main Hotel Image" %>
+      <% end %>
+    </div>
+    <div class="col-md-4">
+      <div class="row h-full">
+        <% @property.images.drop(1).each_with_index do |image, index| %>
+          <div class="col-6 mb-2">
+            <%= image_tag main_app.url_for(image), class: "img-fluid thumbnail-image object_fit_cover h-full", alt: "Thumbnail #{index + 1}" %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container mt-5">
+  <div class="row">
+    <div class="col-md-7">
+      <h2><%= @property.title %></h2>
+      <p><%= raw(@property.description) %></p>
+      
+      <div class="d-flex align-items-center">
+        <div class="review-badge me-3">
+          <strong>Guest favourite</strong><br>
+          One of the most loved homes, according to guests
+        </div>
+        <div class="text-center">
+          <strong><%= @average_rating.round(1) %></strong> ⭐ <br>
+          <small><%= @reviews_count %> Reviews</small>
+        </div>
+      </div>
+
+      <div class="host-info my-4">
+        <div>
+          <p>Superhost • <%= @property.user&.first_name %> <%= @property.user&.last_name %> <br> 
+          <small class="text-muted"><i class="bi bi-telephone"></i> Connect with host <%= @property.user&.phone %></small></p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="container mt-5">        
+  <div class="table-responsive">
+    <%= form_with url: property_bookings_path(@property.id),id: "room-booking-form" , method: :post do %>
+
+      <!-- Global Check-in and Check-out Dates -->
+      <div class="row mb-4">
+        <div class="col">
+          <label for="check-in">Check-in</label>
+          <input type="date" class="form-control" name="check_in_date" id="check-in-date" required>
+        </div>
+        <div class="col">
+          <label for="check-out">Check-out</label>
+          <input type="date" class="form-control" name="check_out_date" id="check-out-date" required>
+        </div>
+      </div>
+
+      <table class="table table-bordered">
+        <thead class="table-primary">
+          <tr>
+            <th>Room type</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+        <% @property.rooms.each do |room| %>
+          <tr>
+            <td>
+              <h5><%= room.room_type.name %></h5>
+              <p>1 double bed</p>
+
+              <div class="room-amenities">
+                <i class="fas fa-expand"></i> 120 m² 
+                <i class="fas fa-mountain"></i> Balcony<br>
+                <i class="fas fa-tree"></i> Garden view 
+                <i class="fas fa-snowflake"></i> Air conditioning<br>
+                <i class="fas fa-bath"></i> Private bathroom 
+                <i class="fas fa-tv"></i> Flat-screen TV<br>
+                <i class="fas fa-wifi"></i> Free WiFi
+              </div>
+            </td>
+            <td>
+              <div class="col-md-5">
+                <div class="price-section">
+                  <h4>₹<%= room.price_per_night %> <small class="text-muted">/ night</small></h4>
+                  <input type="checkbox" name="selected_rooms[]" value="<%= room.id %>" >
+                  <div class="row my-3">
+                    <div class="col">
+                      <label for="number_of_guests_<%= room.id %>">Number of Guests</label>
+                      <div class="guest-type">
+                        <div class="counter">
+                          <button type="button" onclick="updateCount(-1, <%= room.max_guests %>, this)">-</button>
+                          <span class="number-of-guests-count">1</span>
+                          <input type="hidden" name="bookings[<%= room.id %>][number_of_guests]" class="number-of-guests-input" value="1">
+                          <button type="button" onclick="updateCount(1, <%= room.max_guests %>, this)">+</button>
+                        </div>
+                      </div>
+                      <div class="max-guest-message" style="color: red; display: none;">Maximum number of guests reached</div>
+                    </div>
+                  </div>
+                  <input type="hidden" name="bookings[<%= room.id %>][total]" value="<%= room.price_per_night %>">
+                </div>
+              </div>
+            </td>
+          </tr>
+        <% end %>
+        </tbody>
+      </table>
+      <button type="submit" class="btn btn-primary mt-3">Book Selected Rooms</button>
+    <% end %>                             
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const form = document.getElementById("room-booking-form");
+
+    form.addEventListener("submit", function(event) {
+      const checkboxes = document.querySelectorAll('input[name="selected_rooms[]"]');
+      
+      const isChecked = Array.from(checkboxes).some(checkbox => checkbox.checked);
+
+      if (!isChecked) {
+        event.preventDefault(); // Prevent form submission
+        alert("Please select at least one room to book.");
+      }
+    });
+  });
+</script>

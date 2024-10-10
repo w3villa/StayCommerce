@@ -1,0 +1,36 @@
+<div class="card auth-card shadow-lg bg-white rounded">
+  <div class="card-body p-5">
+    <div class="text-center mb-5">
+      <h1 class="ls-tight font-bolder h2">
+        Sign In 🔑
+      </h1>
+    </div>
+    <%= form_for(resource, as: resource_name, url: admin_create_new_session_path, html: { class: "form" }) do |f| %>
+      <div class="mb-3">
+        <%= f.label :email, class: "form-label" %>
+        <%= f.email_field :email, class: "form-control", autofocus: true, placeholder: "Your email address", autocomplete: "email" %>
+      </div>
+      <div class="mb-3">
+        <%= f.label :password, class: "form-label" %>
+        <%= f.password_field :password, class: "form-control", placeholder: "Password", autocomplete: "current-password" %>
+      </div>
+
+      <% if devise_mapping.rememberable? %>
+        <div class="mb-3">
+          <div class="form-check">
+            <%= f.check_box :remember_me, class: "form-check-input" %>
+            <%= f.label :remember_me, class: "form-check-label" %>
+          </div>
+        </div>
+      <% end %>
+
+      <div class="d-grid">
+        <%= f.submit "Sign in to Dashboard", class: "btn btn-primary" %>
+      </div>
+    <% end %>
+    <div class="text-center mt-3">
+      <small>Don't have an account?</small>
+      <%= render "stay/admin/shared/links" %>
+    </div>
+  </div>
+</div>

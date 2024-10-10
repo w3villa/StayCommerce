@@ -1,0 +1,73 @@
+<%= form_with(model: [:admin, user], local: true, class: 'needs-validation', novalidate: true) do |f| %>
+        <% if user.errors.any? %>
+          <div id="error_explanation" class="alert alert-danger">
+            <h4><%= pluralize(user.errors.count, "error") %> prohibited this user from being saved:</h4>
+            <ul>
+              <% user.errors.full_messages.each do |message| %>
+                <li><%= message %></li>
+              <% end %>
+            </ul>
+          </div>
+        <% end %>
+
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group mb-3">
+              <%= f.label :first_name, class: 'form-label' %>
+              <%= f.text_field :first_name, class: 'form-control', required: true %>
+            </div>
+
+            <div class="form-group mb-3">
+              <%= f.label :last_name, class: 'form-label' %>
+              <%= f.text_field :last_name, class: 'form-control', required: true %>
+            </div>
+
+            <div class="form-group mb-3">
+              <%= f.label :email, class: 'form-label' %>
+              <%= f.email_field :email, class: 'form-control', required: true %>
+            </div>
+
+            <div class="form-group mb-3">
+              <%= f.label :password, class: 'form-label' %>
+              <%= f.password_field :password, class: 'form-control' %>
+            </div>
+
+            <div class="form-group mb-3">
+              <%= f.label :password_confirmation, class: 'form-label' %>
+              <%= f.password_field :password_confirmation, class: 'form-control' %>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="form-group mb-3">
+              <%= f.label :phone, class: 'form-label' %>
+              <%= f.telephone_field :phone, class: 'form-control', required: true %>
+            </div>
+
+            <div class="form-group mb-3">
+              <%= f.label :date_of_birth, class: 'form-label' %>
+              <%= f.date_field :date_of_birth, class: 'form-control', data: { behavior: "flatpickr" } %>
+            </div>
+
+            <div class="form-group mb-3">
+              <%= f.label :gender, class: 'form-label' %>
+              <%= f.select :gender, options_for_select([['Select Gender', nil], ['Male', 'Male'], ['Female', 'Female'], ['Other', 'Other']], f.object.gender), {}, class: 'form-select custom-select-box' %>
+            </div>
+
+            <div class="form-group mb-3">
+              <%= f.label :roles, class: 'form-label d-block' %>
+              <%= f.collection_check_boxes :stay_role_ids, Stay::Role.all, :id, :name do |role_form| %>
+                <div class="form-check">
+                  <%= role_form.check_box class: 'form-check-input' %>
+                  <%= role_form.label class: 'form-check-label' %>
+                </div>
+              <% end %>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="form-group mt-4">
+          <%= f.submit user.persisted? ? 'Update User' : 'Create User', class: 'btn btn-primary' %>
+        </div>
+<% end %>
