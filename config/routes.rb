@@ -83,6 +83,7 @@ Stay::Engine.routes.draw do
       end
       
       resources :profiles , only: [:show, :update]
+      resources :reviews
     end
   end
   
