@@ -15,7 +15,7 @@ module Stay
     has_many :chats, class_name: 'Stay::Chat', dependent: :destroy
 
     belongs_to :user, class_name: 'Stay::User', optional: true
-    belongs_to :address, class_name: 'Stay::Address', optional: true
+    # belongs_to :address, class_name: 'Stay::Address', optional: true
 
     has_one_attached :cover_image
     has_many_attached :place_images
@@ -40,8 +40,13 @@ module Stay
     accepts_nested_attributes_for :rooms, allow_destroy: true
     accepts_nested_attributes_for :property_house_rules, allow_destroy: true
 
+    geocoded_by :address
+    after_validation :geocode
+
     has_many :store_properties, class_name: 'Stay::StoreProperty', dependent: :destroy
     has_many :stores, through: :store_properties, class_name: 'Stay::Store'
+    validates :latitude, format: { with: /\A-?([1-8]?\d(?:\.\d{1,})?|90(?:\.0{1,6})?)\z/ }
+    validates :longitude, format: { with: /\A-?((?:1[0-7]|[1-9])?\d(?:\.\d{1,})?|180(?:\.0{1,})?)\z/ }
 
     # attr_accessor :price_per_night
     # after_create :create_default_room
@@ -52,14 +57,18 @@ module Stay
     #   ["id", "name", "created_at", "updated_at"]
     # end
 
+    def full_address
+      [address].compact.join(' ')
+    end
+
     def self.ransackable_attributes(auth_object = nil)
-      ["active", "address", "availability_end", "availability_start"]
+      ["active", "address", "availability_end", "availability_start", "title", "extra_guest", "total_rooms", "total_bathrooms", "latitude", "longitude"]
     end
   
 
-    # def self.ransackable_associations(auth_object = nil)
-    #   ["address"]
-    # end
+    def self.ransackable_associations(auth_object = nil)
+      ["rooms"]
+    end
   
 
     def has_rooms?

@@ -1,20 +1,20 @@
 class Stay::Api::V1::PropertiesController < Stay::BaseApiController
-    before_action :set_property, only: [:show, :update]
+    before_action :set_property, only: [:show, :update, :property_amenities]
 
     def index
       begin
-        page = (params[:page] || 1).to_i
-        per_page = (params[:per_page] || 10).to_i
-        @properties = Stay::Property.page(page).per(per_page)
+        @properties = Stay::Property.page(params[:page]).per(params[:per_page] || 10)
         return render json: { data: "No properties found", properties: [], success: false}, status: :ok  if @properties.empty?
         render json: {
           data: "Data Found",
           properties: ActiveModelSerializers::SerializableResource.new(@properties, each_serializer: PropertyListingSerializer),
           success: true,
           meta: {
-            current_page: @properties.current_page,
             total_pages: @properties.total_pages,
-            total_count: @properties.total_count
+            current_page: @properties.current_page,
+            next_page: @properties.next_page,
+            prev_page: @properties.prev_page,
+            total_count: @properties.total_count,
           }
         }, status: :ok
       rescue ActiveRecord::RecordNotFound => e
@@ -50,11 +50,24 @@ class Stay::Api::V1::PropertiesController < Stay::BaseApiController
 
     def search
       @q = Stay::Property.ransack(params[:q])
-      @properties = @q.result.includes(address: [:city, :state, :country]).distinct
-
+      @properties = @q.result.includes(:rooms).distinct
+    
+      if @properties.any? && params[:q][:latitude].present? && params[:q][:longitude].present?
+        @properties = @properties.near([params[:q][:latitude], params[:q][:longitude]], params[:distance] || 50)
+      end
+      @properties = @properties.page(params[:page]).per(params[:per_page] || 10)
+    
       if @properties.any?
         render json: {
-          properties: @properties}, status: :ok
+          message: "data found", 
+          properties: ActiveModelSerializers::SerializableResource.new(@properties, each_serializer: PropertyListingSerializer),
+          total_pages: @properties.total_pages,
+          current_page: @properties.current_page,
+          next_page: @properties.next_page,
+          prev_page: @properties.prev_page,
+          total_count: @properties.total_count,
+          success: true
+        }, status: :ok
       else
         render json: { message: 'No properties found' }, status: :not_found
       end
