@@ -17,7 +17,7 @@ module Stay
     has_many :addresses, class_name: 'Stay::Address'
     # validates :phone, format: { with: /\A\d{10}\z/, message: "number must be valid." }
 
-    acts_as_paranoid
+    # acts_as_paranoid
 
     accepts_nested_attributes_for :addresses, allow_destroy: true
     
