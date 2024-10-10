@@ -54,7 +54,7 @@ module Stay
 
       # Only allow a list of trusted parameters through.
       def amenity_params
-        params.require(:amenity).permit(:name, :description, :position, :active, :extra_charge, :category)
+        params.require(:amenity).permit(:name, :description, :position, :active, :charge, :category)
       end
   end
 end

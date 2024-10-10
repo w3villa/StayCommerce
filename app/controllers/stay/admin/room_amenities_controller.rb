@@ -37,7 +37,7 @@ module Stay
     end
 
     def room_amenity_params
-      params.require(:room_amenity).permit(:stay_amenity_id, :description, :position, :active, :extra_charge)
+      params.require(:room_amenity).permit(:stay_amenity_id, :description, :position, :active, :charge)
     end
   end
 end

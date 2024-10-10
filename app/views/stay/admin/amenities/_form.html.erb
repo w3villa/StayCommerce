@@ -1,7 +1,7 @@
 <%= form_with(model: [:admin,  @amenity], local: true) do |f| %>
   <% if @amenity.errors.any? %>
     <div id="error_explanation">
-      <h2><%= pluralize(@amenity.errors.count, "error") %> prohibited this room from being saved:</h2>
+      <h2><%= pluralize(@amenity.errors.count, "error") %> prohibited this amenity from being saved:</h2>
       <ul>
         <% @amenity.errors.full_messages.each do |message| %>
           <li><%= message %></li>
@@ -35,8 +35,8 @@
       </div>
 
        <div class="field">
-        <%= f.label :extra_charge, class:"form-label" %>
-        <%= f.number_field :extra_charge, class: 'form-control', step: '0.01' %>
+        <%= f.label :charge, class:"form-label" %>
+        <%= f.number_field :charge, class: 'form-control', step: '0.01' %>
       </div>
       
       <div class="field">

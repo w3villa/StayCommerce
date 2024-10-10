@@ -38,7 +38,7 @@
               <td><%= ra.description%></td>
               <td><%= ra.position %></td>
               <td><%= ra.active %></td>
-              <td><%= ra.extra_charge %></td>
+              <td><%= ra.charge %></td>
               <td><%= button_to admin_property_room_room_amenity_path(@property, @room , ra), method: :delete, data: { turbo_method: :delete, turbo_confirm: 'Are you sure?' }, class: 'btn btn-sm btn-neutral mx-1 text-danger-hover' do %>
                  <i class="bi bi-trash"></i>
                 <% end %>

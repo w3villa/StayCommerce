@@ -1,7 +1,7 @@
 <%= form_with(model: [:admin, @property, @room, @room_amenity], local: true) do |f| %>
   <% if room_amenity.errors.any? %>
     <div id="error_explanation">
-      <h2><%= pluralize(room_amenity.errors.count, "error") %> prohibited this review from being saved:</h2>
+      <h2><%= pluralize(room_amenity.errors.count, "error") %> prohibited this room amenity from being saved:</h2>
       <ul>
         <% room_amenity.errors.full_messages.each do |message| %>
           <li><%= message %></li>
@@ -18,7 +18,7 @@
 
     <div class="col-md-6">
      <%= f.label :description, class:"form-label" %>
-     <%= f.text_area :description, class: 'form-control' %>
+     <%= f.text_area :description, class: 'form-control ckeditor' %>
     </div>
 
   </div>
@@ -35,8 +35,8 @@
     </div>
 
     <div class="col-md-6">
-     <%= f.label :extra_charge, class:"form-label" %>
-     <%= f.number_field :extra_charge, class: 'form-control', step: '0.01' %>
+     <%= f.label :charge, class:"form-label" %>
+     <%= f.number_field :charge, class: 'form-control', step: '0.01' %>
     </div>
 
   </div>

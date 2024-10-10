@@ -26,7 +26,7 @@
           <th scope="col">Description</th>
           <th scope="col">Position</th>
           <th scope="col">Active</th>
-          <th scope="col">Extra Charge</th>
+          <th scope="col">Charge</th>
           <th scope="col">Category</th>
           <th></th>
         </tr>
@@ -39,7 +39,7 @@
             <td><%= amenity.description %></td>
             <td><%= amenity.position %></td>
             <td><%= amenity.active %></td>
-            <td><%= amenity.extra_charge %></td>
+            <td><%= amenity.charge %></td>
             <td><%= amenity.category %></td>
             <td class="text-end d-flex justify-content-end">
               <%= link_to edit_admin_amenity_path(amenity), class: 'btn d-inline-flex btn-sm btn-neutral mx-1' do %>
