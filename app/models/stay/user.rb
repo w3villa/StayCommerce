@@ -16,6 +16,7 @@ module Stay
     has_many :received_chats, class_name: 'Stay::Chat', foreign_key: :receiver_id, dependent: :destroy
     has_many :addresses, class_name: 'Stay::Address'
     # validates :phone, format: { with: /\A\d{10}\z/, message: "number must be valid." }
+    acts_as_paranoid
 
     accepts_nested_attributes_for :addresses, allow_destroy: true
     

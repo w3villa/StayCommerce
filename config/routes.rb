@@ -74,7 +74,7 @@ Stay::Engine.routes.draw do
       resources :amenity_categories, only: [:index]
       resources :property_types,  only: [:index, :show]
       resources :properties, only: [:index, :show, :create, :update] do
-
+      resources :users, only: [:destroy]
         collection do
           get 'search', to: 'properties#search'
         end
