@@ -27,6 +27,12 @@ Stay::Engine.routes.draw do
     resources :chats
     resources :messages
     resources :room_types
+    resources :property_categories
+    resources :property_types
+    resources :bed_types
+    resources :amenities
+    resources :amenity_categories
+    resources :house_rules
     resources :countries do
       resources :states
     end

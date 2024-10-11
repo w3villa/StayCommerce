@@ -15,7 +15,7 @@ module Stay
     has_many :chats, class_name: 'Stay::Chat', dependent: :destroy
 
     belongs_to :user, class_name: 'Stay::User', optional: true
-    belongs_to :address, class_name: 'Stay::Address', optional: true
+    # belongs_to :address, class_name: 'Stay::Address', optional: true
 
     has_one_attached :cover_image
     has_many_attached :place_images
@@ -46,7 +46,8 @@ module Stay
     # attr_accessor :price_per_night
     # after_create :create_default_room
     # after_update :update_prices
-    # after_create :create_store_property
+    after_create :create_store_property
+    validate :availability_dates_are_valid
 
     # def self.ransackable_attributes(auth_object = nil)
     #   ["id", "name", "created_at", "updated_at"]
@@ -101,6 +102,12 @@ module Stay
     end
 
     private
+
+    def availability_dates_are_valid
+      if availability_start && availability_end && availability_start >= availability_end
+        errors.add(:availability_end, "must be after availability start date")
+      end
+    end
 
     def create_store_property
       return unless current_store.present?
