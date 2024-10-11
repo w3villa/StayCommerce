@@ -30,20 +30,19 @@
   <div class="row">
     <div class="col-md-6">
       <div class="field">
-        <%= f.label :ctaegory, '*Category (mandatory)', class:"form-label" %>
-        <%= f.select :property_category_id, Stay::PropertyCategory.all.collect { |pc| [pc.name, pc.id] }, { include_blank: 'None' }, class: 'form-control', required: true %>
+        <%= f.label :category, '*Category (mandatory)', class:"form-label" %>
+        <%= f.select :property_category_id, Stay::PropertyCategory.all.collect { |pc| [pc.name, pc.id] }, { include_blank: 'None' }, class: 'form-control custom-select-box', id: 'property_category_select', onchange: 'updateRoomType(this.value)', required: true %>
       </div>
     </div>
 
     <div class="col-md-6">
       <div class="field">
         <%= f.label :room_type, 'Room Type (auto-filled)', class: "form-label" %>
-        <% selected_category = Stay::PropertyCategory.find_by(id: property.property_category_id) %>
-        <%= f.text_field :room_type_id, value: selected_category&.room_type_id, readonly: true, class: 'form-control' %>
+        <%= f.text_field :room_type_name, value: property.property_category&.room_type&.name, readonly: true, class: 'form-control', id: 'room_type_field' %>
       </div>
     </div>
+    <div id="property-category-data" data-room-types='<%= Stay::PropertyCategory.all.map { |pc| [pc.id, pc.room_type.name] }.to_h.to_json %>'></div>
   </div>
-
 
   <div class="row">
     <div class="col-md-6">

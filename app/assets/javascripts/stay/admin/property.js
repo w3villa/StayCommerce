@@ -21,4 +21,17 @@ $(document).ready(function() {
     ruleRow.find('.rule-destroy-field').val('true');
     ruleRow.hide();
   });
+
+  const roomTypeField = document.getElementById('room_type_field');
+  const propertyCategoryData = document.getElementById('property-category-data');
+
+  const roomTypesByCategory = JSON.parse(propertyCategoryData.getAttribute('data-room-types'));
+
+  window.updateRoomType = function(selectedCategoryId) {
+    if (roomTypesByCategory[selectedCategoryId]) {
+      roomTypeField.value = roomTypesByCategory[selectedCategoryId];
+    } else {
+      roomTypeField.value = '';
+    }
+  };
 });
