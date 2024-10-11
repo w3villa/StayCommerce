@@ -41,8 +41,9 @@ Stay::Engine.routes.draw do
     devise_for :users,
               class_name: "Stay::User",
               controllers: { sessions: 'stay/admin/sessions',
-                                passwords: 'stay/admin/passwords',
-                                 registrations: 'stay/admin/registrations'},
+                            passwords: 'stay/admin/passwords',
+                              registrations: 'stay/admin/registrations',
+                            tokens: 'customers/api/tokens' },
               skip: [:unlocks, :omniauth_callbacks],
               path_names: { sign_out: 'logout' }
 
@@ -63,9 +64,12 @@ Stay::Engine.routes.draw do
 
   namespace :api do
     namespace :v1 do
+      resources :property_categories,  only: [:index, :show]
+      resources :amenity_categories, only: [:index]
+      resources :property_types,  only: [:index, :show]
       resources :users, only: [:destroy]
-
-      resources :properties, only: [:index, :show] do
+      resources :house_rules, only: :index
+      resources :properties, only: [:index, :show, :create, :update] do
 
         collection do
           get 'search', to: 'properties#search'

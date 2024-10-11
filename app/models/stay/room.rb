@@ -13,7 +13,7 @@ module Stay
 
     after_create :set_price
     after_update :update_price, if: :saved_change_to_price_per_night?
-
+    belongs_to :bed_type, class_name: "Stay::BedType", optional: :true
     def price
       price_per_night
     end
