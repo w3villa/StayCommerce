@@ -10,7 +10,11 @@ class Stay::Api::V1::MessagesController <  ApplicationController
     @messages = @chat.messages
     @message = @chat.messages.new
 
-    render json: @messages
+    render json: {
+      data: "Message Found",
+      chat:ActiveModelSerializers::SerializableResource.new(@messages, each_serializer: MessageSerializer),
+      success: true
+     }, status: :ok
   end
 
   def new
@@ -29,7 +33,11 @@ class Stay::Api::V1::MessagesController <  ApplicationController
     if message.valid?
       ActionCable.server.broadcast "ChatChannel", message
     end
-    render json: message
+    render json: {
+      data: "Message Create",
+      chat:ActiveModelSerializers::SerializableResource.new(message, each_serializer: MessageSerializer),
+      success: true
+     }, status: :created
   end
 
 

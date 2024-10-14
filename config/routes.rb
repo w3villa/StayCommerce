@@ -65,6 +65,9 @@ Stay::Engine.routes.draw do
     namespace :v1 do
       resources :users, only: [:destroy]
       resources :chats, only: [:index, :create, :show] do
+        member do
+           get 'chat_messages', to: 'chats#chat_messages'
+        end
         resources :messages, only: [:index, :new, :create]
       end
       resources :properties, only: [:index, :show] do

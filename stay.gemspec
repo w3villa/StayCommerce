@@ -48,4 +48,5 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'jsbundling-rails'
   spec.add_dependency 'sass-rails'
   spec.add_dependency 'sprockets'
+  spec.add_dependency 'active_model_serializers'
 end
