@@ -8,7 +8,6 @@ class Stay::Api::V1::MessagesController <  ApplicationController
 
   def index
     @messages = @chat.messages
-    @message = @chat.messages.new
 
     render json: {
       data: "Message Found",

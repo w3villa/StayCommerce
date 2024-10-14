@@ -3,7 +3,6 @@ class Stay::Api::V1::ChatsController < ApplicationController
   # skip_before_action :verify_authenticity_token
 
   def index
-    @users = Stay::User.all
     @chat = Stay::Chat.where(property_id: params[:property_id])
 
     render json: {
