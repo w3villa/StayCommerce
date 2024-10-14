@@ -1,0 +1,102 @@
+<%= form_with(model: [:admin, property], local: true) do |f| %>
+  <% if property.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(property.errors.count, "error") %> prohibited this property from being saved:</h2>
+      <ul>
+        <% property.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="row">
+    <div class="col-md-6">
+      <div class="field">
+        <%= f.label :property_size, class: "form-label" %>
+        <%= f.text_field :property_size, class: 'form-control' %>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="field">
+        <%= f.label :Rooms, class: "form-label" %>
+        <%= f.number_field :total_rooms, class: 'form-control' %>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-6">
+      <div class="field">
+        <%= f.label :bedrooms, class: "form-label mt-4" %>
+        <%= f.number_field :total_bedrooms, class: 'form-control' %>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="field">
+        <%= f.label :bathrooms, class: "form-label mt-4" %>
+        <%= f.number_field :total_bathrooms, class: 'form-control' %>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      <%= f.label :additional_rules, class: "form-label mt-4" %>
+      <div id="additional_rules" data-initial-index="<%= property.additional_rules.length %>">
+        <%= f.fields_for :additional_rules do |additional_rule_fields| %>
+          <div class="row mb-3 additional_rule" data-rule-id="<%= additional_rule_fields.object.id %>">
+            <div class="col-md-9">
+              <%= additional_rule_fields.text_field :name, class: 'form-control', placeholder: 'Rule Name' %>
+            </div>
+            <div class="col-md-3">
+              <%= additional_rule_fields.hidden_field :_destroy, class: 'rule-destroy-field' %>
+              <i class="bi bi-trash remove-rule" style="cursor: pointer;"></i>
+            </div>
+          </div>
+        <% end %>
+      </div>
+      <div class="form-group">
+        <%= f.button 'Add Another Rule', type: 'button', class: 'btn btn-secondary', id: 'add_rule_button' %>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-9">
+      <%= f.label :property_house_rules, class: "form-label mt-4" %>
+      <div id="house_rules">
+          <div class="nested-fields border p-3 mb-3 form-control">
+        <% Stay::HouseRule.all.each do |house_rule| %>
+          <% property_house_rule = @property.property_house_rules.find_or_initialize_by(house_rule_id: house_rule.id) %>
+            <%= f.fields_for :property_house_rules, property_house_rule do |house_rule_fields| %>
+              <%= house_rule_fields.label :house_rule_id, house_rule.name, class: "form-label mt-6"%>
+              <%= house_rule_fields.hidden_field :house_rule_id, value: house_rule.id %>
+              <div class="form-group mt-2">
+                <%= house_rule_fields.radio_button :value, "allow", checked: (property_house_rule.value == "allow" || property_house_rule.value.nil?) %>
+                <%= house_rule_fields.label :value, "Allow", class: 'radio-button-label' %>
+
+                <%= house_rule_fields.radio_button :value, "do_not_allow", checked: (property_house_rule.value == "do_not_allow"), class: 'radio-button'  %>
+                <%= house_rule_fields.label :value, "Do Not Allow", class: 'radio-button-label'%>
+
+                <%= house_rule_fields.radio_button :value, "charge", checked: (property_house_rule.value == "charge"), class: 'radio-button'  %>
+                <%= house_rule_fields.label :value, "Charge", class: 'radio-button-label' %>
+              </div>
+            <% end %>
+        <% end %>
+          </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      <div class="form-group mt-4">
+        <%= hidden_field_tag :step, 'details' %>
+        <%= f.submit 'Continue', class: 'btn btn-primary' %>
+      </div>
+    </div>
+  </div>
+<% end %>

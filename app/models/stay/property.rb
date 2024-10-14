@@ -1,7 +1,8 @@
 module Stay
   class Property < ApplicationRecord
+    include Rails.application.routes.url_helpers
     include CurrencyHelper
-    # include Stay::ControllerHelpers::Currency
+    include Stay::ControllerHelpers::Currency
     include Stay::ControllerHelpers::Store
 
     has_one :master, -> { where is_master: true }, class_name: 'Stay::Room', dependent: :destroy
@@ -14,34 +15,52 @@ module Stay
     has_many :chats, class_name: 'Stay::Chat', dependent: :destroy
 
     belongs_to :user, class_name: 'Stay::User', optional: true
-    belongs_to :address, class_name: 'Stay::Address', optional: true
+    # belongs_to :address, class_name: 'Stay::Address', optional: true
 
-    has_many_attached :images
-
+    has_one_attached :cover_image
+    has_many_attached :place_images
     has_many :prices, through: :rooms
 
     has_many :line_items, through: :variants_including_master
     has_many :bookings, through: :line_items
 
+    belongs_to :property_category, class_name: "Stay::PropertyCategory", optional: true
+    has_one :room_type, through: :property_category, class_name: "Stay::RoomType"   
+    has_one :property_type, through: :property_category, class_name: "Stay::PropertyType"
+    has_many :property_amenities, class_name: "Stay::PropertyAmenity", dependent: :destroy
+    has_many :amenities, through: :property_amenities, class_name: "Stay::Amenity"
+    has_many :additional_rules, class_name: "Stay::AdditionalRule", dependent: :destroy
+    has_many :property_house_rules, class_name: "Stay::PropertyHouseRule", dependent: :destroy
+    has_many :house_rules, through: :property_house_rules, class_name: "Stay::HouseRule"
+
+
+    # nested_attributes
+    accepts_nested_attributes_for :property_amenities, allow_destroy: true
+    accepts_nested_attributes_for :additional_rules, allow_destroy: true
+    accepts_nested_attributes_for :rooms, allow_destroy: true
+    accepts_nested_attributes_for :property_house_rules, allow_destroy: true
+
     has_many :store_properties, class_name: 'Stay::StoreProperty', dependent: :destroy
     has_many :stores, through: :store_properties, class_name: 'Stay::Store'
 
-    attr_accessor :price_per_night
-    after_create :create_default_room
-    after_update :update_prices
+    # attr_accessor :price_per_night
+    # after_create :create_default_room
+    # after_update :update_prices
     after_create :create_store_property
+    validate :availability_dates_are_valid
 
     # def self.ransackable_attributes(auth_object = nil)
     #   ["id", "name", "created_at", "updated_at"]
     # end
+
     def self.ransackable_attributes(auth_object = nil)
-      ["active", "address_id", "availability_end", "availability_start"]
+      ["active", "address", "availability_end", "availability_start"]
     end
   
 
-    def self.ransackable_associations(auth_object = nil)
-      ["address"]
-    end
+    # def self.ransackable_associations(auth_object = nil)
+    #   ["address"]
+    # end
   
 
     def has_rooms?
@@ -74,7 +93,21 @@ module Stay
       master&.price_per_night.to_f || 0
     end
 
+    def place_images_urls
+      place_images.map { |image| Rails.application.routes.url_helpers.url_for(image) }
+    end
+
+    def cover_image_url
+      cover_image.attached? ? url_for(cover_image) : nil
+    end
+
     private
+
+    def availability_dates_are_valid
+      if availability_start && availability_end && availability_start >= availability_end
+        errors.add(:availability_end, "must be after availability start date")
+      end
+    end
 
     def create_store_property
       return unless current_store.present?
