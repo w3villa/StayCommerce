@@ -32,13 +32,15 @@ module Stay
     has_many :additional_rules, class_name: "Stay::AdditionalRule", dependent: :destroy
     has_many :property_house_rules, class_name: "Stay::PropertyHouseRule", dependent: :destroy
     has_many :house_rules, through: :property_house_rules, class_name: "Stay::HouseRule"
-
+    has_many :property_features, class_name: "Stay::PropertyFeature", dependent: :destroy
+    has_many :features, through: :property_features, class_name: "Stay::Feature"
 
     # nested_attributes
     accepts_nested_attributes_for :property_amenities, allow_destroy: true
     accepts_nested_attributes_for :additional_rules, allow_destroy: true
     accepts_nested_attributes_for :rooms, allow_destroy: true
     accepts_nested_attributes_for :property_house_rules, allow_destroy: true
+    accepts_nested_attributes_for :property_features, allow_destroy: true
 
     geocoded_by :address
     after_validation :geocode
@@ -51,7 +53,8 @@ module Stay
     # attr_accessor :price_per_night
     # after_create :create_default_room
     # after_update :update_prices
-    # after_create :create_store_property
+    after_create :create_store_property
+    validate :availability_dates_are_valid
 
     # def self.ransackable_attributes(auth_object = nil)
     #   ["id", "name", "created_at", "updated_at"]
@@ -110,6 +113,12 @@ module Stay
     end
 
     private
+
+    def availability_dates_are_valid
+      if availability_start && availability_end && availability_start >= availability_end
+        errors.add(:availability_end, "must be after availability start date")
+      end
+    end
 
     def create_store_property
       return unless current_store.present?

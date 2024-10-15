@@ -27,6 +27,13 @@ Stay::Engine.routes.draw do
     resources :chats
     resources :messages
     resources :room_types
+    resources :property_categories
+    resources :property_types
+    resources :bed_types
+    resources :amenities
+    resources :amenity_categories
+    resources :house_rules
+    resources :features
     resources :countries do
       resources :states
     end
@@ -66,11 +73,11 @@ Stay::Engine.routes.draw do
     namespace :v1 do
       resources :property_categories,  only: [:index, :show]
       resources :amenity_categories, only: [:index]
+      resources :property_features, only: [:index]
       resources :property_types,  only: [:index, :show]
       resources :users, only: [:destroy]
       resources :house_rules, only: :index
       resources :properties, only: [:index, :show, :create, :update] do
-
         collection do
           get 'search', to: 'properties#search'
         end

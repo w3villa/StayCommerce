@@ -27,7 +27,6 @@
       <th scope="col">Description</th>
       <th scope="col">Availability Start</th>
       <th scope="col">Availability End</th>
-      <th scope="col">User</th>
       <th scope="col">Active</th>
       <th></th>
     </tr>
@@ -37,13 +36,12 @@
     <% @properties.each do |property| %>
       <tr>
         <td>
-          <%= image_tag main_app.url_for(property.images.first), size: "25x25" if property.images.attached? %>
+          <%= image_tag main_app.url_for(property.cover_image), size: "25x25" if property.cover_image.attached? %>
         </td>
         <td><%= property.title %></td>
         <td><%= sanitize property.description %></td>
         <td><%= property.availability_start %></td>
         <td><%= property.availability_end %></td>
-        <td><%= property.user&.name %></td>
         <td>
           <%= property.active %>
           <span class="badge badge-lg badge-dot <%= property.active ? 'badge-primary' : 'badge-warning' %>">

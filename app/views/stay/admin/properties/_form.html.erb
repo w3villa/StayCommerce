@@ -11,72 +11,90 @@
   <% end %>
 
   <div class="row">
-     <div class="col-md-6">
+    <div class="col-md-6">
       <div class="field">
-        <%= f.label :title, class:"form-label" %>
-        <%= f.text_field :title, class: 'form-control' %>
-      </div>
-    </div>
-
-     <div class="col-md-6">
-      <div class="field">
-        <%= f.label :availability_start, class:"form-label"%>
-        <%= f.date_field :availability_start, class: 'form-control' %>
+        <%= f.label :title, '*Title (mandatory)', class:"form-label" %>
+        <%= f.text_field :title, required: true, class: 'form-control' %>
       </div>
     </div>
 
 
-  </div>
-
-  <div class="row">
     <div class="col-md-6">
       <div class="field">
         <%= f.label :description, class:"form-label" %>
-        <%= f.text_area :description, class: 'form-control ckeditor' %>
+        <%= f.text_area :description, class: 'form-control' %>
       </div>
     </div>
-
-     <div class="col-md-6">
-      <div class="field">
-        <%= f.label :availability_end, class:"form-label" %>
-        <%= f.date_field :availability_end, class: 'form-control' %>
-      </div>
-    </div>
-
-   
   </div>
 
   <div class="row">
     <div class="col-md-6">
       <div class="field">
-        <%= f.label :images, "Upload Images", class:"form-label" %>
-        <%= f.file_field :images, multiple: true, class:"form-control" %>
+        <%= f.label :category, '*Category (mandatory)', class:"form-label" %>
+        <%= f.select :property_category_id, Stay::PropertyCategory.all.collect { |pc| [pc.name, pc.id] }, { include_blank: 'None' }, class: 'form-control custom-select-box', id: 'property_category_select', onchange: 'updateRoomType(this.value)', required: true %>
       </div>
     </div>
 
     <div class="col-md-6">
       <div class="field">
-        <%= f.label :price_per_night, class: "form-label" %>
-        <div class="input-group">
-          <span class="input-group-text"><%= currency_symbol(current_currency) %></span>
-          <%= f.number_field :price_per_night, value: @property.master&.price_per_night || '', class: "form-control" %>
-        </div>
+        <%= f.label :room_type, 'Room Type (auto-filled)', class: "form-label" %>
+        <%= f.text_field :room_type_name, value: property.property_category&.room_type&.name, readonly: true, class: 'form-control', id: 'room_type_field' %>
       </div>
     </div>
-    
-     <div class="col-md-6">
+    <div id="property-category-data" data-room-types='<%= Stay::PropertyCategory.all.map { |pc| [pc.id, pc.room_type.name] }.to_h.to_json %>'></div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-6">
+      <div class="field">
+        <%= f.label :city, class: "form-label" %>
+        <%= f.text_field :city, class: "form-control" %>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="field">
+        <%= f.label :address, class:"form-label" %>
+        <%= f.text_field :address, class: 'form-control' %>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-6">
+      <div class="field">
+        <%= f.label :guest_no, class: "form-label" %>
+        <%= f.number_field :guest_number, required: true, class: "form-control" %>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="field">
+        <%= f.label :country_id, 'Select Country' %>
+        <%= f.select :country_id, options_from_collection_for_select(Stay::Country.all, :id, :name, property.country_id), { include_blank: 'Select Country' }, id: 'country_select', class: 'form-control custom-select-box' %>
+      </div>
+    </div>
+
+    <div class="col-md-6">
       <div class="field">
         <%= f.label :active, class:"form-label" %>
         <%= f.check_box :active %>
       </div>
     </div>
-    
+
+    <%# <div class="col-md-6"> %>
+      <%# <div class="field"> %>
+        <%#= label_tag :cancellation_policy, 'Select Country' %>
+        <%#= select_tag :cancellation_policy_id, options_from_collection_for_select(Stay::CancellationPolicy.all, :id, :name), class: 'form-control' %>
+      <%# </div> %>
+    <%# </div> %>
   </div>
 
   <div class="row">
     <div class="col-md-12">
       <div class="form-group mt-4">
-        <%= f.submit property.persisted? ? 'Update Property' : 'Create Property', class: 'btn btn-primary' %>
+        <%= hidden_field_tag :step, 'description' %>
+        <%= f.submit 'continue', class: 'btn btn-primary' %>
       </div>
     </div>
   </div>

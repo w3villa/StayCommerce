@@ -11,6 +11,11 @@ module Stay
              class_name: 'Stay::Price',
              dependent: :destroy
 
+    has_many :room_features, class_name: "Stay::RoomFeature", dependent: :destroy
+    has_many :features, through: :room_features, class_name: "Stay::Feature"
+
+    accepts_nested_attributes_for :room_features, allow_destroy: true
+
     after_create :set_price
     after_update :update_price, if: :saved_change_to_price_per_night?
     belongs_to :bed_type, class_name: "Stay::BedType", optional: :true
