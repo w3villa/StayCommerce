@@ -69,12 +69,16 @@ Stay::Engine.routes.draw do
       resources :property_types,  only: [:index, :show]
       resources :users, only: [:destroy]
       resources :house_rules, only: :index
+      resources :chats, only: [:index, :create, :show] do
+        member do
+           get 'chat_messages', to: 'chats#chat_messages'
+        end
+        resources :messages, only: [:index, :new, :create]
+      end
       resources :properties, only: [:index, :show, :create, :update] do
-
         collection do
           get 'search', to: 'properties#search'
         end
-
         resources :rooms, only: [:index, :show] do
           resources :bookings, only: [:create, :show, :update] do
             resources :payments, only: [:new, :create] do

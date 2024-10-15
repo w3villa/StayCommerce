@@ -1,12 +1,37 @@
 class Stay::Api::V1::PropertiesController < Stay::BaseApiController
     before_action :set_property, only: [:show, :update]
-
+    before_action :authenticate_devise_api_token!
     def index
       begin
         @properties = Stay::Property.page(params[:page]).per(params[:per_page] || 10)
         return render json: { data: "No properties found", properties: [], success: false}, status: :ok  if @properties.empty?
         render json: {
           data: "Data Found",
+          properties: ActiveModelSerializers::SerializableResource.new(@properties, each_serializer: PropertyListingSerializer),
+          success: true,
+          meta: {
+            total_pages: @properties.total_pages,
+            current_page: @properties.current_page,
+            next_page: @properties.next_page,
+            prev_page: @properties.prev_page,
+            total_count: @properties.total_count,
+          }
+        }, status: :ok
+      rescue ActiveRecord::RecordNotFound => e
+        render json: { success: false, error: 'Properties not found', message: e.message }, status: :not_found
+      rescue ArgumentError => e
+        render json: { success: false, error: 'Invalid pagination parameters', message: e.message }, status: :bad_request
+      rescue StandardError => e
+        render json: { success: false, error: 'Internal server error', message: e.message }, status: :internal_server_error
+      end
+    end
+
+    def my_properties
+      begin
+        @properties = current_devise_api_user.properties.page(params[:page]).per(params[:per_page] || 10)
+        return render json: { data: "No properties found", properties: [], success: false}, status: :ok  if @properties.empty?
+        render json: {
+          data: "Property Found",
           properties: ActiveModelSerializers::SerializableResource.new(@properties, each_serializer: PropertyListingSerializer),
           success: true,
           meta: {
