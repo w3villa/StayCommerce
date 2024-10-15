@@ -23,10 +23,12 @@
       <thead class="table-light">
     <tr>
       <th scope="col">Image</th>
-      <th scope="col">Property</th>
       <th scope="col">Max Guests</th>
       <th scope="col">Price Per Night</th>
       <th scope="col">Room Type</th>
+      <th scope="col">Booking Start</th>
+      <th scope="col">Booking End</th>
+
       <th></th>
     </tr>
   </thead>
@@ -37,10 +39,11 @@
         <td>
           <%= image_tag main_app.url_for(room.images.first), size: "25x25" if room.images.attached? %>
         </td>
-        <td><%= room.property.title %></td>
         <td><%= room.max_guests %></td>
         <td><%= currency_symbol(current_currency) %> <%= room.price_per_night %></td>
         <td><%= room.room_type&.name %></td>
+        <td><%= room.booking_start%></td>
+        <td><%= room.booking_end%></td>
         <td class="text-end d-flex justify-content-end">
           <%= link_to edit_admin_property_room_path(@property, room), class: 'btn d-inline-flex btn-sm btn-neutral mx-1' do %>
             <i class="bi bi-pencil">Edit</i>

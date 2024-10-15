@@ -1,0 +1,47 @@
+<%= form_with(model: [:admin, property], local: true) do |f| %>
+  <% if property.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(property.errors.count, "error") %> prohibited this property from being saved:</h2>
+      <ul>
+        <% property.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="row">
+    <div class="col-md-6">
+      <div class="field">
+        <%= f.label :amenity_ids, 'Amenities And Features', class: 'form-label' %>
+        <%= hidden_field_tag 'property[amenity_ids][]', '' %>
+        <div class="form-check">
+          <% Stay::Amenity.all.each do |amenity| %>
+            <div class="form-check">
+              <%= check_box_tag 'property[amenity_ids][]', amenity.id, property.amenities.include?(amenity), class: 'form-check-input', id: "amenity_#{amenity.id}" %>
+              <%= label_tag "amenity_#{amenity.id}", amenity.name, class: 'form-check-label' %>
+            </div>
+          <% end %>
+
+          <%= hidden_field_tag 'property[feature_ids][]', '' %>
+          <% Stay::Feature.where(feature_type: 'property').each do |feature| %>
+            <div class="form-check">
+              <%= check_box_tag 'property[feature_ids][]', feature.id, property.features.include?(feature), class: 'form-check-input', id: "feature_#{feature.id}" %>
+              <%= label_tag "feature_#{feature.id}", feature.name, class: 'form-check-label' %>
+            </div>
+          <% end %>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      <div class="form-group mt-4">
+        <%= hidden_field_tag :step, 'amenities' %>
+        <%= f.submit 'Continue', class: 'btn btn-primary' %>
+      </div>
+    </div>
+  </div>
+<% end %>
