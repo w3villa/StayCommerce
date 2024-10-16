@@ -1,17 +1,7 @@
 class ChatSerializer < ActiveModel::Serializer
-  attributes :id, :property, :sender, :receiver
-  
-  def sender
-    object.sender
-  end
-
-  def receiver
-    object.receiver
-  end
+  attributes :id, :property, :sender_id, :receiver_id
 
   def property
-    # binding.pry
     PropertyListingSerializer.new(object.property)
   end
-
 end
