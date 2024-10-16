@@ -74,6 +74,7 @@ Stay::Engine.routes.draw do
       resources :property_categories,  only: [ :index, :show ]
       resources :amenity_categories, only: [ :index ]
       resources :property_types,  only: [ :index, :show ]
+      resources :room_types,  only: [ :index, :show ]
       resources :users, only: [ :destroy ]
       resources :house_rules, only: :index
       resources :property_features, only: [ :index ]

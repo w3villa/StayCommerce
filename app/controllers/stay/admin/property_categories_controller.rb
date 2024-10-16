@@ -13,7 +13,7 @@ module Stay
     def create
       @property_category = Stay::PropertyCategory.new(property_category_params)
       if @property_category.save
-        redirect_to admin_property_categories_path, notice: 'Property Category was successfully created.'
+        redirect_to admin_property_categories_path, notice: "Property Category was successfully created."
       else
         render :new
       end
@@ -27,7 +27,7 @@ module Stay
 
     def update
       if @property_category.update(property_category_params)
-        redirect_to admin_property_categories_path, notice: 'Property Category was successfully updated.'
+        redirect_to admin_property_categories_path, notice: "Property Category was successfully updated."
       else
         render :edit
       end
@@ -35,7 +35,7 @@ module Stay
 
     def destroy
       @property_category.destroy
-      redirect_to admin_property_categories_path, notice: 'Property Category was successfully deleted.'
+      redirect_to admin_property_categories_path, notice: "Property Category was successfully deleted."
     end
 
     private
@@ -45,7 +45,7 @@ module Stay
     end
 
     def property_category_params
-      params.require(:property_category).permit(:name, :property_type_id, :room_type_id)
+      params.require(:property_category).permit(:name)
     end
   end
 end

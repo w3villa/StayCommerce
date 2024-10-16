@@ -33,8 +33,7 @@
     <% @property_categories.each do |property_category| %>
       <tr>
         <td><%= property_category.name %></td>
-        <td><%= property_category.property_type&.name %></td>
-        <td><%= property_category.room_type&.name %></td>
+        <td><%= property_category&.name %></td>
         <td class="text-end d-flex justify-content-end">
           <%= link_to edit_admin_property_category_path(property_category), class: 'btn d-inline-flex btn-sm btn-neutral mx-1' do %>
             <i class="bi bi-pencil"></i>

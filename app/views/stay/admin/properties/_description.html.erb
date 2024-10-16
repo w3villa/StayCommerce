@@ -33,14 +33,6 @@
         <%= f.select :property_category_id, Stay::PropertyCategory.all.collect { |pc| [pc.name, pc.id] }, { include_blank: 'None' }, required: true, class: 'form-control custom-select-box', selected: @property.property_category&.name %>
       </div>
     </div>
-
-    <div class="col-md-6">
-      <div class="field">
-        <%= f.label :room_type, 'Room Type (auto-filled)', class: "form-label" %>
-        <% selected_category = Stay::PropertyCategory.find_by(id: @property.property_category_id) %>
-        <%= f.text_field :room_type_id, value: selected_category&.room_type&.name, readonly: true, class: 'form-control' %>
-      </div>
-    </div>
   </div>
 
   <div class="row">

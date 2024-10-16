@@ -5,16 +5,16 @@ module Stay
     include Stay::ControllerHelpers::Currency
     include Stay::ControllerHelpers::Store
 
-    has_one :master, -> { where is_master: true }, class_name: 'Stay::Room', dependent: :destroy
-    has_many :rooms, class_name: 'Stay::Room', dependent: :destroy
+    has_one :master, -> { where is_master: true }, class_name: "Stay::Room", dependent: :destroy
+    has_many :rooms, class_name: "Stay::Room", dependent: :destroy
     has_many :rooms_including_master,
          inverse_of: :property,
-         class_name: 'Stay::Room',
+         class_name: "Stay::Room",
          dependent: :destroy
 
-    has_many :chats, class_name: 'Stay::Chat', dependent: :destroy
+    has_many :chats, class_name: "Stay::Chat", dependent: :destroy
 
-    belongs_to :user, class_name: 'Stay::User', optional: true
+    belongs_to :user, class_name: "Stay::User", optional: true
     # belongs_to :address, class_name: 'Stay::Address', optional: true
 
     has_one_attached :cover_image
@@ -25,8 +25,7 @@ module Stay
     has_many :bookings, through: :line_items
 
     belongs_to :property_category, class_name: "Stay::PropertyCategory", optional: true
-    has_one :room_type, through: :property_category, class_name: "Stay::RoomType"   
-    has_one :property_type, through: :property_category, class_name: "Stay::PropertyType"
+    belongs_to :property_type, class_name: "Stay::PropertyType"
     has_many :property_amenities, class_name: "Stay::PropertyAmenity", dependent: :destroy
     has_many :amenities, through: :property_amenities, class_name: "Stay::Amenity"
     has_many :additional_rules, class_name: "Stay::AdditionalRule", dependent: :destroy
@@ -45,8 +44,8 @@ module Stay
     geocoded_by :address
     after_validation :geocode
 
-    has_many :store_properties, class_name: 'Stay::StoreProperty', dependent: :destroy
-    has_many :stores, through: :store_properties, class_name: 'Stay::Store'
+    has_many :store_properties, class_name: "Stay::StoreProperty", dependent: :destroy
+    has_many :stores, through: :store_properties, class_name: "Stay::Store"
     # validates :latitude, format: { with: /\A-?([1-8]?\d(?:\.\d{1,})?|90(?:\.0{1,6})?)\z/ }
     # validates :longitude, format: { with: /\A-?((?:1[0-7]|[1-9])?\d(?:\.\d{1,})?|180(?:\.0{1,})?)\z/ }
 
@@ -65,14 +64,14 @@ module Stay
     # end
 
     def self.ransackable_attributes(auth_object = nil)
-      ["active", "address", "availability_end", "availability_start", "title", "extra_guest", "total_rooms", "total_bathrooms", "latitude", "longitude"]
+      [ "active", "address", "availability_end", "availability_start", "title", "extra_guest", "total_rooms", "total_bathrooms", "latitude", "longitude" ]
     end
-  
+
 
     def self.ransackable_associations(auth_object = nil)
-      ["rooms"]
+      [ "rooms" ]
     end
-  
+
 
     def has_rooms?
       rooms.any?
@@ -84,17 +83,17 @@ module Stay
 
     def average_rating
       all_reviews = Stay::Review.joins(booking: { rooms: :property }).where(stay_properties: { id: self.id })
-    
-      return 0 if all_reviews.empty?    
+
+      return 0 if all_reviews.empty?
       total_rating = all_reviews.sum(:rating)
       review_count = all_reviews.count
-    
+
       (total_rating.to_f / review_count).round(2)
     end
-    
+
     def reviews_count
       Stay::Review.joins(booking: { rooms: :property }).where(stay_properties: { id: self.id }).count
-    end  
+    end
 
     def default_room
       master
@@ -127,13 +126,12 @@ module Stay
 
     def create_default_room
       return unless Stay::RoomType.first.present?
-      master_room = rooms.create!(is_master: true, property_id: self.id, max_guests: 2, price_per_night: price_per_night, room_type_id: Stay::RoomType.first&.id, status: 'available')
+      master_room = rooms.create!(is_master: true, property_id: self.id, max_guests: 2, price_per_night: price_per_night, room_type_id: Stay::RoomType.first&.id, status: "available")
       master_room.prices.create(amount: master_room.price_per_night, currency: Stay::Store.default.default_currency)
     end
 
     def update_prices
       master&.prices&.update(amount: master.price_per_night, currency: Stay::Store.default.default_currency)
     end
-
   end
 end

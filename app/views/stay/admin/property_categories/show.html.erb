@@ -7,8 +7,6 @@
         </div>
         <div class="card-body">
           <p><strong>Name: </strong><%= @property_category.name %></p>
-          <p><strong>Property Type: </strong><%= @property_category.property_type&.name %></p>
-          <p><strong>Room Type: </strong><%= @property_category.room_type&.name %></p>
           <div class="d-flex mt-4 p-4 justify-content-center">  
             <%= link_to 'Edit', edit_admin_property_category_path(@property_category), class: 'btn btn-warning me-3' %> 
             <%= link_to 'Back', admin_property_categories_path, class: 'btn btn-secondary' %>
