@@ -34,6 +34,7 @@ Stay::Engine.routes.draw do
     resources :amenity_categories
     resources :house_rules
     resources :features
+    resources :taxes
     resources :countries do
       resources :states
     end

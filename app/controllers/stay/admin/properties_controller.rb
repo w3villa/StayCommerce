@@ -36,7 +36,6 @@ module Stay
 
       def update
         @step = params[:step] || 'description'
-
         if @property.update(property_params)
           next_step = determine_next_step(@step)
           if @step == 'calender'
@@ -66,6 +65,7 @@ module Stay
                                           :university_nearby, :about_neighbourhoods, :instant_booking, :minimum_days_of_booking, :security_deposit, 
                                           :extra_guest, :allow_extra_guest, :city, :total_bedrooms, :latitude, :longitude, :total_rooms,
                                           :total_bathrooms, :property_size, :cover_image, :zipcode, amenity_ids: [], feature_ids: [],
+                                          property_taxes_attributes: [:id, :tax_id, :value, :_destroy],
                                           property_amenities_attributes: [:id, :property_id, :amenity_id, :_destroy],
                                           property_features_attributes: [:id, :name, :feature_id, :_destroy],
                                           additional_rules_attributes: [:id, :name, :property_id, :_destroy],

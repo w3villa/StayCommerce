@@ -109,7 +109,8 @@ class Stay::Api::V1::PropertiesController < Stay::BaseApiController
                                         property_house_rules_attributes: [:id, :house_rule_id, :value, :_destroy], 
                                         property_amenities_attributes: [:id, :amenity_id, :_destroy],
                                         property_features_attributes: [:id, :name, :feature_id, :_destroy],
-                                        rooms_attributes: [:id, :max_guests, :price_per_night, :status, :booking_start, :booking_end, :description, :size, :bed_type_id, :room_type_id ]
+                                        rooms_attributes: [:id, :max_guests, :price_per_night, :status, :booking_start, :booking_end, :description, :size, :bed_type_id, :room_type_id ],
+                                        property_taxes_attributes: [:id, :tax_id, :value, :_destroy],
                                       )
     end
 
