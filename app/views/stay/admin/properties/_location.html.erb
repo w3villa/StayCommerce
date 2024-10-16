@@ -29,15 +29,17 @@
   <div class="row">
     <div class="col-md-6">
       <div class="field">
-        <%= f.label :country_id, 'Select Country' %>
-        <%= f.select :country_id, options_from_collection_for_select(Stay::Country.all, :id, :name, property.country_id), { include_blank: 'Select Country' }, id: 'country_select custom-select-box', class: 'form-control custom-select-box' %>
+        <%= f.label :country, 'Select Country' %>
+        <%= f.text_field :country, value: property.country, required: true, class: "form-control" %>
+        <%#= f.select :country_id, options_from_collection_for_select(Stay::Country.all, :id, :name, property.country_id), { include_blank: 'Select Country' }, id: 'country_select custom-select-box', class: 'form-control custom-select-box' %>
       </div>
     </div>
 
     <div class="col-md-6">
       <div class="field">
-        <%= f.label :state_id, 'Select State' %>
-        <%= f.select :state_id, Stay::State.where(country_id: f.object.country_id).pluck(:name, :id),{ prompt: 'Select State', selected: f.object.state_id }, class: 'form-control custom-select-box', id: 'state_select' %>
+        <%= f.label :state, 'Select State' %>
+        <%= f.text_field :state, value: property.state, required: true, class: "form-control" %>
+        <%#= f.select :state_id, Stay::State.where(country_id: f.object.country_id).pluck(:name, :id),{ prompt: 'Select State', selected: f.object.state_id }, class: 'form-control custom-select-box', id: 'state_select' %>
       </div>
     </div>
   </div>

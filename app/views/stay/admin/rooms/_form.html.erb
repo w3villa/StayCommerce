@@ -79,28 +79,35 @@
   <div class="row">
     <div class="col-md-6">
       <div class="field">
-        <%= f.label :amenity_ids, 'Amenities And Features', class: 'form-label' %>
+        <%= f.label :amenity_ids, 'Amenities', class: 'form-label' %>
         <%= hidden_field_tag 'room[amenity_ids][]', '' %>
-        <div class="form-control">
+        <div class="custom-checkbox form-control">
           <% Stay::Amenity.all.each do |amenity| %>
             <div class="form-check">
               <%= check_box_tag 'room[amenity_ids][]', amenity.id, room.amenities.include?(amenity), class: 'form-check-input', id: "amenity_#{amenity.id}" %>
               <%= label_tag "amenity_#{amenity.id}", amenity.name, class: 'form-check-label' %>
             </div>
           <% end %>
+        </div>
+      </div>
+    </div>
 
-          <%= hidden_field_tag 'room[feature_ids][]', '' %>
+    <div class="col-md-6">
+      <div class="field">
+        <%= f.label :amenity_ids, 'Features', class: 'form-label' %>
+        <%= hidden_field_tag 'room[feature_ids][]', '' %>
+        <div class="custom-checkbox form-control">
           <% Stay::Feature.where(feature_type: 'room').each do |feature| %>
             <div class="form-check">
               <%= check_box_tag 'room[feature_ids][]', feature.id, room.features.include?(feature), class: 'form-check-input', id: "feature_#{feature.id}" %>
               <%= label_tag "feature_#{feature.id}", feature.name, class: 'form-check-label' %>
             </div>
           <% end %>
-
         </div>
       </div>
     </div>
   </div>
+
 
   <div class="row">
     <div class="col-md-6">

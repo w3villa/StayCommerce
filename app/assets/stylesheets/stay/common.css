@@ -164,6 +164,13 @@
     margin-left: 11.5rem !important;
     font-weight: 700;
  }
+
+ .custom-checkbox {
+    flex-wrap: wrap;
+    display: flex !important;
+    column-gap: 80px;
+    padding-left: 1.5em;
+ }
 /*#storeSwitcherDropdown {
   .dropdown-menu.show {
     min-width: 250px;

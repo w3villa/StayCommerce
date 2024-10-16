@@ -63,7 +63,7 @@ module Stay
         params.require(:property).permit(:active, :title, :description, :availability_start, :availability_end, :address, :user_id,
                                           :price_per_night, :property_category_id, :guest_number, :country_id, :state_id, :bedroom_description,
                                           :university_nearby, :about_neighbourhoods, :instant_booking, :minimum_days_of_booking, :security_deposit, 
-                                          :extra_guest, :allow_extra_guest, :city, :total_bedrooms, :latitude, :longitude, :total_rooms,
+                                          :extra_guest, :allow_extra_guest, :city, :total_bedrooms, :latitude, :longitude, :total_rooms, :country, :state,
                                           :total_bathrooms, :property_size, :cover_image, :zipcode, amenity_ids: [], feature_ids: [],
                                           property_taxes_attributes: [:id, :tax_id, :value, :_destroy],
                                           property_amenities_attributes: [:id, :property_id, :amenity_id, :_destroy],
@@ -88,16 +88,16 @@ module Stay
         when 'location'
           'amenities'
         when 'amenities'
+          'features'
+        when 'features'
           'calender'
-        # when 'features'
-        #   'calender'
         else
           'description'
         end
       end
 
       def valid_step?(step)
-        %w[description price images details location amenities calender].include?(step)
+        %w[description price images details location amenities features calender].include?(step)
       end
     end
   end
