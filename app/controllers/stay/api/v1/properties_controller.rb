@@ -1,6 +1,7 @@
 class Stay::Api::V1::PropertiesController < Stay::BaseApiController
     before_action :set_property, only: [ :show, :update ]
     before_action :authenticate_devise_api_token!
+
     def index
       begin
         @properties = Stay::Property.page(params[:page]).per(params[:per_page] || 10)
@@ -108,13 +109,14 @@ class Stay::Api::V1::PropertiesController < Stay::BaseApiController
     def property_params
       params.require(:property).permit(:title, :description, :user_id, :guest_number, :availability_start, :availability_end,  :bedroom_description,
                                         :university_nearby, :about_neighbourhoods, :instant_booking, :minimum_days_of_booking, :security_deposit,
-                                        :extra_guest, :allow_extra_guest, :city, :address, :latitude, :longitude, :total_rooms, :total_bathrooms,
+                                        :extra_guest, :allow_extra_guest, :city, :address, :latitude, :longitude, :total_rooms, :total_bathrooms, :state,
                                         :property_size, :property_category_id, :property_type_id, :cover_image, :price_per_night, place_images: [],
                                         additional_rules_attributes: [ :id, :name,  :_destroy ],
                                         property_house_rules_attributes: [ :id, :house_rule_id, :value, :_destroy ],
                                         property_amenities_attributes: [ :id, :amenity_id, :_destroy ],
                                         property_features_attributes: [ :id, :name, :feature_id, :_destroy ],
-                                        rooms_attributes: [ :id, :max_guests, :price_per_night, :status, :booking_start, :booking_end, :description, :size, :bed_type_id, :room_type_id ]
+                                        rooms_attributes: [ :id, :max_guests, :price_per_night, :status, :booking_start, :booking_end, :description, :size, :bed_type_id, :room_type_id ],
+                                        property_taxes_attributes: [ :id, :tax_id, :value, :_destroy ],
                                       )
     end
 

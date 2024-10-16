@@ -33,6 +33,8 @@ module Stay
     has_many :house_rules, through: :property_house_rules, class_name: "Stay::HouseRule"
     has_many :property_features, class_name: "Stay::PropertyFeature", dependent: :destroy
     has_many :features, through: :property_features, class_name: "Stay::Feature"
+    has_many :property_taxes, class_name: "Stay::PropertyTax", dependent: :destroy
+    has_many :taxes, through: :property_taxes, class_name: "Stay::Tax"
 
     # nested_attributes
     accepts_nested_attributes_for :property_amenities, allow_destroy: true
@@ -40,6 +42,7 @@ module Stay
     accepts_nested_attributes_for :rooms, allow_destroy: true
     accepts_nested_attributes_for :property_house_rules, allow_destroy: true
     accepts_nested_attributes_for :property_features, allow_destroy: true
+    accepts_nested_attributes_for :property_taxes, allow_destroy: true
 
     geocoded_by :address
     after_validation :geocode
