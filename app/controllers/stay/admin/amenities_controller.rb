@@ -46,7 +46,7 @@ module Stay
     end
 
     def amenity_params
-      params.require(:amenity).permit(:name, :amenity_category_id)
+      params.require(:amenity).permit(:name, :amenity_category_id, :amenity_type)
     end
-  end
+    end
 end

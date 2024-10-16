@@ -77,9 +77,9 @@ class Stay::Api::V1::PropertiesController < Stay::BaseApiController
       @q = Stay::Property.ransack(params[:q])
       @properties = @q.result.includes(:rooms).distinct
 
-      # if @properties.any? && params[:q][:latitude].present? && params[:q][:longitude].present?
-      #   @properties = @properties.near([params[:q][:latitude], params[:q][:longitude]], params[:distance] || 50)
-      # end
+      if @properties.any? && params[:q][:latitude].present? && params[:q][:longitude].present?
+        @properties = @properties.near([ params[:q][:latitude], params[:q][:longitude] ], params[:distance] || 50)
+      end
       @properties = @properties.page(params[:page]).per(params[:per_page] || 10)
 
       if @properties.any?
@@ -96,6 +96,11 @@ class Stay::Api::V1::PropertiesController < Stay::BaseApiController
       else
         render json: { message: "No properties found" }, status: :not_found
       end
+    end
+
+    def resubmit
+      render json: { message: "Property resubmitted for approval", data: PropertyListingSerializer.new(@property), success: :true }, status: :ok if @property.resubmit!
+      render json: { error: "Property not approved",  success: :false }, status: :unprocessable_entity
     end
 
     private

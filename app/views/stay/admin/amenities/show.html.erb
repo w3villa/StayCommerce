@@ -8,6 +8,7 @@
         <div class="card-body">
           <p><strong>Name: </strong><%= @amenity.name %></p>
           <p><strong>Amenity Category: </strong><%= @amenity.amenity_category&.name %></p>
+          <p><strong>Amenity For: </strong><%= @amenity.amenity_type&.capitalize %></p>
           <div class="d-flex mt-4 p-4 justify-content-center">  
             <%= link_to 'Edit', edit_admin_amenity_path(@amenity), class: 'btn btn-warning me-3' %> 
             <%= link_to 'Back', admin_amenities_path, class: 'btn btn-secondary' %>

@@ -17,6 +17,11 @@ Stay::Engine.routes.draw do
       end
     end
     resources :properties do
+      member do
+        put :approve
+        put :reject
+        put :resubmit
+      end
       resources :rooms
     end
     resources :rooms
@@ -90,6 +95,9 @@ Stay::Engine.routes.draw do
       resources :properties, only: [ :index, :show, :create, :update ] do
         collection do
           get "search", to: "properties#search"
+        end
+        member do
+          put :resubmit
         end
         resources :rooms, only: [ :index, :show ] do
           resources :bookings, only: [ :create, :show, :update ] do

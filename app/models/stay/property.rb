@@ -63,6 +63,44 @@ module Stay
     #   [address].compact.join(' ')
     # end
 
+    state_machine initial: :waiting_for_approval do
+      state :waiting_for_approval
+      state :approved
+      state :rejected
+
+      event :approve do
+        transition waiting_for_approval: :approved
+      end
+
+      event :rejected do
+        transition waiting_for_approval: :rejected
+      end
+
+      event :resubmit do
+        transition rejected: :waiting_for_approval
+      end
+
+      # after_transition on: :approve do |property|
+      #   property.notify_user("Your property has been approved!")
+      # end
+
+      # after_transition on: :reject do |property|
+      #   property.notify_user("Your property has been rejected.")
+      # end
+
+      # after_transition on: :resubmit do |property|
+      #   property.notify_admin("Property has been resubmitted for approval.")
+      # end
+    end
+
+    # def notify_user(message)
+    #   puts message
+    # end
+
+    # def notify_admin(message)
+    #   puts message
+    # end
+
     def self.ransackable_attributes(auth_object = nil)
       [ "active", "address", "availability_end", "availability_start", "title", "extra_guest", "total_rooms", "total_bathrooms", "latitude", "longitude" ]
     end
