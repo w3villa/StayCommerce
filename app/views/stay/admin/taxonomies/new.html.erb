@@ -1,0 +1,17 @@
+<h2><%= link_to 'Taxonomies', admin_taxonomies_url %> / New Taxonomy </h2>
+
+<%#= render partial: 'spree/admin/shared/error_messages', locals: { target: @taxonomy } %>
+
+<%= form_for [:admin, @taxonomy] do |f| %>
+  <fieldset>
+    <%= render partial: 'form', locals: { f: f } %>
+    <div class="row">
+    <div class="col-md-12">
+      <div class="form-group mt-4">
+        <%= f.submit @taxonomy.persisted? ? 'Update Taxonomy' : 'Create Taxonomy', class: 'btn btn-primary' %>
+      </div>
+    </div>
+  </div>
+    <%#= render partial: 'spree/admin/shared/new_resource_links' %>
+  </fieldset>
+<% end %>

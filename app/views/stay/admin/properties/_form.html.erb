@@ -42,15 +42,25 @@
         <%= f.date_field :availability_end, class: 'form-control' %>
       </div>
     </div>
-
-   
   </div>
 
   <div class="row">
     <div class="col-md-6">
       <div class="field">
-        <%= f.label :images, "Upload Images", class:"form-label" %>
-        <%= f.file_field :images, multiple: true, class:"form-control" %>
+        <%= f.label :taxon_ids, 'Taxons', class:"form-label" %>
+        
+        <%= f.select :taxon_ids, 
+                      options_from_collection_for_select(Stay::Taxon.all, :id, :pretty_name, @property.taxon_ids),
+                      { include_hidden: true },
+                      multiple: true, class: 'select2 form-control',
+                      data: { 
+                        autocomplete_url_value: 'taxons_api_v2',
+                        autocomplete_return_attr_value: 'pretty_name',
+                        autocomplete_multiple_value: true 
+                      } %>
+        <% if Stay::Taxon.none? %>
+          <div class="alert alert-info">No Resouce Found.</div>
+        <% end %>    
       </div>
     </div>
 
@@ -63,10 +73,19 @@
         </div>
       </div>
     </div>
+  </div> 
+
+  <div class="row">
+    <div class="col-md-6">
+      <div class="field">
+        <%= f.label :images, "Upload Images", class:"form-label" %>
+        <%= f.file_field :images, multiple: true, class:"form-control" %>
+      </div>
+    </div>
     
      <div class="col-md-6">
       <div class="field">
-        <%= f.label :active, class:"form-label" %>
+        <%= f.label :active, class:"form-label mt-10" %>
         <%= f.check_box :active %>
       </div>
     </div>

@@ -22,6 +22,8 @@ module Stay
     has_many :store_properties, class_name: 'Stay::StoreProperty'
     has_many :properties, through: :store_properties, class_name: 'Stay::Property'
     has_many :rooms, through: :properties, class_name: 'Stay::Room', source: :rooms_including_master
+    has_many :taxonomies, class_name: 'Stay::Taxonomy'
+    has_many :taxons, through: :taxonomies, class_name: 'Stay::Taxon'
 
     validates :code, uniqueness: { case_sensitive: false, conditions: -> { with_deleted }}
 

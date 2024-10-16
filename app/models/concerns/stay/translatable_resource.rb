@@ -4,7 +4,7 @@ module Stay
 
     included do
       extend Mobility
-      default_scope { i18n }
+      # default_scope { i18n }
 
       def get_field_with_locale(locale, field_name, fallback: false)
         # method will return nil if no translation is present due to fallback: false setting

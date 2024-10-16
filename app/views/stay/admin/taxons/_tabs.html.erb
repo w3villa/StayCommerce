@@ -1,8 +1,17 @@
+<% content_for :page_title do %>
+  <%= link_to 'Taxonomies', admin_taxonomies_url %> /
+
+  <%= link_to @taxonomy.root.name, edit_admin_taxonomy_url(@taxonomy) %>
+  <% unless @taxon.root? %>
+    / <%= @taxon.name %>
+  <% end %>
+<% end %>
+
 <% content_for(:page_tabs) do %>
   <%= content_tag :li, class: 'nav-item' do %>
     <%= link_to_with_icon 'edit.svg',
                           'details',
-                          edit_admin_store_path(@store),
+                          edit_admin_taxonomy_taxon_path(@taxonomy, @taxon.id),
                           class: "nav-link #{'active' if current == :details}" %>
 
   <% end %>
@@ -10,7 +19,7 @@
   <%= content_tag :li, class: 'nav-item' do %>
     <%= link_to_with_icon 'translate.svg',
                           'translations',
-                          translations_admin_store_path(@store),
+                          translations_admin_taxonomy_taxon_path(@taxonomy, @taxon.id),
                           class: "nav-link #{'active' if current == :translations}" %>
 
   <% end %>

@@ -1,0 +1,31 @@
+<div class="card mb-7">
+  <div class="card-header">
+    <div class="row align-items-center">
+      <div class="col-sm-6 col-12 mb-4 mb-sm-0">
+          <!-- Title -->
+          <h1 class="h3 mb-0 ls-tight">Taxonomies</h1>
+      </div>
+      <!-- Actions -->
+      <div class="col-sm-6 col-12 text-sm-end">
+          <div class="mx-n1">
+          <%= link_to new_admin_taxonomy_path(@taxonomy), class:"btn d-inline-flex btn-sm btn-primary mx-1" do %>
+              <span class=" pe-2">
+              <i class="bi bi-plus"></i>
+              </span>
+              <span>Create New</span>
+          <%end%>
+          </div>
+      </div>
+    </div>  
+  </div>
+  <% if @taxonomies.any? %>
+    <div id="list-taxonomies" data-hook>
+      <%= render 'list' %>
+    </div>
+  <% else %>
+    <div class="text-center no-objects-found m-5">
+      <%= I18n.t(:no_resource_found, resource: plural_resource_name(Stay::Taxonomy)) %>,
+      <%= link_to I18n.t(:add_one), new_admin_taxonomy_path %>!
+    </div>
+  <% end %>
+</div>
