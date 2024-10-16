@@ -156,6 +156,14 @@
     z-index: 2 !important;
 }
 
+.radio-button-label {
+    font-size: 0.875rem !important;
+}
+
+.radio-button {
+    margin-left: 11.5rem !important;
+    font-weight: 700;
+ }
 /*#storeSwitcherDropdown {
   .dropdown-menu.show {
     min-width: 250px;

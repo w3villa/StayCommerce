@@ -1,0 +1,29 @@
+<%= form_with(model: [:admin,  @bed_type], local: true) do |f| %>
+  <% if @bed_type.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@bed_type.errors.count, "error") %> prohibited this room from being saved:</h2>
+      <ul>
+        <% @bed_type.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="row">
+    <div class="col-md-6">
+      <div class="field">
+        <%= f.label :name, class:"form-label" %>
+        <%= f.text_field :name, class: 'form-control' %>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      <div class="form-group mt-4">
+        <%= f.submit class: 'btn btn-primary' %>
+      </div>
+    </div>
+  </div>
+<% end %>

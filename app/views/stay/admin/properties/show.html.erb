@@ -6,7 +6,7 @@
           <h2 class="text-xl font-semibold mb-0">Property Details</h2> 
         </div>
         <div class="card-body">
-          <p><strong>Image: </strong><%= image_tag main_app.url_for(@property.images.first), size: "60x60" if @property.images.attached? %></p> 
+          <p><strong>Image: </strong><%= image_tag main_app.url_for(@property.cover_image), size: "60x60" if @property.cover_image.attached? %></p>
           <p><strong>Active: </strong><%= @property.active %></p>
           <p><strong>Title: </strong><%= @property.title %></p>
           <p><strong>Description: </strong><%= @property.description %></p>

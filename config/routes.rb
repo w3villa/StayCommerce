@@ -27,6 +27,13 @@ Stay::Engine.routes.draw do
     resources :chats
     resources :messages
     resources :room_types
+    resources :property_categories
+    resources :property_types
+    resources :bed_types
+    resources :amenities
+    resources :amenity_categories
+    resources :house_rules
+    resources :features
     resources :countries do
       resources :states
     end
@@ -69,6 +76,7 @@ Stay::Engine.routes.draw do
       resources :property_types,  only: [ :index, :show ]
       resources :users, only: [ :destroy ]
       resources :house_rules, only: :index
+      resources :property_features, only: [ :index ]
       resources :chats, only: [ :index, :create, :show ] do
         collection do
           get :user_chat
@@ -92,7 +100,6 @@ Stay::Engine.routes.draw do
           end
         end
       end
-
       resources :profiles, only: [ :show, :update ]
     end
   end
