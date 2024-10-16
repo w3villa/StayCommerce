@@ -109,7 +109,7 @@ class Stay::Api::V1::PropertiesController < Stay::BaseApiController
     def property_params
       params.require(:property).permit(:title, :description, :user_id, :guest_number, :availability_start, :availability_end,  :bedroom_description,
                                         :university_nearby, :about_neighbourhoods, :instant_booking, :minimum_days_of_booking, :security_deposit,
-                                        :extra_guest, :allow_extra_guest, :city, :address, :latitude, :longitude, :total_rooms, :total_bathrooms, :state,
+                                        :extra_guest, :allow_extra_guest, :city, :address, :latitude, :longitude, :total_rooms, :total_bathrooms, :state, :country, :property_state,
                                         :property_size, :property_category_id, :property_type_id, :cover_image, :price_per_night, place_images: [],
                                         additional_rules_attributes: [ :id, :name,  :_destroy ],
                                         property_house_rules_attributes: [ :id, :house_rule_id, :value, :_destroy ],
