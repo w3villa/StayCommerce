@@ -17,10 +17,7 @@
         <%= f.number_field :max_guests, class: 'form-control' %>
       </div>
     </div>
-  </div>
-
-  <div class="row">
-     <div class="col-md-6">
+    <div class="col-md-6">
       <div class="field">
         <%= f.label :price_per_night, class: "form-label" %>
         <div class="input-group">
@@ -29,11 +26,20 @@
         </div>
       </div>
     </div>
+  </div>
 
+  <div class="row">
     <div class="col-md-6">
       <div class="field">
         <%= f.label :room_type, class:"form-label" %>
-        <%= f.select :room_type_id, Stay::RoomType.all.collect { |rt| [rt.name, rt.id] }, { include_blank: 'Select Room Type' }, class: 'form-control' %>
+        <%= f.select :room_type_id, Stay::RoomType.all.collect { |rt| [rt.name, rt.id] }, { include_blank: 'Select Room Type' }, class: 'form-control custom-select-box' %>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="field">
+        <%= f.label :description, class:"form-label" %>
+        <%= f.text_field :description, class: 'form-control' %>
       </div>
     </div>
   </div>
@@ -41,8 +47,74 @@
   <div class="row">
     <div class="col-md-6">
       <div class="field">
+        <%= f.label :size, class: "form-label" %>
+        <%= f.text_field :size, class: 'form-control' %>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="field">
+        <%= f.label :bed_type, class:"form-label" %>
+        <%= f.select :bed_type_id, Stay::BedType.all.collect { |type| [type.name, type.id] }, { include_blank: 'Select Bed Type' }, class: 'form-control custom-select-box' %>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-6">
+      <div class="field">
+        <%= f.label :booking_start, class:"form-label"%>
+        <%= f.date_field :booking_start, class: 'form-control' %>
+      </div>
+    </div>
+
+     <div class="col-md-6">
+      <div class="field">
+        <%= f.label :booking_end, class:"form-label" %>
+        <%= f.date_field :booking_end, class: 'form-control' %>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-6">
+      <div class="field">
+        <%= f.label :amenity_ids, 'Amenities', class: 'form-label' %>
+        <%= hidden_field_tag 'room[amenity_ids][]', '' %>
+        <div class="custom-checkbox form-control">
+          <% Stay::Amenity.all.each do |amenity| %>
+            <div class="form-check">
+              <%= check_box_tag 'room[amenity_ids][]', amenity.id, room.amenities.include?(amenity), class: 'form-check-input', id: "amenity_#{amenity.id}" %>
+              <%= label_tag "amenity_#{amenity.id}", amenity.name, class: 'form-check-label' %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="field">
+        <%= f.label :amenity_ids, 'Features', class: 'form-label' %>
+        <%= hidden_field_tag 'room[feature_ids][]', '' %>
+        <div class="custom-checkbox form-control">
+          <% Stay::Feature.where(feature_type: 'room').each do |feature| %>
+            <div class="form-check">
+              <%= check_box_tag 'room[feature_ids][]', feature.id, room.features.include?(feature), class: 'form-check-input', id: "feature_#{feature.id}" %>
+              <%= label_tag "feature_#{feature.id}", feature.name, class: 'form-check-label' %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="row">
+    <div class="col-md-6">
+      <div class="field">
         <%= f.label :images, "Upload Images", class:"form-label" %>
         <%= f.file_field :images, multiple: true, class:"form-control" %>
+        <%= f.hidden_field :images, value: room.images if room.images.attached?%>
       </div>
     </div>
   </div>
