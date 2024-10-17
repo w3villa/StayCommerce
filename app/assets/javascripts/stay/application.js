@@ -10,3 +10,5 @@
 //= require stay/admin/address.js
 //= require stay/admin/index
 //= require stay/ckeditor
+//= require stay/admin/property
+

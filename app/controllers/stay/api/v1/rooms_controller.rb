@@ -1,6 +1,7 @@
 class Stay::Api::V1::RoomsController < Stay::BaseApiController
+    before_action :authenticate_devise_api_token!
     before_action :set_property
-    before_action :set_room, only: [:show]
+    before_action :set_room, only: [ :show ]
 
     def index
         @rooms = @property.rooms
@@ -10,7 +11,7 @@ class Stay::Api::V1::RoomsController < Stay::BaseApiController
     def show
         render json: { room: @room }
     end
-    
+
     private
     def set_property
         @property = Stay::Property.find(params[:property_id])
