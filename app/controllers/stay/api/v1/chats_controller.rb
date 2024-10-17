@@ -69,6 +69,6 @@ class Stay::Api::V1::ChatsController < ApplicationController
   private
 
   def chat_params
-    params.require(:chat).permit(:sender_id, :receiver_id, :property_id)
+    params.require(:chat).permit(:sender_id, :receiver_id, :property_id, :booking_id, :chat_event, :event_message)
   end
 end
