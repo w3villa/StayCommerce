@@ -66,7 +66,7 @@ module Stay
     #   [address].compact.join(' ')
     # end
 
-    state_machine initial: :waiting_for_approval do
+    state_machine :property_state, initial: :waiting_for_approval do
       state :waiting_for_approval
       state :approved
       state :rejected
