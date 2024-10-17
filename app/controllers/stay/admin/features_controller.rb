@@ -5,7 +5,7 @@ module Stay
 
       
       def index
-        @features = Stay::Feature.all
+        @features = Stay::Feature.page(params[:page])
       end
 
       def show

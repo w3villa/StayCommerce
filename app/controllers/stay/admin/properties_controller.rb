@@ -1,7 +1,7 @@
 module Stay
   module Admin
     class PropertiesController < Stay::Admin::BaseController
-      before_action :set_property, only: %i[show edit update destroy]
+      before_action :set_property, only: %i[show edit update destroy approve reject]
 
       def index
         @properties = current_store.properties.page(params[:page])
@@ -53,6 +53,18 @@ module Stay
         redirect_to admin_properties_url, notice: 'Property was successfully destroyed.'
       end
 
+      def approve
+        @property.approved
+        flash[:success] = "Your property has been approved!"
+        redirect_to edit_admin_property_path(@property)
+      end
+
+      def reject
+        @property.rejected
+        flash[:success] = "Your property has been rejected!"
+        redirect_to edit_admin_property_path(@property)
+      end
+
       private
 
       def set_property
@@ -60,7 +72,7 @@ module Stay
       end
 
       def property_params
-        params.require(:property).permit(:active, :title, :description, :availability_start, :availability_end, :address, :user_id,
+        params.require(:property).permit(:active, :title, :description, :availability_start, :availability_end, :address, :user_id, :property_type_id,
                                           :price_per_night, :property_category_id, :guest_number, :country_id, :state_id, :bedroom_description,
                                           :university_nearby, :about_neighbourhoods, :instant_booking, :minimum_days_of_booking, :security_deposit, 
                                           :extra_guest, :allow_extra_guest, :city, :total_bedrooms, :latitude, :longitude, :total_rooms, :country, :state,

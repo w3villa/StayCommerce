@@ -75,7 +75,7 @@ module Stay
         transition waiting_for_approval: :approved
       end
 
-      event :rejected do
+      event :reject do
         transition waiting_for_approval: :rejected
       end
 
@@ -150,6 +150,24 @@ module Stay
 
     def cover_image_url
       cover_image.attached? ? url_for(cover_image) : nil
+    end
+
+    def approved
+      transaction do
+        approve!
+      end
+    end
+
+    def rejected
+      transaction do
+        reject!
+      end
+    end
+
+    def resubmited
+      transaction do
+        resubmit!
+      end
     end
 
     private

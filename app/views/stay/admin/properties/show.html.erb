@@ -1,20 +1,148 @@
 <div class="container mx-auto p-4">
   <div class="row mt-4 justify-content-center">
-    <div class="col-md-8 col-lg-10"> 
+    <div class="col-md-8 col-lg-10">
       <div class="card">
         <div class="card-header">
-          <h2 class="text-xl font-semibold mb-0">Property Details</h2> 
+          <h2 class="text-xl font-semibold mb-0">Property Details</h2>
         </div>
         <div class="card-body">
-          <p><strong>Image: </strong><%= image_tag main_app.url_for(@property.cover_image), size: "60x60" if @property.cover_image.attached? %></p>
-          <p><strong>Active: </strong><%= @property.active %></p>
-          <p><strong>Title: </strong><%= @property.title %></p>
-          <p><strong>Description: </strong><%= @property.description %></p>
-          <p><strong>Availability Start: </strong><%= @property.availability_start %></p>
-          <p><strong>Availability End: </strong><%= @property.availability_end %></p>
-          <div class="d-flex mt-4 p-4 justify-content-center">  
-            <%= link_to 'Edit', edit_admin_property_path(@property), class: 'btn btn-warning me-3' %> 
-            <%= link_to 'Back', admin_properties_path, class: 'btn btn-secondary' %>
+          <div class="step-description">
+            <h3 class="font-semibold mb-3">Description</h3>
+            <div class="row">
+                <p class="form-label"><strong>Title:</strong><span class="property-data"><%= @property.title %></span></p>
+                <p class="form-label"><strong>Description:</strong><span class="property-data"><%= @property.description%></span></p>
+                <p class="form-label"><strong>category:</strong><span class="property-data"><%= @property.property_category&.name %></span></p>
+                <p class="form-label"><strong>Property Type:</strong><span class="property-data"><%= @property.property_type&.name %></span></p>
+                <p class="form-label"><strong>city:</strong><span class="property-data"><%= @property.city %></span></p>
+                <p class="form-label"><strong>address:</strong><span class="property-data"><%= @property.address %></span></p>
+                <p class="form-label"><strong>guest_no.:</strong><span class="property-data"><%= @property.guest_number%></span></p>
+                <p class="form-label"><strong>country:</strong><span class="property-data"><%= @property.country %></span></p>
+                <p class="form-label"><strong>Bedroom Description:</strong><span class="property-data"><%= @property.bedroom_description %></span></p>
+                <p class="form-label"><strong>University Nearby:</strong><span class="property-data"><%= @property.university_nearby %></span></p>
+                <p class="form-label"><strong>About Neighbourhoods:</strong><span class="property-data"><%= @property.about_neighbourhoods %></span></p>
+                <p class="form-label"><strong>active: </strong><input type="checkbox" class="form-check-input" <%= @property.active ? 'checked' : '' %> disabled></p>
+            </div>
+          </div>
+          <hr>
+          <div class="step-price mt-5">
+            <h3 class="font-semibold mb-3">Price</h3>
+            <div class="row">
+              <p class="form-label"><strong>Price per Night:</strong><span class="property-data"><%= @property.price_per_night %></span></p>
+              <p class="form-label"><strong>minimum_days_of_booking:</strong><span class="property-data"><%= @property.minimum_days_of_booking %></span></p>
+              <p class="form-label"><strong>security_deposit:</strong><span class="property-data"><%= @property.security_deposit %></span></p>
+              <p class="form-label"><strong>extra_guest:</strong><span class="property-data"><%= @property.extra_guest %></span></p>
+              <div class="col-md-12">
+                <div class="field d-flex">
+                  <% Stay::Tax.all.each do |tax| %>
+                    <div class="col-md-6 mb-2">
+                      <p class="form-label"><strong><%= tax.name %>:</strong></p>
+                      <span class="property-data">
+                        <%= @property.property_taxes.find_by(tax_id: tax.id)&.value || 0 %>
+                      </span>
+                    </div>
+                  <% end %>
+                </div>
+              </div>
+              <p class="form-label"><strong>allow_extra_guest: </strong><input type="checkbox" class="form-check-input"<%= @property.allow_extra_guest ? 'checked' : '' %> disabled></p>
+            </div>
+          </div>
+          <hr>
+          <!-- Images Step -->
+          <div class="step-images mt-5">
+            <h3 class="font-semibold mb-3">Images</h3>
+            <p class="form-label"><strong>Cover Image: </strong>
+              <span><%= image_tag main_app.url_for(@property.cover_image), size: "60x60" if @property.cover_image.attached? %></span>
+            </p>
+          </div>
+          <hr>
+          <!-- Details Step -->
+          <div class="step-details mt-5">
+            <h3 class="font-semibold mb-3">Details</h3>
+            <div class="row">
+              <p class="form-label"><strong>Property Size:</strong><span class="property-data"><%= @property.property_size %></span></p>
+              <p class="form-label"><strong>Rooms:</strong><span class="property-data"><%= @property.total_rooms %></span></p>
+              <p class="form-label"><strong>Bedrooms:</strong><span class="property-data"><%= @property.total_bedrooms %></span></p>
+              <p class="form-label"><strong>Bathrooms:</strong><span class="property-data"><%= @property.total_bathrooms %></span></p>
+              <div class="field">
+                <p class="form-label"><strong>Additional Rules:</strong></p>
+                <% if @property.additional_rules.present? %>
+                    <% @property.additional_rules.each do |rule| %>
+                      <span class="property-data"><%= rule.name %></span>
+                    <% end %>
+               <% else %>
+                  <p class="property-data">No additional rules specified.</p>
+                <% end %>
+              </div>
+              <div class="field">
+                <p class="form-label"><strong>Property House Rules:</strong></p>
+                <% if @property.property_house_rules.present? %>
+                  <% @property.property_house_rules.each do |house_rule| %>
+                    <span class="property-data">
+                      <strong><%= house_rule.house_rule.name %></strong>
+                      <%= radio_button_tag "house_rule_#{house_rule.house_rule_id}", "allow", house_rule.value == "allow", disabled: true %>
+                      <%= label_tag "house_rule_#{house_rule.house_rule_id}", "Allow", class: 'radio-button-label' %>
+                      <%= radio_button_tag "house_rule_#{house_rule.house_rule_id}", "do_not_allow", house_rule.value == "do_not_allow", disabled: true %>
+                      <%= label_tag "house_rule_#{house_rule.house_rule_id}", "Do Not Allow", class: 'radio-button-label' %>
+                      <%= radio_button_tag "house_rule_#{house_rule.house_rule_id}", "charge", house_rule.value == "charge", disabled: true %>
+                      <%= label_tag "house_rule_#{house_rule.house_rule_id}", "Charge", class: 'radio-button-label' %>
+                    </span>
+                  <% end %>
+                <% else %>
+                  <p class="property-data">No additional rules specified.</p>
+                <% end %>
+              </div>
+            </div>
+          </div>
+          <hr>
+          <!-- Location Step -->
+          <div class="step-location mt-5">
+            <h3 class="font-semibold mb-3">Location</h3>
+            <div class="row">
+              <p class="form-label"><strong>Address:</strong><span class="property-data"><%= @property.address %></span></p>
+              <p class="form-label"><strong>City:</strong><span class="property-data"><%= @property.city %></span></p>
+              <p class="form-label"><strong>State:</strong><span class="property-data"><%= @property.state %></span></p>
+              <p class="form-label"><strong>Country:</strong><span class="property-data"><%= @property.country %></span></p>
+            </div>
+          </div>
+          <hr>
+          <!-- Amenities Step -->
+          <div class="step-features mt-5">
+            <h3 class="font-semibold mb-3">Amenities</h3>
+            <% if @property.amenities.any? %>
+              <% @property.amenities.each do |amenity| %>
+                <input type="checkbox" class="form-check-input" id="feature<%= amenity.id %>" checked disabled>
+                <label class="form-check-label" for="amenity<%= amenity.id %>"><%= amenity.name %></label>
+              <% end %>
+            <% else %>
+              <p>No amenities selected.</p>
+            <% end %>
+          </div>
+          <hr>
+          <!-- Features Step -->
+          <div class="step-features mt-5">
+            <h3 class="font-semibold mb-3">Features</h3>
+            <% if @property.features.any? %>
+              <% @property.features.each do |feature| %>
+                <input type="checkbox" class="form-check-input" id="feature<%= feature.id %>" checked disabled>
+                <label class="form-check-label" for="feature<%= feature.id %>"><%= feature.name %></label>
+              <% end %>
+            <% else %>
+              <p>No features selected.</p>
+            <% end %>
+          </div>
+          <hr>
+          <!-- Calendar Step -->
+          <div class="step-calendar mt-5">
+            <h3 class="font-semibold mb-3">Calendar</h3>
+            <div class="row">
+              <p class="form-label"><strong>Availability Start:</strong><span class="property-data"><%= @property.availability_start %></span></p>
+              <p class="form-label"><strong>Availability End:</strong><span class="property-data"><%= @property.availability_end %></span></p>
+            </div>
+          </div>
+          <!-- Actions -->
+          <div class="d-flex mt-4 p-4 justify-content-center">
+            <%= button_to 'Approve', approve_admin_property_path(@property), method: :put,  class: 'btn btn-warning me-3',disabled: @property.approved? || @property.rejected? %>
+            <%= button_to 'Reject', reject_admin_property_path(@property), method: :put, class: 'btn btn-secondary', disabled: @property.approved? || @property.rejected? %>
           </div>
         </div>
       </div>
