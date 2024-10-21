@@ -17,6 +17,7 @@ module Stay
     has_many :addresses, class_name: "Stay::Address"
     has_many :chats, class_name: "Stay::Chat"
     has_many :credit_cards, class_name: "Stay::CreditCard"
+    has_one :user_paypal, class_name: "Stay::UserPaypal"
 
     # validates :phone, format: { with: /\A\d{10}\z/, message: "number must be valid." }
 

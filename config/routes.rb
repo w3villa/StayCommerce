@@ -84,6 +84,7 @@ Stay::Engine.routes.draw do
       resources :users, only: [ :destroy ]
       resources :house_rules, only: :index
       resources :credit_cards
+      resources :user_paypal
       resources :property_features, only: [ :index ]
       resources :chats, only: [ :index, :create, :show ] do
         collection do
