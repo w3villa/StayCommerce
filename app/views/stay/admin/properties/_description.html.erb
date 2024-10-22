@@ -33,6 +33,12 @@
         <%= f.select :property_category_id, Stay::PropertyCategory.all.collect { |pc| [pc.name, pc.id] }, { include_blank: 'None' }, required: true, class: 'form-control custom-select-box', selected: @property.property_category&.name %>
       </div>
     </div>
+    <div class="col-md-6">
+      <div class="field">
+        <%= f.label :property_type, class:"form-label" %>
+        <%= f.select :property_type_id, Stay::PropertyType.all.collect { |rt| [rt.name, rt.id] }, { include_blank: 'Select Property Type' }, class: 'form-control custom-select-box', selected: @property.property_category&.name %>
+      </div>
+    </div>
   </div>
 
   <div class="row">
