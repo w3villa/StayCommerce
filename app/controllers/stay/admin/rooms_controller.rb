@@ -29,9 +29,7 @@ module Stay
       end
 
       def update
-        filtered_params = room_params
-        filtered_params.delete(:images)  if filtered_params[:images].empty?
-        if @room.update(filtered_params)
+        if @room.update(room_params)
           redirect_to admin_property_room_path(@property), notice: 'Room was successfully updated.'
         else
           render :edit
@@ -54,11 +52,11 @@ module Stay
       end
 
       def room_params
-        params.require(:room).permit(:property_id, :max_guests, :price_per_night, :room_type_id, images: []).tap do |params|
-          if params[:images]
-            params[:images].reject!(&:blank?)
-          end
-        end
+        params.require(:room).permit(:property_id, :max_guests, :price_per_night, :room_type_id, :booking_start, :booking_end, :description, 
+                                      :size, :bed_type_id, amenity_ids: [], feature_ids: [], images: [],
+                                      room_amenities_attributes: [:id, :amenity_id, :_destroy],
+                                      room_features_attributes: [:id, :name, :feature_id, :_destroy],
+                                    )
       end
     end
   end

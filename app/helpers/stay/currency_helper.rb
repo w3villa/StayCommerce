@@ -22,7 +22,7 @@ module Stay
     end
 
     def currency_symbol(currency)
-      ::Money::Currency.find(currency).symbol
+      ::Money::Currency.find(currency)&.symbol
     end
 
     def currency_presentation(currency)

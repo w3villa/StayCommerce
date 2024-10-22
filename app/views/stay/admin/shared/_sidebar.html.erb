@@ -52,6 +52,11 @@
           <% end %>
         </li>
         <li class="nav-item">
+          <%= link_to admin_taxes_path, class: 'nav-link' do %>
+            <i class="bi bi-bookmarks"></i> Tax
+          <% end %>
+        </li>
+        <li class="nav-item">
           <%= link_to admin_reviews_path, class: 'nav-link' do %>
             <i class="bi bi-bookmarks"></i> Reviews
           <% end %>
@@ -63,22 +68,67 @@
           <div class="collapse" id="generalSettings">
             <ul class="navbar-nav ms-3">
               <li class="nav-item">
-                <%= link_to 'Stores', admin_stores_path, class: 'nav-link' %>
+                <%= link_to admin_stores_path, class: 'nav-link' do %>
+                  <i></i> Stores
+                <%end%>
               </li>
               <li class="nav-item">
-                <%= link_to 'Room Type', admin_room_types_path, class: 'nav-link' %>
+                <%= link_to admin_room_types_path, class: 'nav-link' do %>
+                  <i></i> Room Type
+                <%end%>
               </li>
               <li class="nav-item">
-                <%= link_to 'Roles', admin_roles_path, class: 'nav-link' %>
+                <%= link_to admin_property_types_path, class: 'nav-link' do%>
+                  <i></i>Property Types
+                <%end%>
               </li>
               <li class="nav-item">
-                <%= link_to 'Countries', admin_countries_path, class: 'nav-link' %>
+                <%= link_to admin_property_categories_path, class: 'nav-link' do %>
+                  <i></i> Property Categories
+                <%end%>
               </li>
               <li class="nav-item">
-                  <%= link_to 'States', admin_country_states_path(country_id: Stay::Country.first.id), class: 'nav-link' %>
+                <%= link_to admin_amenity_categories_path, class: 'nav-link' do %>
+                  <i></i> Amenity Categories
+                <% end %>
+              </li>
+              <li class="nav-item">
+                <%= link_to admin_amenities_path, class: 'nav-link' do %>
+                  <i></i> Amenities
+                <% end %>
+              </li>
+              <li class="nav-item">
+                <%= link_to admin_house_rules_path, class: 'nav-link' do%>
+                  <i></i> House Rules
+                <% end %>
+              </li>
+              <li class="nav-item">
+                <%= link_to admin_bed_types_path, class: 'nav-link' do%>
+                  <i></i> Bed Types
+                <% end %>
+              </li>
+              <li class="nav-item">
+                <%= link_to admin_roles_path, class: 'nav-link' do%>
+                  <i></i> Roles
+                <% end %>
+              </li>
+              <li class="nav-item">
+                <%= link_to admin_countries_path, class: 'nav-link' do%>
+                  <i></i> Countries
+                  <%end%>
+              </li>
+              <li class="nav-item">
+                  <%= link_to admin_country_states_path(country_id: Stay::Country.first.id), class: 'nav-link' do %>
+                  <i></i> States
+                  <%end%>
               </li>
               <li class="nav-item">
                   <%#= link_to 'Cities', admin_state_cities_path(state_id: Stay::State.first.id), class: 'nav-link' %>
+              </li>
+              <li class="nav-item">
+                <%= link_to admin_features_path, class: 'nav-link' do %>
+                  <i></i> Fetaures
+                <%end%>
               </li>
             </ul>
           </div>
