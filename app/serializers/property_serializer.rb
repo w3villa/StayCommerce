@@ -13,7 +13,7 @@ class PropertySerializer < ActiveModel::Serializer
 
 
   def amenities
-    ActiveModelSerializers::SerializableResource.new(object.amenities, each_serializer: AmenitySerializer)
+    ActiveModelSerializers::SerializableResource.new(object.amenities.uniq, each_serializer: AmenitySerializer)
   end
 
   def house_rules
