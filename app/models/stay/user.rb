@@ -56,7 +56,7 @@ module Stay
     end
 
     def set_default_preferences
-      self.whatsapp_notification = false if whatsapp_notification.nil?
+      self.whatsapp_notification = true if whatsapp_notification.nil?
       self.sms_notification = false if sms_notification.nil?
     end
 
