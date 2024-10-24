@@ -1,5 +1,5 @@
 class Stay::Api::V1::ChatsController < ApplicationController
-  protect_from_forgery with: :null_session, if: -> { request.format.json? }
+  # protect_from_forgery with: :null_session, if: -> { request.format.json? }
   before_action :authenticate_devise_api_token!
 
   def index
