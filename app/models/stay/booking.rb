@@ -11,7 +11,8 @@ module Stay
 
     has_many :line_items, class_name: 'Stay::LineItem', dependent: :destroy
     has_many :rooms, through: :line_items
-    has_many :properties, through: :rooms
+    # has_many :properties, through: :rooms
+    belongs_to :property, class_name: "Stay::Property"
     belongs_to :store, class_name: 'Stay::Store'
 
     scope :complete, -> { where.not(completed_at: nil) }

@@ -22,7 +22,7 @@ module Stay
     has_many :prices, through: :rooms
 
     has_many :line_items, through: :variants_including_master
-    has_many :bookings, through: :line_items
+    has_many :bookings
 
     belongs_to :property_category, class_name: "Stay::PropertyCategory", optional: true
     belongs_to :property_type, class_name: "Stay::PropertyType"
