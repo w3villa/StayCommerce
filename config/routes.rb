@@ -118,6 +118,7 @@ Stay::Engine.routes.draw do
         end
       end
       resources :profiles, only: [ :show, :update ]
+      resources :taxes, only: [ :index ]
     end
   end
 
