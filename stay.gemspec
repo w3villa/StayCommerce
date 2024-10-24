@@ -50,5 +50,13 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'jsbundling-rails'
   spec.add_dependency 'sass-rails'
   spec.add_dependency 'sprockets'
+  spec.add_dependency 'acts_as_list'
+  spec.add_dependency 'friendly_id'
+  spec.add_dependency 'friendly_id-mobility'
+  spec.add_dependency 'stringex'
+  spec.add_dependency 'awesome_nested_set'
+  spec.add_dependency 'auto_strip_attributes'
+  spec.add_dependency 'active_storage_validations'
+  spec.add_dependency 'activerecord-typedstore'
   spec.add_development_dependency 'letter_opener'
 end

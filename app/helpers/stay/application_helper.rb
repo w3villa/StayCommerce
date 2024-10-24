@@ -1,6 +1,8 @@
 module Stay
   module ApplicationHelper
     include CurrencyHelper
+    include Stay::Admin::SortableTreeHelper
+    include Stay::Admin::NavigationHelper
       ICON_SIZE = 14
 
     def svg_icon(name:, classes: '', width:, height:)

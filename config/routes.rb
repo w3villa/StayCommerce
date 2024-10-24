@@ -51,6 +51,16 @@ Stay::Engine.routes.draw do
         put :set_default
       end
     end
+    resources :taxonomies do
+      resources :taxons do
+        member do
+          delete :remove_icon
+          get :translations
+          post :translations, to: 'taxons#edit_translations'
+        end
+      end
+    end
+    resources :taxons
     devise_for :users,
               class_name: "Stay::User",
               controllers: { sessions: "stay/admin/sessions",

@@ -24,6 +24,18 @@ module Stay
     has_many :line_items, through: :variants_including_master
     has_many :bookings, through: :line_items
 
+    has_many :store_properties, class_name: 'Stay::StoreProperty', dependent: :destroy
+    has_many :stores, through: :store_properties, class_name: 'Stay::Store'
+
+    has_many :classifications, dependent: :delete_all, inverse_of: :property
+    has_many :taxons, through: :classifications, before_remove: :remove_taxon
+
+    attr_accessor :price_per_night
+    after_create :create_default_room
+    after_update :update_prices
+    after_create :create_store_property
+    after_touch :touch_taxons
+
     belongs_to :property_category, class_name: "Stay::PropertyCategory", optional: true
     belongs_to :property_type, class_name: "Stay::PropertyType"
     has_many :property_amenities, class_name: "Stay::PropertyAmenity", dependent: :destroy
@@ -142,6 +154,30 @@ module Stay
 
     def price
       master&.price_per_night.to_f || 0
+    end
+
+    def taxon_and_ancestors
+      @taxon_and_ancestors ||= taxons.map(&:self_and_ancestors).flatten.uniq
+    end
+
+    def taxonomy_ids
+      @taxonomy_ids ||= taxon_and_ancestors.map(&:taxonomy_id).flatten.uniq
+    end
+
+    def touch_taxons
+      Stay::Taxon.where(id: taxon_and_ancestors.map(&:id)).update_all(updated_at: Time.current)
+      Stay::Taxonomy.where(id: taxonomy_ids).update_all(updated_at: Time.current)
+    end
+
+    def remove_taxon(taxon)
+      removed_classifications = classifications.where(taxon: taxon)
+      removed_classifications.each &:remove_from_list
+    end
+
+    def by_taxons(products)
+      return products unless taxons?
+
+      properties.joins(:classifications).where(Classification.table_name => { taxon_id: taxons })
     end
 
     def place_images_urls
