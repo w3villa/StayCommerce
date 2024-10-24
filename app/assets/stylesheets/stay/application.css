@@ -21,4 +21,7 @@
  *= require stay/admin/select2.min
  *= require stay/admin/flatpickr.min
  *= require stay/admin/index
+ *= require stay/admin/tables
+ *= require stay/admin/taxon_products_view
+ *= require stay/admin/shared/_sortable_tree
  */

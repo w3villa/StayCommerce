@@ -1,0 +1,126 @@
+<%= form_with(model: [:admin, @property], local: true) do |f| %>
+  <% if @property.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@property.errors.count, "error") %> prohibited this property from being saved:</h2>
+      <ul>
+        <% @property.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="row">
+    <div class="col-md-6">
+      <div class="field">
+        <%= f.label :title, '*Title (mandatory)', class: "form-label" %>
+        <%= f.text_field :title, required: true, class: 'form-control' %>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="field">
+        <%= f.label :description, 'Description', class: "form-label" %>
+        <%= f.text_area :description, class: 'form-control' %>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-6">
+      <div class="field">
+        <%= f.label :property_category, '*Category (mandatory)', class: "form-label" %>
+        <%= f.select :property_category_id, Stay::PropertyCategory.all.collect { |pc| [pc.name, pc.id] }, { include_blank: 'None' }, required: true, class: 'form-control custom-select-box', selected: @property.property_category&.name %>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="field">
+        <%= f.label :property_type, class:"form-label" %>
+        <%= f.select :property_type_id, Stay::PropertyType.all.collect { |rt| [rt.name, rt.id] }, { include_blank: 'Select Property Type' }, class: 'form-control custom-select-box', selected: @property.property_category&.name %>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-6">
+      <div class="field">
+        <%= f.label :city, '*City (mandatory)', class: "form-label" %>
+        <%= f.text_field :city, value: property.city, required: true, class: "form-control" %>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="field">
+        <%= f.label :address, 'Address', class: "form-label" %>
+        <%= f.text_field :address, value: property.address, class: 'form-control' %>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-6">
+      <div class="field">
+        <%= f.label :guest_number, '*Guest No (mandatory)', class: "form-label" %>
+        <%= f.number_field :guest_number, value: property.guest_number, required: true, min: 0, class: "form-control" %>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="field">
+        <%= f.label :country, 'Select Country' %>
+        <%= f.text_field :country, value: property.country, required: true, class: "form-control" %>
+        <%#= f.select :country_id, options_from_collection_for_select(Stay::Country.all, :id, :name, property.country_id), { include_blank: 'Select Country' }, id: 'country_select', class: 'form-control custom-select-box' %>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-6">
+      <div class="field">
+        <%= f.label :bedroom_description, class: "form-label" %>
+        <%= f.text_field :bedroom_description, value: property.bedroom_description, class: "form-control" %>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="field">
+        <%= f.label :university_nearby, class: "form-label" %>
+        <%= f.text_field :university_nearby, value: property.university_nearby, class: "form-control" %>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <div class="field">
+        <%= f.label :about_neighbourhoods, class: "form-label" %>
+        <%= f.text_field :about_neighbourhoods, value: property.about_neighbourhoods, class: "form-control" %>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="field">
+        <%= f.label :active, class:"form-label" %>
+        <%= f.check_box :active %>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="row">
+    <div class="col-md-6">
+      <div class="field">
+        <%= f.check_box :instant_booking %>
+        <%= f.label :instant_booking, "Allow instant booking", class:"form-label" %>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      <div class="form-group mt-4">
+        <%= hidden_field_tag :step, 'description' %>
+        <%= f.submit 'Continue', class: 'btn btn-primary' %>
+      </div>
+    </div>
+  </div>
+<% end %>

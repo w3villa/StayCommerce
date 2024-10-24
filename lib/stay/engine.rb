@@ -3,6 +3,8 @@ require 'active_storage/engine'
 require 'state_machines-activerecord'
 
 require 'stripe'
+require 'geocoder'
+
 module Stay
   class Engine < ::Rails::Engine
     isolate_namespace Stay

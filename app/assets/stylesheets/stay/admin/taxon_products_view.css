@@ -1,0 +1,26 @@
+.taxon-products-view ul.taxon li.product {
+  list-style: none;
+}
+.taxon-products-view ul.taxon li.product .thumbnail {
+  width: 100%;
+}
+.taxon-products-view ul.taxon li.product .product-info {
+  font-size: 0.8em;
+}
+
+ul#taxon_products {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -o-user-select: none;
+  user-select: none;
+}
+ul#taxon_products .dropdown-menu {
+  min-width: 8rem;
+}
+ul#taxon_products .products-ddb::after {
+  display: none;
+}
+ul#taxon_products li.moving-this div.card {
+  border-color: #17a2b8; /* theme-color('info') equivalent */
+}

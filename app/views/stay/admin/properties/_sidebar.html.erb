@@ -1,5 +1,45 @@
 <ul class="nav nav-pills flex-column">
   <li class="nav-item">
+    <%= link_to edit_admin_property_path(@property, step: 'description'), class: "nav-link #{'active' if @step == 'description'}" do %>
+      <i class="bi bi-pencil"></i> Description
+    <% end %>
+  </li>
+  <li class="nav-item">
+    <%= link_to edit_admin_property_path(@property, step: 'price'), class: "nav-link #{'active' if @step == 'price'}" do %>
+      <i class="bi bi-cash"></i> Price
+    <% end %>
+  </li>
+  <li class="nav-item">
+    <%= link_to edit_admin_property_path(@property, step: 'images'), class: "nav-link #{'active' if @step == 'images'}" do %>
+      <i class="bi bi-image"></i> Images
+    <% end %>
+  </li>
+  <li class="nav-item">
+    <%= link_to edit_admin_property_path(@property, step: 'details'), class: "nav-link #{'active' if @step == 'details'}" do %>
+      <i class="bi bi-list"></i> Details
+    <% end %>
+  </li>
+  <li class="nav-item">
+    <%= link_to edit_admin_property_path(@property, step: 'location'), class: "nav-link #{'active' if @step == 'location'}" do %>
+      <i class="bi bi-geo-alt"></i> Location
+    <% end %>
+  </li>
+  <li class="nav-item">
+    <%= link_to edit_admin_property_path(@property, step: 'amenities'), class: "nav-link #{'active' if @step == 'amenities'}" do %>
+      <i class="bi bi-check-square"></i> Amenities
+    <% end %>
+  </li>
+  <li class="nav-item">
+    <%= link_to edit_admin_property_path(@property, step: 'features'), class: "nav-link #{'active' if @step == 'features'}" do %>
+      <i class="bi bi-star"></i> Features
+    <% end %>
+  </li>
+  <li class="nav-item">
+    <%= link_to edit_admin_property_path(@property, step: 'calender'), class: "nav-link #{'active' if @step == 'calender'}" do %>
+      <i class="bi bi-calendar"></i> Calendar
+    <% end %>
+  </li>
+  <li class="nav-item">
     <%= link_to admin_property_rooms_path(@property), class: 'nav-link' do %>
       <i class="bi bi-house-fill"></i> Rooms
     <% end %>

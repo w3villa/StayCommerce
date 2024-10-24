@@ -4,7 +4,7 @@ module Stay
       include Stay::ControllerHelpers::Currency
       include Stay::ControllerHelpers::Store
       layout "stay/admin"
-      before_action :authenticate_user!
+      # before_action :authenticate_user!
       before_action :ensure_admin, if: -> { current_user.present? }
       before_action :load_stores
 

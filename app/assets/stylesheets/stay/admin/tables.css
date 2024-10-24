@@ -1,0 +1,108 @@
+.table {
+  margin-bottom: 0;
+}
+.table th {
+  padding: 0.75rem !important;
+  border-bottom: 0;
+}
+.table th.handel-head {
+  width: 50px;
+}
+.table th a.sort_link {
+  white-space: nowrap;
+}
+.table td.move-handle {
+  width: 45px;
+}
+.table thead th {
+  text-transform: uppercase;
+  font-size: 0.875rem; /* Replace $small-font-size with an equivalent value */
+  padding: 0.5rem;
+  padding-top: 14px;
+  padding-bottom: 14px;
+  vertical-align: top;
+  border-top: 0;
+}
+.table tbody tr td {
+  vertical-align: middle;
+}
+.table tbody tr td .filterable {
+  margin-left: 0.2em;
+  cursor: pointer;
+  width: 0.9rem;
+  height: 0.9rem;
+  opacity: 0.25;
+}
+.table tbody tr td .filterable:hover {
+  opacity: 1;
+}
+
+.table-active-filters {
+  display: none;
+}
+.table-active-filters .js-filter .icon {
+  cursor: pointer;
+}
+.table-active-filters .badge-secondary .icon {
+  filter: invert(1);
+}
+.table-active-filters .badge {
+  display: inline-block;
+  margin-right: 0.5em;
+  margin-bottom: 0.5em;
+}
+.table-active-filters .badge:hover {
+  opacity: 0.8;
+}
+
+.card > .table,
+.card .table-responsive > .table {
+  border-right: 0;
+  border-left: 0;
+  margin-bottom: 0;
+}
+.card > .table:last-child,
+.card .table-responsive > .table:last-child {
+  border-bottom: 0;
+}
+.card > .table td:first-child,
+.card > .table th:first-child,
+.card .table-responsive > .table td:first-child,
+.card .table-responsive > .table th:first-child {
+  border-left: 0;
+}
+.card > .table td:last-child,
+.card > .table th:last-child,
+.card .table-responsive > .table td:last-child,
+.card .table-responsive > .table th:last-child {
+  border-right: 0;
+}
+.card > .table tr:first-child td,
+.card > .table tr:first-child th,
+.card .table-responsive > .table tr:first-child td,
+.card .table-responsive > .table tr:first-child th {
+  border-top: 0;
+}
+.card > .table tr:last-child td,
+.card .table-responsive > .table tr:last-child td {
+  border-bottom: 0;
+}
+.card .card-header + .table,
+.card .card-header + .table-responsive > .table {
+  border-top: 0;
+}
+
+.sortable-drag-v {
+  border: 1px solid #17a2b8; /* theme-color('info') equivalent in Bootstrap */
+  border-radius: 0.25rem; /* Replace $border-radius with an equivalent value */
+  width: 100%;
+  text-align: right;
+  opacity: 0;
+}
+.sortable-drag-v td {
+  border-top: none;
+  opacity: 0;
+}
+.sortable-drag-v td:first-child {
+  opacity: 1;
+}

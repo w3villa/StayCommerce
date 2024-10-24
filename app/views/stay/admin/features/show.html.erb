@@ -1,0 +1,19 @@
+<div class="container mx-auto p-4">
+  <div class="row mt-4 justify-content-center">
+    <div class="col-md-8 col-lg-10"> 
+      <div class="card">
+        <div class="card-header">
+          <h2 class="text-xl font-semibold mb-0">Feature Details</h2> 
+        </div>
+        <div class="card-body">
+          <p><strong>Name: </strong><%= @feature.name %></p>
+          <p><strong>Feature Type: </strong><%= @feature.feature_type %></p>
+          <div class="d-flex mt-4 p-4 justify-content-center">  
+            <%= link_to 'Edit', edit_admin_feature_path(@feature), class: 'btn btn-warning me-3' %> 
+            <%= link_to 'Back', admin_features_path, class: 'btn btn-secondary' %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
