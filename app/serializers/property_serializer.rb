@@ -11,7 +11,6 @@ class PropertySerializer < ActiveModel::Serializer
   has_many :rooms,  Serializer: :RoomSerializer
   belongs_to :user
 
-
   def amenities
     ActiveModelSerializers::SerializableResource.new(object.amenities.property.uniq, each_serializer: AmenitySerializer)
   end
