@@ -1,9 +1,11 @@
 module Stay
   class Room < ApplicationRecord
     include CurrencyHelper
+    # STATUSES = %w[active booked inactive].freeze
 
     belongs_to :property, class_name: 'Stay::Property'
     belongs_to :room_type, class_name: 'Stay::RoomType'
+    belongs_to :bed_type, class_name: "Stay::BedType", optional: :true
     has_many :bookings, class_name: 'Stay::Booking'
     has_many_attached :images
     has_many :line_items, class_name: 'Stay::LineItem'
@@ -22,9 +24,27 @@ module Stay
 
     after_create :set_price
     after_update :update_price, if: :saved_change_to_price_per_night?
-    belongs_to :bed_type, class_name: "Stay::BedType", optional: :true
-
+    # validates :status, inclusion: { in: STATUSES }
     validate :booking_dates_are_valid
+
+    # state_machine :status, initial: :active do
+    #   state :active
+    #   state :booked
+    #   state :inactive
+    
+    #   event :book do
+    #     transition active: :booked
+    #   end
+    
+    #   event :deactivate do
+    #     transition [:booked, :active] => :inactive
+    #   end
+    
+    #   event :activate do
+    #     transition inactive: :active
+    #   end
+    # end
+    
 
     def price
       price_per_night

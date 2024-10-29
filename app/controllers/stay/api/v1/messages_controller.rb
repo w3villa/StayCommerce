@@ -32,7 +32,8 @@ class Stay::Api::V1::MessagesController < Stay::BaseApiController
 
       message = @chat.messages.new(message_params)
       message.sender_id = current_devise_api_user.id
-      message.chat_id = params[:chat_id]
+      message.chat = @chat
+      message.event_for= Stay::Message.event_fors["both"]
 
       if message.sender_id == sender_id
         message.receiver_id = receiver_id
@@ -43,7 +44,7 @@ class Stay::Api::V1::MessagesController < Stay::BaseApiController
       end
 
       return render json: { error: "You cannot send a message to yourself", success: false }, status: :unprocessable_entity if message.sender_id == message.receiver_id
-
+      
       if message.save
         ActionCable.server.broadcast "ChatChannel", message
         render json: {

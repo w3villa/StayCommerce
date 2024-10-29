@@ -22,7 +22,7 @@ module Stay
     has_many :prices, through: :rooms
 
     has_many :line_items, through: :variants_including_master
-    has_many :bookings, through: :line_items
+    has_many :bookings
 
     belongs_to :property_category, class_name: "Stay::PropertyCategory", optional: true
     belongs_to :property_type, class_name: "Stay::PropertyType"
@@ -49,6 +49,8 @@ module Stay
 
     has_many :store_properties, class_name: "Stay::StoreProperty", dependent: :destroy
     has_many :stores, through: :store_properties, class_name: "Stay::Store"
+    scope :approved, -> { where(property_state: "approved") }
+
     # validates :latitude, format: { with: /\A-?([1-8]?\d(?:\.\d{1,})?|90(?:\.0{1,6})?)\z/ }
     # validates :longitude, format: { with: /\A-?((?:1[0-7]|[1-9])?\d(?:\.\d{1,})?|180(?:\.0{1,})?)\z/ }
 

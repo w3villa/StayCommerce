@@ -15,8 +15,5 @@ module Stay
           sender_id, receiver_id, receiver_id, sender_id
       )
     end
-
-    def chat_event_message
-    end
   end
 end

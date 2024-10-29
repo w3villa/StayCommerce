@@ -131,6 +131,12 @@ Stay::Engine.routes.draw do
         end
       end
       resources :profiles, only: [ :show, :update ]
+      resources :bookings do 
+        member do
+          get :booking_chat
+          delete 'line_items/:room_id', to: 'bookings#delete_line_item', as: :delete_line_item
+        end
+      end
     end
   end
 

@@ -75,7 +75,7 @@ class Stay::Api::V1::PropertiesController < Stay::BaseApiController
     end
 
     def search
-      @q = Stay::Property.ransack(params[:q])
+      @q = Stay::Property.approved.ransack(params[:q])
       @properties = @q.result.includes(:rooms).distinct
 
       if @properties.any? && params[:q][:latitude].present? && params[:q][:longitude].present?
