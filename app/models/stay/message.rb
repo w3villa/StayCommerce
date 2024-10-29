@@ -3,5 +3,7 @@ module Stay
     belongs_to :sender, foreign_key: :sender_id, class_name: "Stay::User", optional: true
     belongs_to :receiver, foreign_key: :receiver_id, class_name: "Stay::User", optional: true
     belongs_to :chat, class_name: "Stay::Chat"
+    enum :event_for, { host: 0, student: 1, both: 2}
+
   end
 end

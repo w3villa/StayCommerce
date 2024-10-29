@@ -1,42 +1,52 @@
 module Stay
   class Booking < ApplicationRecord
     PAYMENT_STATES = %w(balance_due credit_owed failed paid void)
-    STATUSES = %w[pending confirmed canceled completed].freeze
+    STATUSES = %w[booking_request confirmed canceled completed].freeze
 
     belongs_to :user, class_name: 'Stay::User'
+    belongs_to :canceler, class_name: 'Stay::User', foreign_key: "canceler_id"
     # belongs_to :room, class_name: 'Stay::Room'
     has_many :reviews, class_name: 'Stay::Review', dependent: :destroy
 
     has_many :payments, class_name: 'Stay::Payment', dependent: :destroy
 
-    has_many :line_items, class_name: 'Stay::LineItem', dependent: :destroy
+    has_many :line_items, class_name: 'Stay::LineItem'
     has_many :rooms, through: :line_items
     # has_many :properties, through: :rooms
     belongs_to :property, class_name: "Stay::Property"
     belongs_to :store, class_name: 'Stay::Store'
+    has_one :chat, class_name: 'Stay::Chat',dependent: :destroy
+    has_one :invoice, dependent: :destroy
 
     scope :complete, -> { where.not(completed_at: nil) }
     scope :incomplete, -> { where(completed_at: nil) }
     scope :not_canceled, -> { where.not(status: 'canceled') }
     before_create :link_by_email, :generate_number
     before_validation :ensure_store_presence
+    # before_commit :check_room_availblity
+
+
+    accepts_nested_attributes_for :line_items, allow_destroy: true
+    accepts_nested_attributes_for :payments, allow_destroy: true
+    accepts_nested_attributes_for :invoice, allow_destroy: true
+
 
 
     validates :status, inclusion: { in: STATUSES }
     validates :number, uniqueness: true
 
-    state_machine :status, initial: :pending do
-      state :pending
+    state_machine :status, initial: :booking_request do
+      state :booking_request
       state :confirmed
       state :canceled
       state :completed
 
       event :confirm do
-        transition pending: :confirmed
+        transition booking_request: :confirmed
       end
 
       event :cancel do
-        transition [:pending, :confirmed] => :canceled
+        transition [:booking_request, :confirmed] => :canceled
       end
 
       event :complete do
@@ -54,6 +64,10 @@ module Stay
       end
     end
 
+    def total_amount
+      rooms.pluck(:price_per_night).sum
+    end
+    
     def after_cancel
       payments.completed.each(&:cancel!)
       send_cancel_email
