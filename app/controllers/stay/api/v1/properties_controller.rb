@@ -99,6 +99,15 @@ class Stay::Api::V1::PropertiesController < Stay::BaseApiController
       end
     end
 
+    def property_tax
+      @taxes = Stay::Tax.all
+      if @taxes.any?
+        render json: { message: "tax found", tax: @taxes, success: true }, status: :ok
+      else
+        render json: { message: "No properties found" }, status: :not_found
+      end
+    end
+
     def resubmit
       render json: { message: "Property resubmitted for approval", data: PropertyListingSerializer.new(@property), success: :true }, status: :ok if @property.resubmit!
       render json: { error: "Property not approved",  success: :false }, status: :unprocessable_entity
@@ -115,7 +124,10 @@ class Stay::Api::V1::PropertiesController < Stay::BaseApiController
                                         property_house_rules_attributes: [ :id, :house_rule_id, :value, :_destroy ],
                                         property_amenities_attributes: [ :id, :amenity_id, :_destroy ],
                                         property_features_attributes: [ :id, :name, :feature_id, :_destroy ],
-                                        rooms_attributes: [ :id, :max_guests, :price_per_night, :status, :booking_start, :booking_end, :description, :size, :bed_type_id, :room_type_id ],
+                                        rooms_attributes: [ :id, :max_guests, :price_per_night, :status, :booking_start, :booking_end, :description, :size, :bed_type_id, :room_type_id ,
+                                          room_features_attributes: [ :id, :feature_id, :_destroy ],
+                                          room_amenities_attributes: [ :id, :amenity_id, :_destroy ]
+                                        ],
                                         property_taxes_attributes: [ :id, :tax_id, :value, :_destroy ],
                                       )
     end

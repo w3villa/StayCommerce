@@ -78,14 +78,26 @@ Stay::Engine.routes.draw do
   namespace :api do
     namespace :v1 do
       resources :property_categories,  only: [ :index, :show ]
-      resources :amenity_categories, only: [ :index ]
+      resources :amenity_categories do
+        collection do
+          get :property
+          get :room
+        end
+      end
       resources :property_types,  only: [ :index, :show ]
       resources :room_types,  only: [ :index, :show ]
       resources :users, only: [ :destroy ]
       resources :house_rules, only: :index
+      resources :bed_types, only: :index
       resources :credit_cards
       resources :user_paypal
-      resources :property_features do
+      resources :bookings do 
+        resources :line_items
+        # member do
+          
+        # end
+      end
+      resources :features do
         collection do
           get :property
           get :room
@@ -103,6 +115,7 @@ Stay::Engine.routes.draw do
       resources :properties, only: [ :index, :show, :create, :update ] do
         collection do
           get "search", to: "properties#search"
+          get :property_tax
         end
         member do
           put :resubmit
