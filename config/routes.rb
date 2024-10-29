@@ -115,6 +115,7 @@ Stay::Engine.routes.draw do
       resources :properties, only: [ :index, :show, :create, :update ] do
         collection do
           get "search", to: "properties#search"
+          get :property_tax
         end
         member do
           put :resubmit

@@ -99,6 +99,15 @@ class Stay::Api::V1::PropertiesController < Stay::BaseApiController
       end
     end
 
+    def property_tax
+      @taxes = Stay::Tax.all
+      if @taxes.any?
+        render json: { message: "tax found", tax: @taxes, success: true }, status: :ok
+      else
+        render json: { message: "No properties found" }, status: :not_found
+      end
+    end
+
     def resubmit
       render json: { message: "Property resubmitted for approval", data: PropertyListingSerializer.new(@property), success: :true }, status: :ok if @property.resubmit!
       render json: { error: "Property not approved",  success: :false }, status: :unprocessable_entity
