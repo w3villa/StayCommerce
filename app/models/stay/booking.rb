@@ -4,7 +4,7 @@ module Stay
     STATUSES = %w[booking_request confirmed canceled completed].freeze
 
     belongs_to :user, class_name: 'Stay::User'
-    belongs_to :canceler, class_name: 'Stay::User', foreign_key: "canceler_id"
+    belongs_to :canceler, class_name: 'Stay::User', foreign_key: "canceler_id", optional: true
     # belongs_to :room, class_name: 'Stay::Room'
     has_many :reviews, class_name: 'Stay::Review', dependent: :destroy
 
