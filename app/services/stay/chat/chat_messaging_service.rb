@@ -19,6 +19,10 @@ class Stay::Chat::ChatMessagingService
         user_message: { text: "Your booking request was sent for property #{@property.title} for dates #{@booking.check_in_date} to #{@booking.check_out_date}.", event: "booking request", receiver: nil },
         owner_message: { text: "You have received a new booking request for property #{@property.title} for dates #{@booking.check_in_date} to #{@booking.check_out_date}.", event: "booking request", receiver: nil }
       },
+      "invoice_sent" => {
+        user_message: { text: "You Have received a invoice for your booking for #{@property.title} for dates #{@booking.check_in_date} to #{@booking.check_out_date}.", event: "invoice_sent", receiver: nil },
+        owner_message: { text: "You have sent a new booking invoice for property #{@property.title} for dates #{@booking.check_in_date} to #{@booking.check_out_date}.", event: "invoice_sent", receiver: nil }
+      },
       "confirmed" => {
         user_message: { text: "Your booking for property #{@property.title} from #{@booking.check_in_date} to #{@booking.check_out_date} has been confirmed.", event: "booking confirmed", receiver: nil },
         owner_message: { text: "You have confirmed the booking for property #{@property.title} from #{@booking.check_in_date} to #{@booking.check_out_date}.", event: "booking confirmed", receiver: nil }

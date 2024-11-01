@@ -31,6 +31,7 @@ class Stay::Api::V1::BookingsController < Stay::BaseApiController
     @booking = Stay::Booking.new(booking_params.merge(user: current_devise_api_user))
     if @booking.save
         Stay::Chat::ChatMessagingService.new(@booking).send_initial_messages
+        @booking.calculate_totals
         render json: {  data: BookingSerializer.new(@booking), success: true}, status: :created
     else
         render json: { error: @booking.errors.full_messages }, status: :unprocessable_entity
@@ -43,6 +44,7 @@ class Stay::Api::V1::BookingsController < Stay::BaseApiController
       @messages = @chat.messages.page(params[:page]).per(params[:per_page] || 10 )
       render json: {    
         booking: BookingSerializer.new(@booking),
+        chat: ChatSerializer.new(@booking.chat, scope: { current_user: current_devise_api_user }),
         messages: ActiveModelSerializers::SerializableResource.new(@messages, each_serializer: MessageSerializer),
         success: true
       }, status: :ok
@@ -58,7 +60,10 @@ class Stay::Api::V1::BookingsController < Stay::BaseApiController
   def update
     if @booking.update(booking_params)
       @booking.update_columns(canceler_id: current_devise_api_user.id,canceled_at: Time.current) if @booking.canceled?
-      Stay::Chat::ChatMessagingService.new(@booking).send_initial_messages
+      if @booking.saved_change_to_status?
+        Stay::Chat::ChatMessagingService.new(@booking).send_initial_messages
+      end
+      @booking.calculate_totals
       render json: { data: BookingSerializer.new(@booking), success: true }, status: :ok
     else
       render json: { error: @booking.errors.full_messages }, status: :unprocessable_entity
@@ -85,9 +90,9 @@ class Stay::Api::V1::BookingsController < Stay::BaseApiController
       line_items_attributes: [:id, :room_id, :price, :quantity, :property_id],
       payments_attributes: [:id, :payment_method_id, :amount, :state],
       invoice_attributes: [
-        :id, :total, :invoice_period, :invoice_type, :billing_type, :status,
-        discounts_attributes: [:id, :amount, :description],
-        expenses_attributes: [:id, :amount, :category]
+        :id, :total, :invoice_period, :invoice_type, :billing_type, :status, :_destroy,
+        discounts_attributes: [:id, :amount, :description,  :_destroy],
+        expenses_attributes: [:id, :amount, :category,  :_destroy]
       ]
     )
   end

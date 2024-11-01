@@ -5,5 +5,9 @@ module Stay
     belongs_to :chat, class_name: "Stay::Chat"
     enum :event_for, { host: 0, student: 1, both: 2}
 
+    def read?
+      read_at.present?
+    end
+
   end
 end

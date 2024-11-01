@@ -2,6 +2,7 @@ class Stay::Api::V1::MessagesController < Stay::BaseApiController
   protect_from_forgery with: :null_session, if: -> { request.format.json? }
   before_action :authenticate_devise_api_token!
   before_action :set_chat
+  before_action :set_message, only: [:mark_as_read]
 
   def index
     begin
@@ -9,7 +10,7 @@ class Stay::Api::V1::MessagesController < Stay::BaseApiController
 
       render json: {
         data: "Messages Found",
-        chat: ActiveModelSerializers::SerializableResource.new(@chat, serializer: ChatSerializer),
+        chat: ActiveModelSerializers::SerializableResource.new(@chat, serializer: ChatSerializer, scope: { current_user: current_devise_api_user }),
         message: ActiveModelSerializers::SerializableResource.new(@messages, each_serializer: MessageSerializer),
         success: true
       }, status: :ok
@@ -49,7 +50,7 @@ class Stay::Api::V1::MessagesController < Stay::BaseApiController
         ActionCable.server.broadcast "ChatChannel", message
         render json: {
           data: "Message Created",
-          chat: ActiveModelSerializers::SerializableResource.new(@chat, serializer: ChatSerializer),
+          chat: ActiveModelSerializers::SerializableResource.new(@chat, serializer: ChatSerializer, scope: { current_user: current_devise_api_user }),
           message: ActiveModelSerializers::SerializableResource.new(message, each_serializer: MessageSerializer),
           success: true
         }, status: :created
@@ -63,7 +64,27 @@ class Stay::Api::V1::MessagesController < Stay::BaseApiController
     end
   end
 
+  def mark_as_read
+  if @message.receiver_id.nil? && @message.sender_id == current_devise_api_user.id 
+    @message.update(read_at: Time.current)
+    render json: { message: "Message marked as read", success: true }, status: :ok
+  elsif @message.receiver_id == current_devise_api_user.id 
+      @message.update(read_at: Time.current)
+      render json: { message: "Message marked as read", success: true }, status: :ok
+    else
+      render json: { error: "You are not authorized to read this message" }, status: :unauthorized
+    end
+  end
+
   private
+
+  def set_message
+    begin
+      @message = Stay::Message.find(params[:id])
+    rescue ActiveRecord::RecordNotFound => e
+      render json: { success: false, error: "message not found" }, status: :not_found
+    end
+  end
 
   def set_chat
     begin

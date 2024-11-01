@@ -1,7 +1,7 @@
 module Stay
   class Booking < ApplicationRecord
     PAYMENT_STATES = %w(balance_due credit_owed failed paid void)
-    STATUSES = %w[booking_request confirmed canceled completed].freeze
+    STATUSES = %w[booking_request invoice_sent confirmed canceled completed].freeze
 
     belongs_to :user, class_name: 'Stay::User'
     belongs_to :canceler, class_name: 'Stay::User', foreign_key: "canceler_id", optional: true
@@ -23,35 +23,38 @@ module Stay
     scope :not_canceled, -> { where.not(status: 'canceled') }
     before_create :link_by_email, :generate_number
     before_validation :ensure_store_presence
-    before_save :calculate_totals
 
     accepts_nested_attributes_for :line_items, allow_destroy: true
     accepts_nested_attributes_for :payments, allow_destroy: true
     accepts_nested_attributes_for :invoice, allow_destroy: true
-
-
 
     validates :status, inclusion: { in: STATUSES }
     validates :number, uniqueness: true
 
     state_machine :status, initial: :booking_request do
       state :booking_request
+      state :invoice_sent
       state :confirmed
       state :canceled
       state :completed
-
-      event :confirm do
-        transition booking_request: :confirmed
+    
+      event :send_invoice do
+        transition booking_request: :invoice_sent
       end
-
+    
+      event :confirm do
+        transition invoice_sent: :confirmed
+      end
+    
       event :cancel do
         transition [:booking_request, :confirmed] => :canceled
       end
-
+    
       event :complete do
         transition confirmed: :completed
       end
     end
+    
 
     def canceled_by(user)
       transaction do
@@ -63,9 +66,9 @@ module Stay
       end
     end
 
-    def total_amount
-      rooms.pluck(:price_per_night).sum
-    end
+    # def total_amount
+    #   rooms.pluck(:price_per_night).sum
+    # end
     
     def after_cancel
       payments.completed.each(&:cancel!)
@@ -116,16 +119,26 @@ module Stay
       self.store ||= Stay::Store.default
     end
 
+    def calculate_totals
+      item_total = line_items.any? ? line_items.pluck(:price).sum : 0
+      invoice_total = invoice.present? ? invoice.total : 0
+      total_amount = item_total + invoice_total
+
+      if item_total != self.item_total || invoice_total != self.total || total_amount != self.total_amount
+        update_columns(
+          item_total: item_total,
+          total: invoice_total,
+          total_amount: total_amount
+        )
+      end
+    end
+
     private
 
     def link_by_email
       self.email = user.email if user
     end
 
-    def calculate_totals
-      item_total = line_items&.sum('price * quantity')
-      total = invoice&.total
-      total_amount = item_total + total
-    end
+    
   end
 end
