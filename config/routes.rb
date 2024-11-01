@@ -113,6 +113,7 @@ Stay::Engine.routes.draw do
         resources :messages, only: [ :index, :new, :create ]
       end
       resources :properties, only: [ :index, :show, :create, :update ] do
+        resources :booking_queries
         collection do
           get "search", to: "properties#search"
           get :property_tax
