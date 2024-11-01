@@ -8,7 +8,7 @@ class Stay::Api::V1::ChatsController < ApplicationController
     if chats.any?
       render json: {
         data: "Chats Found",
-        chats: ActiveModelSerializers::SerializableResource.new(chats, each_serializer: ChatSerializer),
+        chats: ActiveModelSerializers::SerializableResource.new(chats, each_serializer: ChatSerializer, scope: { current_user: current_devise_api_user }),
         success: true
       }, status: :ok
     else
@@ -21,7 +21,7 @@ class Stay::Api::V1::ChatsController < ApplicationController
       @chat = Stay::Chat.between(current_devise_api_user&.id, params[:receiver_id]).first_or_create!(chat_params.merge(sender_id: current_devise_api_user&.id))
       render json: {
         data: "Chat Created",
-        chat: ActiveModelSerializers::SerializableResource.new(@chat, serializer: ChatSerializer),
+        chat: ActiveModelSerializers::SerializableResource.new(@chat, serializer: ChatSerializer, scope: { current_user: current_devise_api_user }),
         success: true
       }, status: :ok
     rescue ActiveRecord::RecordInvalid => e

@@ -93,9 +93,8 @@ Stay::Engine.routes.draw do
       resources :user_paypal
       resources :bookings do 
         resources :line_items
-        # member do
-          
-        # end
+        resources :invoices
+        
       end
       resources :features do
         collection do
@@ -110,9 +109,14 @@ Stay::Engine.routes.draw do
         member do
           get "chat_messages", to: "chats#chat_messages"
         end
-        resources :messages, only: [ :index, :new, :create ]
+        resources :messages, only: [ :index, :new, :create ] do
+          member do
+            put :mark_as_read
+          end
+        end
       end
       resources :properties, only: [ :index, :show, :create, :update ] do
+        resources :booking_queries
         collection do
           get "search", to: "properties#search"
           get :property_tax

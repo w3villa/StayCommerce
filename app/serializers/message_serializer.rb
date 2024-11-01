@@ -1,5 +1,5 @@
 class MessageSerializer < ActiveModel::Serializer
-  attributes :id, :body, :event_message, :event_for, :sender_id, :receiver_id, :sender, :receiver
+  attributes :id, :body, :event_message, :event_for, :sender_id, :receiver_id, :sender, :receiver, :read?
 
   
   def sender
