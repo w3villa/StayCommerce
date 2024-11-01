@@ -86,7 +86,7 @@ class Stay::Api::V1::BookingsController < Stay::BaseApiController
   private
   def booking_params
     params.require(:booking).permit(
-      :check_in_date, :check_out_date, :number_of_guests, :total_amount, :property_id, :status,
+      :check_in_date, :check_out_date, :number_of_guests, :total_amount, :property_id, :status, :payment_intent_id
       line_items_attributes: [:id, :room_id, :price, :quantity, :property_id],
       payments_attributes: [:id, :payment_method_id, :amount, :state],
       invoice_attributes: [
