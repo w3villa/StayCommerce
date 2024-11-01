@@ -1,7 +1,9 @@
 module Stay
   class BookingQuery < ApplicationRecord
     belongs_to :chat
-    belongs_to :booking
+    belongs_to :booking, optional: true
+    belongs_to :property
+    belongs_to :user
     enum state: { send_message: 0, request_change: 1, accepted: 2, rejected: 3 }
     after_initialize :set_default_state, if: :new_record?
 

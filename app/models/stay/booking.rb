@@ -23,8 +23,7 @@ module Stay
     scope :not_canceled, -> { where.not(status: 'canceled') }
     before_create :link_by_email, :generate_number
     before_validation :ensure_store_presence
-    # before_commit :check_room_availblity
-
+    before_save :calculate_totals
 
     accepts_nested_attributes_for :line_items, allow_destroy: true
     accepts_nested_attributes_for :payments, allow_destroy: true
@@ -121,6 +120,12 @@ module Stay
 
     def link_by_email
       self.email = user.email if user
+    end
+
+    def calculate_totals
+      item_total = line_items&.sum('price * quantity')
+      total = invoice&.total
+      total_amount = item_total + total
     end
   end
 end

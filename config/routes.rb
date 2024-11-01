@@ -93,9 +93,8 @@ Stay::Engine.routes.draw do
       resources :user_paypal
       resources :bookings do 
         resources :line_items
-        # member do
-          
-        # end
+        resources :invoices
+        
       end
       resources :features do
         collection do

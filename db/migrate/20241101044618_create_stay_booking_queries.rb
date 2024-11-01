@@ -6,6 +6,7 @@ class CreateStayBookingQueries < ActiveRecord::Migration[7.2]
       t.references :chat, null: false, foreign_key: { to_table: :stay_chats }
       t.references :property, null: false, foreign_key: { to_table: :stay_properties }
       t.references :booking, foreign_key: { to_table: :stay_bookings }
+      t.references :user, foreign_key: { to_table: :stay_users }
       t.integer :state
       t.text :query
       t.integer :guest_count
