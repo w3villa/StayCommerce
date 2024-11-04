@@ -3,8 +3,8 @@ class PropertySerializer < ActiveModel::Serializer
 
   attributes :id, :title, :description, :availability_start, :availability_end, :guest_number, :bedroom_description,
               :university_nearby, :about_neighbourhoods, :instant_booking, :minimum_days_of_booking, :security_deposit, :extra_guest,
-              :allow_extra_guest, :city, :address, :latitude, :longitude, :total_rooms, :total_bathrooms, :property_size,
-              :cover_image, :place_images, :price_per_night, :house_rules, :additional_rules, :amenities, :property_taxes, :state, :country, :zipcode, :features
+              :allow_extra_guest, :city, :address, :latitude, :longitude, :state, :country, :zipcode, :total_rooms, :total_bathrooms, :property_size,
+              :cover_image, :place_images, :price_per_night, :house_rules, :additional_rules, :amenities, :property_taxes,  :features
 
   belongs_to :property_category, Serializer: :PropertyCategorySerializer
   belongs_to :property_type, Serializer: :PropertyTypeSerializer
@@ -47,12 +47,12 @@ class PropertySerializer < ActiveModel::Serializer
   end
 
   def property_taxes
-    object.property_taxes.map do |property_tax|
-       {
-        id: property_tax.tax.id,
+    object.property_taxes.uniq { |property_tax| property_tax.tax_id }.map do |property_tax|
+      {
+        id: property_tax.id,
         name: property_tax.tax.name,
         value: property_tax.value
-       }
+      }
     end
-  end
+  end  
 end

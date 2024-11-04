@@ -1,6 +1,6 @@
 module Stay
   class Booking < ApplicationRecord
-    PAYMENT_STATES = %w(balance_due credit_owed failed paid void)
+    PAYMENT_STATES = %w(failed paid)
     STATUSES = %w[booking_request invoice_sent confirmed canceled completed].freeze
 
     belongs_to :user, class_name: 'Stay::User'

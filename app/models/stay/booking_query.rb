@@ -4,7 +4,7 @@ module Stay
     belongs_to :booking, optional: true
     belongs_to :property
     belongs_to :user
-    enum state: { send_message: 0, request_change: 1, accepted: 2, rejected: 3 }
+    enum state: { send_message: 0, request_change: 1, booking_invitation: 2, accepted: 3, rejected: 4 }
     after_initialize :set_default_state, if: :new_record?
 
     def set_default_state

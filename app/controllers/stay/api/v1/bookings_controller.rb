@@ -1,5 +1,6 @@
 class Stay::Api::V1::BookingsController < Stay::BaseApiController
   before_action :set_booking , only: [:show, :update, :delete_line_item, :booking_chat]
+  before_action :booking_availability, only: [:create]
   before_action :authenticate_devise_api_token!
 
   def index
@@ -58,6 +59,10 @@ class Stay::Api::V1::BookingsController < Stay::BaseApiController
   end
 
   def update
+    if @booking.payment_state == 'failed' && params[:booking][:status] == 'confirmed'
+      return render json: { error: "Booking cannot be confirmed due to failed payment." }, status: :unprocessable_entity
+    end
+
     if @booking.update(booking_params)
       @booking.update_columns(canceler_id: current_devise_api_user.id,canceled_at: Time.current) if @booking.canceled?
       if @booking.saved_change_to_status?
@@ -86,9 +91,9 @@ class Stay::Api::V1::BookingsController < Stay::BaseApiController
   private
   def booking_params
     params.require(:booking).permit(
-      :check_in_date, :check_out_date, :number_of_guests, :total_amount, :property_id, :status,
+      :check_in_date, :check_out_date, :number_of_guests, :total_amount, :property_id, :status, :payment_intent_id,
       line_items_attributes: [:id, :room_id, :price, :quantity, :property_id],
-      payments_attributes: [:id, :payment_method_id, :amount, :state],
+      payments_attributes: [:id, :payment_method_id, :amount, :state, :transaction_id, :intent_client_key],
       invoice_attributes: [
         :id, :total, :invoice_period, :invoice_type, :billing_type, :status, :_destroy,
         discounts_attributes: [:id, :amount, :description,  :_destroy],
@@ -100,6 +105,24 @@ class Stay::Api::V1::BookingsController < Stay::BaseApiController
   def set_room
       @room = Stay::Room.find(params[:room_id])
   end
+
+  def booking_availability
+    property = Stay::Property.find_by(id: params[:booking][:property_id])
+  
+    if property.nil?
+      return render json: { success: false, message: "Property not found." }, status: :not_found
+    end
+  
+    check_in_date = params[:booking][:check_in_date].to_date
+    check_out_date = params[:booking][:check_out_date].to_date
+  
+    if check_in_date < property.availability_start.to_date
+      return render json: { success: false, message: "Check-in date cannot be earlier than the property's check-in date." }, status: :unprocessable_entity
+    elsif check_out_date > property.availability_end.to_date
+      return render json: { success: false, message: "Check-out date cannot be greater than the property's check-out date." }, status: :unprocessable_entity
+    end
+  end
+  
 
   def set_booking
     @booking = Stay::Booking.find_by(id: params[:id])

@@ -9,6 +9,7 @@ class Stay::Api::V1::BookingQueriesController < Stay::BaseApiController
       if chat.persisted?
         booking_query = chat.build_booking_query(booking_query_params.merge(property: @property, user: current_devise_api_user))
         if booking_query.save
+          Stay::Chat::QueryMessagingService.new(booking_query, current_devise_api_user).perform
           render json: { success: true, booking_query: BookingQuerySerializer.new(booking_query) }, status: :created
         else
           raise ActiveRecord::Rollback
@@ -27,28 +28,30 @@ class Stay::Api::V1::BookingQueriesController < Stay::BaseApiController
   end
 
   def update
-    if %w[accepted rejected].include?(booking_query_params[:state])
+    if %w[request_change booking_invitation accepted rejected].include?(booking_query_params[:state])
       @booking_query.update(state: booking_query_params[:state].to_sym)
+      Stay::Chat::QueryMessagingService.new(@booking_query, current_devise_api_user).perform
     end
   
-    if @booking_query.update(booking_query_params)
-      if @booking_query.accepted?
+    unless @booking_query.update(booking_query_params)
+      return render json: { success: false, errors: @booking_query.errors.full_messages }, status: :unprocessable_entity
+    end
+  
+    if @booking_query.accepted?
+      if @booking_query.booking.present?
+        render json: { success: false, message: "Booking already created for this query" }, status: :unprocessable_entity
+      else
         result = Stay::Bookings::CreateBookingService.new(@booking_query).perform
-        
         if result[:success]
-          render json: { success: true, booking_query: BookingQuerySerializer.new(@booking_query) , message: "booking created successfully"}, status: :ok
+          render json: { success: true, booking_query: BookingQuerySerializer.new(@booking_query), message: "Booking created successfully" }, status: :ok
         else
           render json: { success: false, errors: result[:errors] }, status: :unprocessable_entity
         end
-      else
-        render json: { success: true, booking_query: BookingQuerySerializer.new(@booking_query) }, status: :ok
       end
     else
-      render json: { success: false, errors: @booking_query.errors.full_messages }, status: :unprocessable_entity
+      render json: { success: true, booking_query: BookingQuerySerializer.new(@booking_query) }, status: :ok
     end
   end
-  
-  
 
   private
 
