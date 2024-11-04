@@ -89,6 +89,11 @@ Stay::Engine.routes.draw do
       resources :users, only: [ :destroy ]
       resources :house_rules, only: :index
       resources :bed_types, only: :index
+      resources :payments do
+        collection do
+          get :payment_method
+        end
+      end
       resources :credit_cards
       resources :user_paypal
       resources :bookings do 

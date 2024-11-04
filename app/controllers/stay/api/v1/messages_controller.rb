@@ -7,7 +7,6 @@ class Stay::Api::V1::MessagesController < Stay::BaseApiController
   def index
     begin
       @messages = @chat.messages
-
       render json: {
         data: "Messages Found",
         chat: ActiveModelSerializers::SerializableResource.new(@chat, serializer: ChatSerializer, scope: { current_user: current_devise_api_user }),
@@ -65,17 +64,17 @@ class Stay::Api::V1::MessagesController < Stay::BaseApiController
   end
 
   def mark_as_read
-  if @message.receiver_id.nil? && @message.sender_id == current_devise_api_user.id 
-    @message.update(read_at: Time.current)
-    render json: { message: "Message marked as read", success: true }, status: :ok
-  elsif @message.receiver_id == current_devise_api_user.id 
-      @message.update(read_at: Time.current)
+    if @message.receiver_id == current_devise_api_user.id
+      @chat.messages.where(receiver_id: current_devise_api_user.id).update_all(read_at: DateTime.now)
+      render json: { message: "Message marked as read", success: true }, status: :ok
+    elsif @message.sender_id == current_devise_api_user.id
+      @chat.messages.where(sender_id: current_devise_api_user.id).update_all(read_at: DateTime.now)
       render json: { message: "Message marked as read", success: true }, status: :ok
     else
       render json: { error: "You are not authorized to read this message" }, status: :unauthorized
     end
   end
-
+  
   private
 
   def set_message
@@ -89,6 +88,9 @@ class Stay::Api::V1::MessagesController < Stay::BaseApiController
   def set_chat
     begin
       @chat = Stay::Chat.find(params[:chat_id])
+      unless @chat.sender_id == current_devise_api_user.id || @chat.receiver_id == current_devise_api_user.id
+        return render json:{error: "not authorized to view this chat", success: false}, status: :unprocessable_entity
+      end
     rescue ActiveRecord::RecordNotFound => e
       render json: { error: "Chat not found: #{e.message}", success: false }, status: :not_found
     rescue StandardError => e

@@ -16,8 +16,9 @@ module Stay
           check_in_date: @booking_query.check_in_date,
           check_out_date: @booking_query.check_out_date,
           number_of_guests: @booking_query.guest_count, 
-          line_items_attributes: line_items_attributes
+          line_items_attributes: line_items_attributes,
         )
+        @booking.chat = @booking_query.chat
         if @booking.save
           @booking_query.update(booking: @booking)
           { success: true, booking: @booking }
