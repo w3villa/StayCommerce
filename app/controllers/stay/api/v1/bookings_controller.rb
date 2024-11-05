@@ -69,9 +69,7 @@ class Stay::Api::V1::BookingsController < Stay::BaseApiController
     if @booking.payment_state == 'failed' && params[:booking][:status] == 'confirmed'
       return render json: { error: "Booking cannot be confirmed due to failed payment." }, status: :unprocessable_entity
     end
-
-    binding.pry
-
+    
     if @booking.update(booking_params)
       @booking.update_columns(canceler_id: current_devise_api_user.id,canceled_at: Time.current) if @booking.canceled?
       if @booking.saved_change_to_status?
