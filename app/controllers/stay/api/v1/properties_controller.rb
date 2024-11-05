@@ -101,7 +101,7 @@ class Stay::Api::V1::PropertiesController < Stay::BaseApiController
       @properties = @q.result.includes(:rooms).distinct
 
       if @properties.any? && params[:q][:latitude].present? && params[:q][:longitude].present?
-        @properties = @properties.near([ params[:q][:latitude], params[:q][:longitude] ], params[:distance] || 500)
+        @properties = @properties.near([ params[:q][:latitude], params[:q][:longitude] ], params[:distance] || 10)
       end
       @properties = @properties.page(params[:page]).per(params[:per_page] || 10)
 
