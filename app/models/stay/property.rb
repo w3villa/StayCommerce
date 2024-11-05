@@ -150,11 +150,11 @@ module Stay
     end
 
     def place_images_urls
-      place_images.map { |image| Rails.application.routes.url_helpers.url_for(image) }
+      place_images.map { |image| image.url }
     end
 
     def cover_image_url
-      cover_image.attached? ? url_for(cover_image) : nil
+      cover_image.attached? ? cover_image.url : nil
     end
 
     def approved
