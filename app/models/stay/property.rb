@@ -115,6 +115,9 @@ module Stay
       [ "rooms" ]
     end
 
+    def shared_property
+      property_type.present? ? property_type.name.casecmp?("shared property") : false
+    end
 
     def has_rooms?
       rooms.any?

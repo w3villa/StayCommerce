@@ -122,7 +122,8 @@ module Stay
     def calculate_totals
       item_total = line_items.any? ? line_items.pluck(:price).sum : 0
       invoice_total = invoice.present? ? invoice.total : 0
-      total_amount = item_total + invoice_total
+      tax_total = property.property_taxes.any? ? property.property_taxes.uniq { |property_tax| property_tax.tax_id }.pluck(:value).sum : 0
+      total_amount = item_total + invoice_total + tax_total
 
       if item_total != self.item_total || invoice_total != self.total || total_amount != self.total_amount
         update_columns(

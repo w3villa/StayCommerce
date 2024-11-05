@@ -47,7 +47,14 @@ class Stay::Api::V1::BookingsController < Stay::BaseApiController
         booking: BookingSerializer.new(@booking),
         chat: ChatSerializer.new(@booking.chat, scope: { current_user: current_devise_api_user }),
         messages: ActiveModelSerializers::SerializableResource.new(@messages, each_serializer: MessageSerializer),
-        success: true
+        success: true,
+        meta: {
+          total_pages: @messages.total_pages,
+          current_page: @messages.current_page,
+          next_page: @messages.next_page,
+          prev_page: @messages.prev_page,
+          total_count: @messages.total_count
+        }
       }, status: :ok
     else
       render json: { error: "no chat found", success: false}, status: :unprocessable_entity
@@ -62,6 +69,8 @@ class Stay::Api::V1::BookingsController < Stay::BaseApiController
     if @booking.payment_state == 'failed' && params[:booking][:status] == 'confirmed'
       return render json: { error: "Booking cannot be confirmed due to failed payment." }, status: :unprocessable_entity
     end
+
+    binding.pry
 
     if @booking.update(booking_params)
       @booking.update_columns(canceler_id: current_devise_api_user.id,canceled_at: Time.current) if @booking.canceled?

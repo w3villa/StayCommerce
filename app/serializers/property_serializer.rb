@@ -1,7 +1,7 @@
 class PropertySerializer < ActiveModel::Serializer
     include Rails.application.routes.url_helpers
 
-  attributes :id, :title, :description, :availability_start, :availability_end, :guest_number, :bedroom_description,
+  attributes :id, :title, :description, :is_shared_property, :availability_start, :availability_end, :guest_number, :bedroom_description,
               :university_nearby, :about_neighbourhoods, :instant_booking, :minimum_days_of_booking, :security_deposit, :extra_guest,
               :allow_extra_guest, :city, :address, :latitude, :longitude, :state, :country, :zipcode, :total_rooms, :total_bathrooms, :property_size,
               :cover_image, :place_images, :price_per_night, :house_rules, :additional_rules, :amenities, :property_taxes,  :features
@@ -17,6 +17,10 @@ class PropertySerializer < ActiveModel::Serializer
 
   def features
     ActiveModelSerializers::SerializableResource.new(object.features.property.uniq, each_serializer: PropertyFeatureSerializer)
+  end
+
+  def is_shared_property
+    object.shared_property
   end
 
   def house_rules
@@ -51,6 +55,7 @@ class PropertySerializer < ActiveModel::Serializer
       {
         id: property_tax.id,
         name: property_tax.tax.name,
+        tax_id: property_tax.tax.id,
         value: property_tax.value
       }
     end

@@ -67,13 +67,35 @@ class Stay::Api::V1::PropertiesController < Stay::BaseApiController
     end
 
     def update
-      if @property.update(property_params)
-        render json: { message: "property updated", property: PropertySerializer.new(@property), success: true }, status: :created
-      else
-        render json: { message: @property.errors.full_messages, success: false }, status: :unprocessable_entity
+      ActiveRecord::Base.transaction do
+        if property_params["property_taxes_attributes"].present? &&  @property.property_taxes.any?
+          property_params["property_taxes_attributes"].each do |p_tax|
+            tax = @property.property_taxes.where(tax_id: p_tax["tax_id"])
+            if p_tax["value"].present?
+              tax.update_all(value: p_tax["value"]) 
+            elsif p_tax["_destroy"] == "true"
+              tax.destroy_all
+            end
+          end
+        end
+    
+        if @property.update(property_params)
+          render json: {
+            message: "property updated",
+            property: PropertySerializer.new(@property),
+            success: true
+          }, status: :created
+        else
+          raise ActiveRecord::Rollback
+        end
+      rescue ActiveRecord::RecordInvalid
+        render json: {
+          message: @property.errors.full_messages,
+          success: false
+        }, status: :unprocessable_entity
       end
     end
-
+    
     def search
       @q = Stay::Property.approved.ransack(params[:q])
       @properties = @q.result.includes(:rooms).distinct
@@ -124,7 +146,7 @@ class Stay::Api::V1::PropertiesController < Stay::BaseApiController
                                         property_house_rules_attributes: [ :id, :house_rule_id, :value, :_destroy ],
                                         property_amenities_attributes: [ :id, :amenity_id, :_destroy ],
                                         property_features_attributes: [ :id, :name, :feature_id, :_destroy ],
-                                        rooms_attributes: [ :id, :max_guests, :price_per_night, :status, :booking_start, :booking_end, :description, :size, :bed_type_id, :room_type_id ,  :_destroy ,
+                                        rooms_attributes: [ :id, :max_guests, :price_per_night, :status, :booking_start, :booking_end, :description, :size, :bed_type_id, :room_type_id,  :_destroy ,
                                           room_features_attributes: [ :id, :feature_id, :_destroy ],
                                           room_amenities_attributes: [ :id, :amenity_id, :_destroy ]
                                         ],
