@@ -171,6 +171,13 @@
     column-gap: 80px;
     padding-left: 1.5em;
  }
+.property-tax {
+    width: 49%;
+}
+
+.property-custom {
+    column-gap: 20px;
+}
 
  .property-data{
     display: block;
