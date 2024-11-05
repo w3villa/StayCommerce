@@ -8,7 +8,7 @@ module Stay
       def perform
         user = @booking_query.user
         property = @booking_query.property
-        room_numbers = @booking_query.query_for["room_number"]
+        room_numbers = @booking_query&.query_for.present? ? @booking_query.query_for["room_number"] : @booking_query.property.rooms.pluck(:id)
         line_items_attributes = build_line_items(room_numbers)
         @booking = Stay::Booking.new(
           user: user,
@@ -20,6 +20,7 @@ module Stay
         )
         @booking.chat = @booking_query.chat
         if @booking.save
+          @booking.calculate_totals
           @booking_query.update(booking: @booking)
           { success: true, booking: @booking }
         else
