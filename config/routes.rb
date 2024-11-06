@@ -121,6 +121,9 @@ Stay::Engine.routes.draw do
         end
       end
       resources :properties, only: [ :index, :show, :create, :update ] do
+        collection do
+          get :my_properties, to: "properties#my_properties"
+        end
         resources :booking_queries
         collection do
           get "search", to: "properties#search"
