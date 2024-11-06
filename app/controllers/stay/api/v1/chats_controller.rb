@@ -6,11 +6,12 @@ class Stay::Api::V1::ChatsController < ApplicationController
     chats = Stay::Chat.joins(:property).where(stay_properties: { user_id: current_devise_api_user&.id })
 
     if chats.any?
-      render json: {
-        data: "Chats Found",
+      data = {
+        message: "Chats Found",
         chats: ActiveModelSerializers::SerializableResource.new(chats, each_serializer: ChatSerializer, scope: { current_user: current_devise_api_user }),
         success: true
-      }, status: :ok
+      }
+      render json: {data: data} , status: :ok
     else
       render json: { error: "No chats found", success: false }, status: :unprocessable_entity
     end
@@ -34,11 +35,12 @@ class Stay::Api::V1::ChatsController < ApplicationController
   def user_chat
     @chats = Stay::Chat.where(sender_id: current_devise_api_user.id).or(Stay::Chat.where(receiver_id: current_devise_api_user.id))
       if chats.any?
-      render json: {
-        data: "Chats Found",
-        chats: ActiveModelSerializers::SerializableResource.new(chats, each_serializer: ChatSerializer, scope: { current_user: current_devise_api_user }),
+        data = {
+        message: "Chats Found",
+        chats: ActiveModelSerializers::SerializableResource.new(@chats, each_serializer: ChatSerializer, scope: { current_user: current_devise_api_user }),
         success: true
-      }, status: :ok
+      }
+      render json: {data: data} , status: :ok
     else
       render json: { error: "No chats found", success: false }, status: :unprocessable_entity
     end

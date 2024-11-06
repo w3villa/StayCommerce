@@ -1,5 +1,5 @@
 class ChatSerializer < ActiveModel::Serializer
-  attributes :id, :sender_id, :receiver_id, :sender, :receiver, :unread_count, :property
+  attributes :id, :sender_id, :receiver_id, :sender, :receiver, :last_message,:last_message_time, :unread_count, :property
 
   def property
     PropertyListingSerializer.new(object.property)
@@ -13,7 +13,8 @@ class ChatSerializer < ActiveModel::Serializer
     if object.sender_id.present?
       {
         id: object.sender_id,
-        name: object.sender.first_name
+        name: object.sender.first_name,
+        image: object.sender.profile_image.present? ? object.sender.profile_image.url : nil
       }
     end
   end
@@ -22,8 +23,18 @@ class ChatSerializer < ActiveModel::Serializer
     if object.receiver_id.present?
       {
         id: object.receiver_id,
-        name: object.receiver.first_name
+        name: object.receiver.first_name,
+        image: object.receiver.profile_image.present? ? object.receiver.profile_image.url : nil
       }
     end
   end
+
+  def last_message
+    object.messages.any? ? object.messages.last.body : nil
+  end
+
+  def last_message_time
+    object.messages.any? ? object.messages.last.created_at : nil
+  end
+
 end

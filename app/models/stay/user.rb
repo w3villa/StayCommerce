@@ -18,6 +18,7 @@ module Stay
     has_many :chats, class_name: "Stay::Chat"
     has_many :credit_cards, class_name: "Stay::CreditCard"
     has_one :user_paypal, class_name: "Stay::UserPaypal"
+    has_one_attached :profile_image
 
     # validates :phone, format: { with: /\A\d{10}\z/, message: "number must be valid." }
 
@@ -48,7 +49,7 @@ module Stay
     end
 
     def stay_host?
-      has_stay_role?("host")
+      hproas_stay_role?("host")
     end
 
     def name
