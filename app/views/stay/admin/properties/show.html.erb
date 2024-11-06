@@ -31,17 +31,15 @@
               <p class="form-label"><strong>minimum_days_of_booking:</strong><span class="property-data"><%= @property.minimum_days_of_booking %></span></p>
               <p class="form-label"><strong>security_deposit:</strong><span class="property-data"><%= @property.security_deposit %></span></p>
               <p class="form-label"><strong>extra_guest:</strong><span class="property-data"><%= @property.extra_guest %></span></p>
-              <div class="col-md-12">
-                <div class="field d-flex">
-                  <% Stay::Tax.all.each do |tax| %>
-                    <div class="col-md-6 mb-2">
-                      <p class="form-label"><strong><%= tax.name %>:</strong></p>
-                      <span class="property-data">
-                        <%= @property.property_taxes.find_by(tax_id: tax.id)&.value || 0 %>
-                      </span>
-                    </div>
-                  <% end %>
-                </div>
+              <div class="form-label d-flex flex-wrap property-custom">
+                <% Stay::Tax.all.each do |tax| %>
+                  <div class="property-tax mb-2">
+                    <p class="form-label"><strong><%= tax.name %>:</strong></p>
+                    <span class="property-data">
+                      <%= @property.property_taxes.find_by(tax_id: tax.id)&.value || 0 %>
+                    </span>
+                  </div>
+                <% end %>
               </div>
               <p class="form-label"><strong>allow_extra_guest: </strong><input type="checkbox" class="form-check-input"<%= @property.allow_extra_guest ? 'checked' : '' %> disabled></p>
             </div>
