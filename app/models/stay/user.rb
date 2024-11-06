@@ -49,7 +49,7 @@ module Stay
     end
 
     def stay_host?
-      hproas_stay_role?("host")
+      has_stay_role?("host")
     end
 
     def name
