@@ -18,7 +18,7 @@ class Stay::Api::V1::ChatsController < ApplicationController
 
   def create
     begin
-      @chat = Stay::Chat.between(current_devise_api_user&.id, params[:receiver_id]).first_or_create!(chat_params.merge(sender_id: current_devise_api_user&.id))
+      @chat = Stay::Chat.between(current_devise_api_user&.id, params[:receiver_id]).create!(chat_params.merge(sender_id: current_devise_api_user&.id))
       render json: {
         data: "Chat Created",
         chat: ActiveModelSerializers::SerializableResource.new(@chat, serializer: ChatSerializer, scope: { current_user: current_devise_api_user }),

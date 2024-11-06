@@ -47,6 +47,10 @@ module Stay
       has_stay_role?("admin")
     end
 
+    def stay_host?
+      has_stay_role?("host")
+    end
+
     def name
       "#{first_name} #{last_name}"
     end

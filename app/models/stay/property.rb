@@ -44,7 +44,7 @@ module Stay
     accepts_nested_attributes_for :property_features, allow_destroy: true
     accepts_nested_attributes_for :property_taxes, allow_destroy: true
 
-    geocoded_by :address
+    geocoded_by :combine_address
     after_validation :geocode
 
     has_many :store_properties, class_name: "Stay::StoreProperty", dependent: :destroy
@@ -64,9 +64,9 @@ module Stay
     #   ["id", "name", "created_at", "updated_at"]
     # end
 
-    # def full_address
-    #   [address].compact.join(' ')
-    # end
+    def combine_address
+      [address, city, state, country].compact.join(' ')
+    end
 
     state_machine :property_state, initial: :waiting_for_approval do
       state :waiting_for_approval

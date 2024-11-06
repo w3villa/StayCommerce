@@ -1,10 +1,11 @@
 class Stay::Api::V1::PropertiesController < Stay::BaseApiController
     before_action :set_property, only: [ :show, :update ]
     before_action :authenticate_devise_api_token!
+    before_action :check_create_access, only: [:create, :update]
 
     def index
       begin
-        @properties = Stay::Property.page(params[:page]).per(params[:per_page] || 10)
+        @properties = Stay::Property.approved.page(params[:page]).per(params[:per_page] || 10)
         return render json: { data: "No properties found", properties: [], success: false }, status: :ok  if @properties.empty?
         render json: {
           data: "Data Found",
@@ -160,5 +161,9 @@ class Stay::Api::V1::PropertiesController < Stay::BaseApiController
       rescue ActiveRecord::RecordNotFound => e
         render json: { success: false, error: "Properties not found" }, status: :not_found
       end
+    end
+
+    def check_create_access
+      return render json:{error: "You don't have access to create property", success: false}, status: :unprocessable_entity unless current_devise_api_user.stay_host?
     end
 end
