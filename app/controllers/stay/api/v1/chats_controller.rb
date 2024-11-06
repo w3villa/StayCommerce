@@ -32,25 +32,15 @@ class Stay::Api::V1::ChatsController < ApplicationController
   end
 
   def user_chat
-    @chats = Stay::Chat.where(sender_id: current_devise_api_user.id)
-                       .or(Stay::Chat.where(receiver_id: current_devise_api_user.id))
-
-    if @chats.any?
-      users_with_chats = @chats.map do |chat|
-        other_user_id = chat.sender_id == current_devise_api_user.id ? chat.receiver_id : chat.sender_id
-        other_user = Stay::User.find_by(id: other_user_id)
-        last_message = chat.messages.last
-        {
-          id: other_user&.id,
-          email: other_user&.email,
-          chat_id: chat.id,
-          last_message: last_message&.body,
-          last_message_created_at: last_message&.created_at
-        }
-      end
-      render json: { data: users_with_chats, success: true }, status: :ok
+    @chats = Stay::Chat.where(sender_id: current_devise_api_user.id).or(Stay::Chat.where(receiver_id: current_devise_api_user.id))
+      if chats.any?
+      render json: {
+        data: "Chats Found",
+        chats: ActiveModelSerializers::SerializableResource.new(chats, each_serializer: ChatSerializer, scope: { current_user: current_devise_api_user }),
+        success: true
+      }, status: :ok
     else
-      render json: { data: [], success: false }, status: :ok
+      render json: { error: "No chats found", success: false }, status: :unprocessable_entity
     end
   end
 
