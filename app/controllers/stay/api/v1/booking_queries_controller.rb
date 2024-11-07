@@ -1,6 +1,7 @@
 class Stay::Api::V1::BookingQueriesController < Stay::BaseApiController
   before_action :authenticate_devise_api_token!
   before_action :set_property
+  before_action :booking_availability, only: [:create, :update]
   before_action :set_query, only: [:update, :show]
 
   def create
@@ -71,5 +72,15 @@ class Stay::Api::V1::BookingQueriesController < Stay::BaseApiController
 
   def booking_query_params
     params.require(:booking_query).permit(:chat_id, :user_id, :check_in_date, :check_out_date, :query, :booking_id, :state, :guest_count, :property_id, query_for: {})
+  end
+
+  def booking_availability
+    if @property.user.nil?
+      return render json: { success: false, message: "Property Host not active." }, status: :not_found
+    end
+
+    if @property&.user == current_devise_api_user
+      return render json: { success: false, message: "You can not create booking for your own Property" }, status: :unprocessable_entity
+    end
   end
 end

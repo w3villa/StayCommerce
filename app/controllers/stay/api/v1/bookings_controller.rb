@@ -69,7 +69,7 @@ class Stay::Api::V1::BookingsController < Stay::BaseApiController
     if @booking.payment_state == 'failed' && params[:booking][:status] == 'confirmed'
       return render json: { error: "Booking cannot be confirmed due to failed payment." }, status: :unprocessable_entity
     end
-    
+
     if @booking.update(booking_params)
       @booking.update_columns(canceler_id: current_devise_api_user.id,canceled_at: Time.current) if @booking.canceled?
       if @booking.saved_change_to_status?
@@ -110,7 +110,7 @@ class Stay::Api::V1::BookingsController < Stay::BaseApiController
   end
 
   def set_room
-      @room = Stay::Room.find(params[:room_id])
+    @room = Stay::Room.find(params[:room_id])
   end
 
   def booking_availability
@@ -118,6 +118,14 @@ class Stay::Api::V1::BookingsController < Stay::BaseApiController
   
     if property.nil?
       return render json: { success: false, message: "Property not found." }, status: :not_found
+    end
+
+    unless property.user
+      return render json: { success: false, message: "Property Host not active." }, status: :not_found
+    end
+
+    if property.user == current_devise_api_user
+      return render json: { success: false, message: "You can not create booking for your own Property" }, status: :unprocessable_entity
     end
   
     check_in_date = params[:booking][:check_in_date].to_date
