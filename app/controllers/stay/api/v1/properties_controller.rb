@@ -168,6 +168,6 @@ class Stay::Api::V1::PropertiesController < Stay::BaseApiController
     end
 
     def check_update_access
-      return render json:{error: "You don't have access to update this property", success: false}, status: :unprocessable_entity if current_devise_api_user.user != @property.user
+      return render json:{error: "You don't have access to update this property", success: false}, status: :unprocessable_entity if current_devise_api_user != @property.user
     end
 end
