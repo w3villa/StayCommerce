@@ -1,8 +1,8 @@
 class Stay::Api::V1::PropertiesController < Stay::BaseApiController
     before_action :set_property, only: [ :show, :update ]
     before_action :authenticate_devise_api_token!
-    before_action :check_create_access, only: [:create, :update]
-    before_action :check_update_access, only: [:update]
+    # before_action :check_create_access, only: [:create, :update]
+    # before_action :check_update_access, only: [:update]
 
     def index
       begin
@@ -163,11 +163,11 @@ class Stay::Api::V1::PropertiesController < Stay::BaseApiController
       end
     end
 
-    def check_create_access
-      return render json:{error: "You don't have access to create property", success: false}, status: :unprocessable_entity unless current_devise_api_user.stay_host?
-    end
+    # def check_create_access
+    #   return render json:{error: "You don't have access to create property", success: false}, status: :unprocessable_entity unless current_devise_api_user.stay_host?
+    # end
 
-    def check_update_access
-      return render json:{error: "You don't have access to update this property", success: false}, status: :unprocessable_entity if current_devise_api_user != @property.user
-    end
+    # def check_update_access
+    #   return render json:{error: "You don't have access to update this property", success: false}, status: :unprocessable_entity if current_devise_api_user != @property.user
+    # end
 end
