@@ -5,8 +5,11 @@ class Stay::Api::V1::BookingsController < Stay::BaseApiController
 
   def index
     begin
-      @bookings = current_devise_api_user.bookings.page(params[:page]).per(params[:per_page] || 10 )
-      return render json: { data: "No bookings found", bookings: [], success: false }, status: :ok  if @bookings.empty?
+      @bookings = current_devise_api_user.bookings
+      .order(created_at: :desc)
+      .page(params[:page])
+      .per(params[:per_page] || 10)
+        return render json: { data: "No bookings found", bookings: [], success: false }, status: :ok  if @bookings.empty?
       render json: {
         data: "Bookings Found",
         bookings: ActiveModelSerializers::SerializableResource.new(@bookings, each_serializer: BookingSerializer),
