@@ -5,32 +5,43 @@ class Stay::Api::V1::BookingsController < Stay::BaseApiController
 
   def index
     begin
-      @bookings = current_devise_api_user.bookings
-      .order(created_at: :desc)
-      .page(params[:page])
-      .per(params[:per_page] || 10)
-        return render json: { data: "No bookings found", bookings: [], success: false }, status: :ok  if @bookings.empty?
+      page = params[:page].to_i > 0 ? params[:page].to_i : 1
+      per_page = params[:per_page].to_i > 0 ? params[:per_page].to_i : 10
+      
+      cumulative_per_page = page * per_page
+      
+      @bookings = current_devise_api_user.bookings&.complete
+                   .order(created_at: :asc)
+                   .limit(cumulative_per_page)
+      
+      total_count = current_devise_api_user.bookings&.complete.count
+      total_pages = (total_count.to_f / per_page).ceil
+  
+      if @bookings.empty?
+        return render json: { data: "No bookings found", bookings: [], success: false }, status: :ok
+      end
+      
       render json: {
         data: "Bookings Found",
         bookings: ActiveModelSerializers::SerializableResource.new(@bookings, each_serializer: BookingSerializer),
         success: true,
         meta: {
-          total_pages: @bookings.total_pages,
-          current_page: @bookings.current_page,
-          next_page: @bookings.next_page,
-          prev_page: @bookings.prev_page,
-          total_count: @bookings.total_count
+          total_pages: total_pages,
+          current_page: page,
+          next_page: page < total_pages ? page + 1 : nil,
+          prev_page: page > 1 ? page - 1 : nil,
+          total_count: total_count
         }
       }, status: :ok
     rescue ActiveRecord::RecordNotFound => e
-      render json: { success: false, error: "bookings not found", message: e.message }, status: :not_found
+      render json: { success: false, error: "Bookings not found", message: e.message }, status: :not_found
     rescue ArgumentError => e
       render json: { success: false, error: "Invalid pagination parameters", message: e.message }, status: :bad_request
     rescue StandardError => e
       render json: { success: false, error: "Internal server error", message: e.message }, status: :internal_server_error
     end
   end
-
+  
   def create 
     @booking = Stay::Booking.new(booking_params.merge(user: current_devise_api_user))
     if @booking.save
@@ -41,6 +52,45 @@ class Stay::Api::V1::BookingsController < Stay::BaseApiController
         render json: { error: @booking.errors.full_messages }, status: :unprocessable_entity
     end
   end
+
+  def my_reservation
+    begin
+      page = params[:page].to_i > 0 ? params[:page].to_i : 1
+      per_page = params[:per_page].to_i > 0 ? params[:per_page].to_i : 10
+      
+      cumulative_per_page = page * per_page
+      @bookings = current_devise_api_user.bookings.incomplete
+                   .order(created_at: :asc)
+                   .limit(cumulative_per_page)
+      
+      total_count = current_devise_api_user.bookings.incomplete&.count
+      total_pages = (total_count.to_f / per_page).ceil
+  
+      if @bookings.empty?
+        return render json: { data: "No bookings found", bookings: [], success: false }, status: :ok
+      end
+      
+      render json: {
+        data: "Bookings Found",
+        bookings: ActiveModelSerializers::SerializableResource.new(@bookings, each_serializer: BookingSerializer),
+        success: true,
+        meta: {
+          total_pages: total_pages,
+          current_page: page,
+          next_page: page < total_pages ? page + 1 : nil,
+          prev_page: page > 1 ? page - 1 : nil,
+          total_count: total_count
+        }
+      }, status: :ok
+    rescue ActiveRecord::RecordNotFound => e
+      render json: { success: false, error: "Bookings not found", message: e.message }, status: :not_found
+    rescue ArgumentError => e
+      render json: { success: false, error: "Invalid pagination parameters", message: e.message }, status: :bad_request
+    rescue StandardError => e
+      render json: { success: false, error: "Internal server error", message: e.message }, status: :internal_server_error
+    end
+  end
+
 
   def booking_chat
     @chat = @booking.chat

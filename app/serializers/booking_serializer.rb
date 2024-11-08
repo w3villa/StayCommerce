@@ -6,6 +6,10 @@ class BookingSerializer < ActiveModel::Serializer
   has_one :chat
   has_one :invoice, Serializer: InvoiceSerializer
 
+  def completed_at
+    object.completed_at
+  end
+
   def total
     object.total_amount
   end
@@ -13,10 +17,5 @@ class BookingSerializer < ActiveModel::Serializer
   def room_count
     object.rooms.count
   end
-
-  # def invoice
-  #   binding.pry
-  #   InvoiceSerializer.new(object.invoice)
-  # end
 
 end

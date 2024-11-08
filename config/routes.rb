@@ -97,6 +97,9 @@ Stay::Engine.routes.draw do
       resources :credit_cards
       resources :user_paypal
       resources :bookings do 
+        collection do
+          get :my_reservation, to: "bookings#my_reservation"
+        end
         resources :line_items
         resources :invoices
         

@@ -10,19 +10,24 @@ module Stay
 
     has_many :payments, class_name: 'Stay::Payment', dependent: :destroy
 
-    has_many :line_items, class_name: 'Stay::LineItem'
+    has_many :line_items, class_name: 'Stay::LineItem', dependent: :destroy
     has_many :rooms, through: :line_items
     # has_many :properties, through: :rooms
     belongs_to :property, class_name: "Stay::Property"
     belongs_to :store, class_name: 'Stay::Store'
     has_one :chat, class_name: 'Stay::Chat',dependent: :destroy
+    has_one :booking_query, class_name: 'Stay::BookingQuery',dependent: :destroy
     has_one :invoice, dependent: :destroy
 
-    scope :complete, -> { where.not(completed_at: nil) }
-    scope :incomplete, -> { where(completed_at: nil) }
+    scope :complete, -> { where.not(completed_at: nil).where(payment_state: "paid") }
+    scope :incomplete, -> { where(completed_at: nil).where(payment_state: ["failed", nil]) }
     scope :not_canceled, -> { where.not(status: 'canceled') }
+    scope :confirmed, -> { where(status: 'confirmed') }
+    after_commit :booking_completed_at
     before_create :link_by_email, :generate_number
     before_validation :ensure_store_presence
+    after_commit :booking_completed_at, if: :booking_completed?
+    after_commit :update_payment_status, on: [:update]
 
     accepts_nested_attributes_for :line_items, allow_destroy: true
     accepts_nested_attributes_for :payments, allow_destroy: true
@@ -55,6 +60,9 @@ module Stay
       end
     end
     
+    def update_payment_status
+      update_columns(payment_state: 'paid') if payments.exists?(state: 'paid')
+    end
 
     def canceled_by(user)
       transaction do
@@ -66,10 +74,14 @@ module Stay
       end
     end
 
-    # def total_amount
-    #   rooms.pluck(:price_per_night).sum
-    # end
+    def booking_completed?
+      completed?
+    end
     
+    def booking_completed_at
+      update_columns(completed_at: Time.current)
+    end
+
     def after_cancel
       payments.completed.each(&:cancel!)
       send_cancel_email

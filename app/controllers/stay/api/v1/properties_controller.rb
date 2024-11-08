@@ -1,24 +1,33 @@
 class Stay::Api::V1::PropertiesController < Stay::BaseApiController
     before_action :set_property, only: [ :show, :update ]
     before_action :authenticate_devise_api_token!
-    # before_action :check_create_access, only: [:create, :update]
-    # before_action :check_update_access, only: [:update]
+    before_action :check_create_access, only: [:create, :update]
+    before_action :check_update_access, only: [:update]
 
     def index
       begin
-        @properties = Stay::Property.approved.page(params[:page]).per(params[:per_page] || 10)
+        page = params[:page].to_i > 0 ? params[:page].to_i : 1
+        per_page = params[:per_page].to_i > 0 ? params[:per_page].to_i : 10
+        
+        cumulative_per_page = page * per_page
+
+        @properties = Stay::Property.order(created_at: :asc).limit(cumulative_per_page)
+        total_count =  Stay::Property.count
+        total_pages = (total_count.to_f / per_page).ceil
+        
         return render json: { data: "No properties found", properties: [], success: false }, status: :ok  if @properties.empty?
+        
         render json: {
           data: "Data Found",
           properties: ActiveModelSerializers::SerializableResource.new(@properties, each_serializer: PropertyListingSerializer),
           success: true,
           meta: {
-            total_pages: @properties.total_pages,
-            current_page: @properties.current_page,
-            next_page: @properties.next_page,
-            prev_page: @properties.prev_page,
-            total_count: @properties.total_count
-          }
+          total_pages: total_pages,
+          current_page: page,
+          next_page: page < total_pages ? page + 1 : nil,
+          prev_page: page > 1 ? page - 1 : nil,
+          total_count: total_count
+        }
         }, status: :ok
       rescue ActiveRecord::RecordNotFound => e
         render json: { success: false, error: "Properties not found", message: e.message }, status: :not_found
@@ -31,19 +40,26 @@ class Stay::Api::V1::PropertiesController < Stay::BaseApiController
 
     def my_properties
       begin
-        @properties = current_devise_api_user.properties.page(params[:page]).per(params[:per_page] || 10)
+        page = params[:page].to_i > 0 ? params[:page].to_i : 1
+        per_page = params[:per_page].to_i > 0 ? params[:per_page].to_i : 10
+        
+        cumulative_per_page = page * per_page
+
+        @properties = current_devise_api_user.properties.order(created_at: :asc).limit(cumulative_per_page)
+        total_count = current_devise_api_user.properties.count
+        total_pages = (total_count.to_f / per_page).ceil
         return render json: { data: "No properties found", properties: [], success: false }, status: :ok  if @properties.empty?
         render json: {
           data: "Property Found",
           properties: ActiveModelSerializers::SerializableResource.new(@properties, each_serializer: PropertyListingSerializer),
           success: true,
           meta: {
-            total_pages: @properties.total_pages,
-            current_page: @properties.current_page,
-            next_page: @properties.next_page,
-            prev_page: @properties.prev_page,
-            total_count: @properties.total_count
-          }
+          total_pages: total_pages,
+          current_page: page,
+          next_page: page < total_pages ? page + 1 : nil,
+          prev_page: page > 1 ? page - 1 : nil,
+          total_count: total_count
+        }
         }, status: :ok
       rescue ActiveRecord::RecordNotFound => e
         render json: { success: false, error: "Properties not found", message: e.message }, status: :not_found
