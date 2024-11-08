@@ -38,7 +38,7 @@ module Stay
         @step = params[:step] || 'description'
         if @property.update(property_params)
           next_step = determine_next_step(@step)
-          if @step == 'calender'
+          if @step == 'calendar'
             redirect_to admin_properties_path, notice: 'Property was successfully updated and all steps are completed.'
           else
             redirect_to edit_admin_property_path(@property, step: next_step), notice: "Property step '#{@step}' was successfully updated. Continue to the next step."
@@ -102,14 +102,14 @@ module Stay
         when 'amenities'
           'features'
         when 'features'
-          'calender'
+          'calendar'
         else
           'description'
         end
       end
 
       def valid_step?(step)
-        %w[description price images details location amenities features calender].include?(step)
+        %w[description price images details location amenities features calendar].include?(step)
       end
     end
   end
