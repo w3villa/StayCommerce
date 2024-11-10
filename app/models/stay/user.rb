@@ -10,6 +10,7 @@ module Stay
     has_many :role_users, class_name: "Stay::RoleUser", dependent: :destroy
     has_many :stay_roles, through: :role_users, class_name: "Stay::Role", source: :role
     has_many :bookings
+    has_many :booking_queries
     has_many :reviews
     has_many :properties
     has_many :sent_chats, class_name: "Stay::Chat", foreign_key: :sender_id, dependent: :destroy

@@ -84,6 +84,7 @@ Stay::Engine.routes.draw do
           get :room
         end
       end
+      resources :booking_queries
       resources :property_types,  only: [ :index, :show ]
       resources :room_types,  only: [ :index, :show ]
       resources :users, only: [ :destroy ]

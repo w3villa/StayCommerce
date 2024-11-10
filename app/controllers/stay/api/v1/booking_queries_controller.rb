@@ -1,9 +1,42 @@
 class Stay::Api::V1::BookingQueriesController < Stay::BaseApiController
   before_action :authenticate_devise_api_token!
-  before_action :set_property
+  before_action :set_property, except: [:index, :show]
   before_action :booking_availability, only: [:create, :update]
   before_action :set_query, only: [:update, :show]
 
+  def index
+    begin
+      page = params[:page].to_i > 0 ? params[:page].to_i : 1
+      per_page = params[:per_page].to_i > 0 ? params[:per_page].to_i : 10
+      
+      cumulative_per_page = page * per_page
+     @booking_queries = current_devise_api_user.booking_queries.order(created_at: :asc).limit(cumulative_per_page)
+    
+      total_count = current_devise_api_user.booking_queries.count
+      total_pages = (total_count.to_f / per_page).ceil
+    if @booking_queries.empty?
+      render json: { success: false, error: "Query not found" }, status: :not_found
+    end
+    render json: {
+      success: true,
+      booking_queries: ActiveModelSerializers::SerializableResource.new(@booking_queries, each_serializer: BookingQuerySerializer),
+      meta: {
+          total_pages: total_pages,
+          current_page: page,
+          next_page: page < total_pages ? page + 1 : nil,
+          prev_page: page > 1 ? page - 1 : nil,
+          total_count: total_count
+        }
+    }, status: :ok
+  rescue ActiveRecord::RecordNotFound => e
+    render json: { success: false, error: "Query not found", message: e.message }, status: :not_found
+  rescue ArgumentError => e
+    render json: { success: false, error: "Invalid pagination parameters", message: e.message }, status: :bad_request
+  rescue StandardError => e
+    render json: { success: false, error: "Internal server error", message: e.message }, status: :internal_server_error
+  end
+  end
+  
   def create
     ActiveRecord::Base.transaction do
       chat = create_chat(current_devise_api_user, @property)
@@ -25,8 +58,15 @@ class Stay::Api::V1::BookingQueriesController < Stay::BaseApiController
   end
 
   def show
-    render json: { success: true, booking_query: BookingQuerySerializer.new(@booking_query) }, status: :created
+    last_five = @booking_query.chat&.messages.order(created_at: :desc).limit(5)
+    render json: {
+      success: true,
+      booking_query: BookingQuerySerializer.new(@booking_query),
+      booking: @booking_query.booking ? BookingSerializer.new(@booking_query.booking) : nil,
+      messages: ActiveModelSerializers::SerializableResource.new(last_five, each_serializer: MessageSerializer)
+    }, status: :ok
   end
+  
 
   def update
     if %w[request_change booking_invitation accepted rejected].include?(booking_query_params[:state])
@@ -38,19 +78,32 @@ class Stay::Api::V1::BookingQueriesController < Stay::BaseApiController
       return render json: { success: false, errors: @booking_query.errors.full_messages }, status: :unprocessable_entity
     end
   
+    last_five = @booking_query.chat&.messages.order(created_at: :desc).limit(5)
+
     if @booking_query.accepted?
       if @booking_query.booking.present?
         render json: { success: false, message: "Booking already created for this query" }, status: :unprocessable_entity
       else
         result = Stay::Bookings::CreateBookingService.new(@booking_query).perform
         if result[:success]
-          render json: { success: true, booking_query: BookingQuerySerializer.new(@booking_query), message: "Booking created successfully" }, status: :ok
+          render json: { 
+            message: "Booking created successfully",
+            success: true,
+            booking_query: BookingQuerySerializer.new(@booking_query),
+            booking: @booking_query.booking ? BookingSerializer.new(@booking_query.booking) : nil,
+            messages: ActiveModelSerializers::SerializableResource.new(last_five, each_serializer: MessageSerializer)
+          }, status: :ok
         else
           render json: { success: false, errors: result[:errors] }, status: :unprocessable_entity
         end
       end
     else
-      render json: { success: true, booking_query: BookingQuerySerializer.new(@booking_query) }, status: :ok
+      render json: { 
+        success: true,
+        booking_query: BookingQuerySerializer.new(@booking_query),
+        booking: @booking_query.booking ? BookingSerializer.new(@booking_query.booking) : nil,
+        messages: ActiveModelSerializers::SerializableResource.new(last_five, each_serializer: MessageSerializer)
+      }, status: :ok, status: :ok
     end
   end
 
@@ -67,7 +120,11 @@ class Stay::Api::V1::BookingQueriesController < Stay::BaseApiController
   end
 
   def set_query
-    @booking_query = Stay::BookingQuery.find(params[:id])
+    begin
+      @booking_query = Stay::BookingQuery.find(params[:id])
+    rescue ActiveRecord::RecordNotFound => e
+      render json: { success: false, error: "Query not found" }, status: :not_found
+    end
   end
 
   def booking_query_params

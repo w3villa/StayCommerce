@@ -5,6 +5,7 @@ class BookingSerializer < ActiveModel::Serializer
   has_many :line_items, Serializer: LineItemSerializer
   has_one :chat
   has_one :invoice, Serializer: InvoiceSerializer
+  has_one :booking_query, Serializer: BookingQuerySerializer
 
   def completed_at
     object.completed_at

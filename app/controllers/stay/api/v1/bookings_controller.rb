@@ -115,7 +115,7 @@ class Stay::Api::V1::BookingsController < Stay::BaseApiController
   end
 
   def show
-      render json: { data: BookingSerializer.new(@booking), success: true}, status: :ok
+      render json: { booking: BookingSerializer.new(@booking),BookingQuerySerializer.new(@booking&.booking_query)  booking_query: success: true}, status: :ok
   end
 
   def update
