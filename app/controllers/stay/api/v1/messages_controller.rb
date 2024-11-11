@@ -6,9 +6,9 @@ class Stay::Api::V1::MessagesController < Stay::BaseApiController
 
   def index
     begin
-      @messages = @chat.messages
       @unread = @chat.messages.where("sender_id = :user_id OR receiver_id = :user_id", user_id: current_devise_api_user.id).where(read_at: nil)
       @unread.update_all(read_at: DateTime.now)
+      @messages = @chat.messages.order(created_at: :asc)
       render json: {
         data: "Messages Found",
         chat: ActiveModelSerializers::SerializableResource.new(@chat, serializer: ChatSerializer, scope: { current_user: current_devise_api_user }),
