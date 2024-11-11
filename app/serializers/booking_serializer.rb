@@ -24,6 +24,6 @@ class BookingSerializer < ActiveModel::Serializer
   end
 
   def last_five_messages
-    object.chat.messages.any? ? ActiveModelSerializers::SerializableResource.new(object.chat.messages, each_serializer: MessageSerializer) : nil
+    object.chat.present? && object.chat.messages.any? ? ActiveModelSerializers::SerializableResource.new(object.chat.messages, each_serializer: MessageSerializer) : nil
   end
 end
