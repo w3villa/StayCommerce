@@ -10,9 +10,10 @@ class Stay::Api::V1::BookingQueriesController < Stay::BaseApiController
       per_page = params[:per_page].to_i > 0 ? params[:per_page].to_i : 10
       
       cumulative_per_page = page * per_page
-     @booking_queries = current_devise_api_user.booking_queries.order(created_at: :asc).limit(cumulative_per_page)
+      query = current_devise_api_user.booking_queries.where.not(state: "accepted")
+      @booking_queries = query.order(created_at: :asc).limit(cumulative_per_page)
     
-      total_count = current_devise_api_user.booking_queries.count
+      total_count = query.count
       total_pages = (total_count.to_f / per_page).ceil
     if @booking_queries.empty?
       render json: { success: false, error: "Query not found" }, status: :not_found
@@ -39,6 +40,9 @@ class Stay::Api::V1::BookingQueriesController < Stay::BaseApiController
   
   def create
     ActiveRecord::Base.transaction do
+      if current_devise_api_user == @property.user
+        return render json:{error: "yopu can not query for your own property", success: false}, status: :unprocessable_entity
+      end
       chat = create_chat(current_devise_api_user, @property)
       if chat.persisted?
         booking_query = chat.build_booking_query(booking_query_params.merge(property: @property, user: current_devise_api_user))
