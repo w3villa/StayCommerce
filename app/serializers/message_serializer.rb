@@ -1,5 +1,5 @@
 class MessageSerializer < ActiveModel::Serializer
-  attributes :id, :body, :event_message, :event_for, :sender_id, :receiver_id, :sender, :receiver, :read?
+  attributes :id, :body, :event_message, :event_for, :sender_id, :receiver_id, :sender, :receiver, :read?, :attachments
   
   def sender
     if object.sender_id.present?
@@ -19,5 +19,9 @@ class MessageSerializer < ActiveModel::Serializer
         image: object.receiver.profile_image.present? ? object.receiver.profile_image.url : nil
       }
     end
+  end
+
+  def attachments
+    object.attachments.attached? ? object.attachments_urls : []
   end
 end

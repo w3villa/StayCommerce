@@ -7,6 +7,8 @@ class Stay::Api::V1::MessagesController < Stay::BaseApiController
   def index
     begin
       @messages = @chat.messages
+      @unread = @chat.messages.where("sender_id = :user_id OR receiver_id = :user_id", user_id: current_devise_api_user.id).where(read_at: nil)
+      @unread.update_all(read_at: DateTime.now)
       render json: {
         data: "Messages Found",
         chat: ActiveModelSerializers::SerializableResource.new(@chat, serializer: ChatSerializer, scope: { current_user: current_devise_api_user }),
@@ -99,6 +101,6 @@ class Stay::Api::V1::MessagesController < Stay::BaseApiController
   end
 
   def message_params
-    params.require(:message).permit(:body, :sender_id, :receiver_id)
+    params.require(:message).permit(:body, :sender_id, :receiver_id, attachments:[])
   end
 end

@@ -16,7 +16,7 @@ class Stay::Api::V1::BookingQueriesController < Stay::BaseApiController
       total_count = query.count
       total_pages = (total_count.to_f / per_page).ceil
     if @booking_queries.empty?
-      render json: { success: false, error: "Query not found" }, status: :not_found
+      return render json: { success: false, error: "Query not found" }, status: :not_found
     end
     render json: {
       success: true,
@@ -143,5 +143,9 @@ class Stay::Api::V1::BookingQueriesController < Stay::BaseApiController
     if @property&.user == current_devise_api_user
       return render json: { success: false, message: "You can not create booking for your own Property" }, status: :unprocessable_entity
     end
+  end
+
+  def existing_query
+    
   end
 end
