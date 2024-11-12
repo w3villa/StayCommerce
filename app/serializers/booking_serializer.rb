@@ -18,12 +18,12 @@ class BookingSerializer < ActiveModel::Serializer
   def room_count
     object.rooms.count
   end
-  
+
   def tax_total
     object.property.property_taxes.any? ? object.property.property_taxes.uniq { |property_tax| property_tax.tax_id }.pluck(:value).sum : 0
   end
 
   def last_five_messages
-    object.chat.present? && object.chat.messages.any? ? ActiveModelSerializers::SerializableResource.new(object.chat.messages, each_serializer: MessageSerializer) : nil
+    object.chat.present? && object.chat.messages.any? ? ActiveModelSerializers::SerializableResource.new(object.chat.messages.limit(5), each_serializer: MessageSerializer) : nil
   end
 end
