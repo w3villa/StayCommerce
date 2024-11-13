@@ -8,15 +8,15 @@ class Stay::Api::V1::PropertiesController < Stay::BaseApiController
       begin
         page = params[:page].to_i > 0 ? params[:page].to_i : 1
         per_page = params[:per_page].to_i > 0 ? params[:per_page].to_i : 10
-        
+
         cumulative_per_page = page * per_page
 
         @properties = Stay::Property.order(created_at: :desc).limit(cumulative_per_page)
         total_count =  Stay::Property.count
         total_pages = (total_count.to_f / per_page).ceil
-        
+
         return render json: { data: "No properties found", properties: [], success: false }, status: :ok  if @properties.empty?
-        
+
         render json: {
           data: "Data Found",
           properties: ActiveModelSerializers::SerializableResource.new(@properties, each_serializer: PropertyListingSerializer),
@@ -42,7 +42,7 @@ class Stay::Api::V1::PropertiesController < Stay::BaseApiController
       begin
         page = params[:page].to_i > 0 ? params[:page].to_i : 1
         per_page = params[:per_page].to_i > 0 ? params[:per_page].to_i : 10
-        
+
         cumulative_per_page = page * per_page
 
         @properties = current_devise_api_user.properties.order(created_at: :asc).limit(cumulative_per_page)
@@ -89,7 +89,7 @@ class Stay::Api::V1::PropertiesController < Stay::BaseApiController
           property_params["property_taxes_attributes"].each do |p_tax|
             tax = @property.property_taxes.where(tax_id: p_tax["tax_id"])
             if p_tax["value"].present?
-              tax.update_all(value: p_tax["value"]) 
+              tax.update_all(value: p_tax["value"])
             elsif p_tax["_destroy"] == "true"
               tax.destroy_all
             end
@@ -111,7 +111,7 @@ class Stay::Api::V1::PropertiesController < Stay::BaseApiController
         }, status: :unprocessable_entity
       end
     end
-    
+
     def search
       @q = Stay::Property.approved.ransack(params[:q])
       @properties = @q.result.includes(:rooms).distinct
@@ -162,7 +162,7 @@ class Stay::Api::V1::PropertiesController < Stay::BaseApiController
                                         property_house_rules_attributes: [ :id, :house_rule_id, :value, :_destroy ],
                                         property_amenities_attributes: [ :id, :amenity_id, :_destroy ],
                                         property_features_attributes: [ :id, :name, :feature_id, :_destroy ],
-                                        rooms_attributes: [ :id, :max_guests, :price_per_night, :status, :booking_start, :booking_end, :description, :size, :bed_type_id, :room_type_id,  :_destroy ,
+                                        rooms_attributes: [ :id, :max_guests, :price_per_night, :status, :booking_start, :booking_end, :description, :size, :bed_type_id, :room_type_id,  :_destroy, room_images: [],
                                           room_features_attributes: [ :id, :feature_id, :_destroy ],
                                           room_amenities_attributes: [ :id, :amenity_id, :_destroy ]
                                         ],
@@ -178,11 +178,11 @@ class Stay::Api::V1::PropertiesController < Stay::BaseApiController
       end
     end
 
-    # def check_create_access
-    #   return render json:{error: "You don't have access to create property", success: false}, status: :unprocessable_entity unless current_devise_api_user.stay_host?
-    # end
+  # def check_create_access
+  #   return render json:{error: "You don't have access to create property", success: false}, status: :unprocessable_entity unless current_devise_api_user.stay_host?
+  # end
 
-    # def check_update_access
-    #   return render json:{error: "You don't have access to update this property", success: false}, status: :unprocessable_entity if current_devise_api_user != @property.user
-    # end
+  # def check_update_access
+  #   return render json:{error: "You don't have access to update this property", success: false}, status: :unprocessable_entity if current_devise_api_user != @property.user
+  # end
 end

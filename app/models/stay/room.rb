@@ -3,14 +3,14 @@ module Stay
     include CurrencyHelper
     # STATUSES = %w[active booked inactive].freeze
 
-    belongs_to :property, class_name: 'Stay::Property'
-    belongs_to :room_type, class_name: 'Stay::RoomType'
+    belongs_to :property, class_name: "Stay::Property"
+    belongs_to :room_type, class_name: "Stay::RoomType"
     belongs_to :bed_type, class_name: "Stay::BedType", optional: :true
-    has_many :bookings, class_name: 'Stay::Booking'
-    has_many_attached :images
-    has_many :line_items, class_name: 'Stay::LineItem'
+    has_many :bookings, class_name: "Stay::Booking"
+    has_many_attached :room_images
+    has_many :line_items, class_name: "Stay::LineItem"
     has_many :prices,
-             class_name: 'Stay::Price',
+             class_name: "Stay::Price",
              dependent: :destroy
 
     has_many :room_features, class_name: "Stay::RoomFeature", dependent: :destroy
@@ -31,27 +31,27 @@ module Stay
     #   state :active
     #   state :booked
     #   state :inactive
-    
+
     #   event :book do
     #     transition active: :booked
     #   end
-    
+
     #   event :deactivate do
     #     transition [:booked, :active] => :inactive
     #   end
-    
+
     #   event :activate do
     #     transition inactive: :active
     #   end
     # end
-    
+
 
     def price
       price_per_night
     end
 
     def images_urls
-      images.map { |image| Rails.application.routes.url_helpers.url_for(image) }
+      room_images.map { |image| image.url }
     end
 
     private
