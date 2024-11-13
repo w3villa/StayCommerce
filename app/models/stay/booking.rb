@@ -1,33 +1,33 @@
 module Stay
   class Booking < ApplicationRecord
-    PAYMENT_STATES = %w(failed paid)
+    PAYMENT_STATES = %w[failed paid]
     STATUSES = %w[booking_request invoice_sent confirmed canceled completed].freeze
 
-    belongs_to :user, class_name: 'Stay::User'
-    belongs_to :canceler, class_name: 'Stay::User', foreign_key: "canceler_id", optional: true
+    belongs_to :user, class_name: "Stay::User"
+    belongs_to :canceler, class_name: "Stay::User", foreign_key: "canceler_id", optional: true
     # belongs_to :room, class_name: 'Stay::Room'
-    has_many :reviews, class_name: 'Stay::Review', dependent: :destroy
+    has_many :reviews, class_name: "Stay::Review", dependent: :destroy
 
-    has_many :payments, class_name: 'Stay::Payment', dependent: :destroy
+    has_many :payments, class_name: "Stay::Payment", dependent: :destroy
 
-    has_many :line_items, class_name: 'Stay::LineItem', dependent: :destroy
+    has_many :line_items, class_name: "Stay::LineItem", dependent: :destroy
     has_many :rooms, through: :line_items
     # has_many :properties, through: :rooms
     belongs_to :property, class_name: "Stay::Property"
-    belongs_to :store, class_name: 'Stay::Store'
-    has_one :chat, class_name: 'Stay::Chat',dependent: :destroy
-    has_one :booking_query, class_name: 'Stay::BookingQuery',dependent: :destroy
+    belongs_to :store, class_name: "Stay::Store"
+    has_one :chat, class_name: "Stay::Chat", dependent: :destroy
+    has_one :booking_query, class_name: "Stay::BookingQuery", dependent: :destroy
     has_one :invoice, dependent: :destroy
 
     scope :complete, -> { where.not(completed_at: nil).where(payment_state: "paid") }
-    scope :incomplete, -> { where(completed_at: nil).where(payment_state: ["failed", nil]) }
-    scope :not_canceled, -> { where.not(status: 'canceled') }
-    scope :confirmed, -> { where(status: 'confirmed') }
+    scope :incomplete, -> { where(completed_at: nil).where(payment_state: [ "failed", nil ]) }
+    scope :not_canceled, -> { where.not(status: "canceled") }
+    scope :confirmed, -> { where(status: "confirmed") }
     after_commit :booking_completed_at
     before_create :link_by_email, :generate_number
     before_validation :ensure_store_presence
     after_commit :booking_completed_at, if: :booking_completed?
-    after_commit :update_payment_status, on: [:update]
+    after_commit :update_payment_status, on: [ :update ]
 
     accepts_nested_attributes_for :line_items, allow_destroy: true
     accepts_nested_attributes_for :payments, allow_destroy: true
@@ -42,26 +42,31 @@ module Stay
       state :confirmed
       state :canceled
       state :completed
-    
+
       event :send_invoice do
         transition booking_request: :invoice_sent
+        transition invoice_sent: :booking_request, if: :invoice_deleted?
       end
-    
+
       event :confirm do
         transition invoice_sent: :confirmed
       end
-    
+
       event :cancel do
-        transition [:booking_request, :confirmed] => :canceled
+        transition [ :booking_request, :confirmed ] => :canceled
       end
-    
+
       event :complete do
         transition confirmed: :completed
       end
     end
-    
+
     def update_payment_status
-      update_columns(payment_state: 'paid') if payments.exists?(state: 'paid')
+      update_columns(payment_state: "paid") if payments.exists?(state: "paid")
+    end
+
+    def invoice_deleted?
+      invoice.nil?
     end
 
     def canceled_by(user)
@@ -77,7 +82,7 @@ module Stay
     def booking_completed?
       completed?
     end
-    
+
     def booking_completed_at
       update_columns(completed_at: Time.current)
     end
@@ -85,7 +90,7 @@ module Stay
     def after_cancel
       payments.completed.each(&:cancel!)
       send_cancel_email
-      update(status: 'canceled', canceled_at: Time.current)
+      update(status: "canceled", canceled_at: Time.current)
     end
 
     # Associates the specified user with the booking.
@@ -111,18 +116,18 @@ module Stay
     def add_rooms_and_calculate(selected_rooms, booking_params, property)
       total_price = 0
       total_guests = 0
-  
+
       selected_rooms.each do |room_id|
         room = property.rooms.find(room_id.to_i)
         number_of_guests = booking_params[:bookings][room_id][:number_of_guests].to_i
         price = room.price_per_night * (check_out_date - check_in_date).to_i
-  
+
         line_items.build(room: room, quantity: number_of_guests, price: price)
-  
+
         total_price += price
         total_guests += number_of_guests
       end
-  
+
       self.total = total_price
       self.number_of_guests = total_guests
     end
@@ -151,7 +156,5 @@ module Stay
     def link_by_email
       self.email = user.email if user
     end
-
-    
   end
 end

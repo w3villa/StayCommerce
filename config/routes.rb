@@ -77,7 +77,7 @@ Stay::Engine.routes.draw do
 
   namespace :api do
     namespace :v1 do
-      resources :cancellation_policies, only: [:index]
+      resources :cancellation_policies, only: [ :index ]
       resources :property_categories,  only: [ :index, :show ]
       resources :amenity_categories do
         collection do
@@ -98,13 +98,13 @@ Stay::Engine.routes.draw do
       end
       resources :credit_cards
       resources :user_paypal
-      resources :bookings do 
+      resources :bookings do
         collection do
+          get :host_request
           get :my_reservation, to: "bookings#my_reservation"
         end
         resources :line_items
         resources :invoices
-        
       end
       resources :features do
         collection do
@@ -148,10 +148,10 @@ Stay::Engine.routes.draw do
         end
       end
       resources :profiles, only: [ :show, :update ]
-      resources :bookings do 
+      resources :bookings do
         member do
           get :booking_chat
-          delete 'line_items/:room_id', to: 'bookings#delete_line_item', as: :delete_line_item
+          delete "line_items/:room_id", to: "bookings#delete_line_item", as: :delete_line_item
         end
       end
     end

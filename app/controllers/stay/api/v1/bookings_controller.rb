@@ -42,6 +42,43 @@ class Stay::Api::V1::BookingsController < Stay::BaseApiController
     end
   end
 
+  def host_request
+    begin
+      page = params[:page].to_i > 0 ? params[:page].to_i : 1
+      per_page = params[:per_page].to_i > 0 ? params[:per_page].to_i : 10
+
+      cumulative_per_page = page * per_page
+      @request =  Stay::Booking.joins(:property).where(stay_properties: { user_id: current_devise_api_user&.id }).where.not(status: "completed")
+      @bookings = @request.order(created_at: :desc).limit(cumulative_per_page)
+
+      total_count = @request.count
+      total_pages = (total_count.to_f / per_page).ceil
+
+      if @bookings.empty?
+        return render json: { data: "No bookings found", bookings: [], success: false }, status: :ok
+      end
+
+      render json: {
+        data: "Bookings Found",
+        bookings: ActiveModelSerializers::SerializableResource.new(@bookings, each_serializer: BookingSerializer),
+        success: true,
+        meta: {
+          total_pages: total_pages,
+          current_page: page,
+          next_page: page < total_pages ? page + 1 : nil,
+          prev_page: page > 1 ? page - 1 : nil,
+          total_count: total_count
+        }
+      }, status: :ok
+    rescue ActiveRecord::RecordNotFound => e
+      render json: { success: false, error: "Bookings not found", message: e.message }, status: :not_found
+    rescue ArgumentError => e
+      render json: { success: false, error: "Invalid pagination parameters", message: e.message }, status: :bad_request
+    rescue StandardError => e
+      render json: { success: false, error: "Internal server error", message: e.message }, status: :internal_server_error
+    end
+  end
+
   def create
     @booking = Stay::Booking.new(booking_params.merge(user: current_devise_api_user))
     if @booking.save
