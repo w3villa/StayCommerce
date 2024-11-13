@@ -1,6 +1,6 @@
 class MessageSerializer < ActiveModel::Serializer
-  attributes :id, :body, :event_message, :event_for, :sender_id, :receiver_id, :sender, :receiver, :read?, :attachments
-  
+  attributes :id, :body, :event_message, :event_for, :sender_id, :receiver_id, :sender, :receiver, :read?, :attachments, :created_at
+
   def sender
     if object.sender_id.present?
       {
