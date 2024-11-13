@@ -3,22 +3,33 @@ module Stay
     # Include default devise modules. Others available are:
     # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
     devise :database_authenticatable, :registerable,
-           :recoverable, :rememberable, :validatable,:api
+           :recoverable, :rememberable, :validatable, :api
 
-    after_create :assign_default_role       
+    # after_create :assign_default_role
 
-    has_many :role_users, class_name: 'Stay::RoleUser', dependent: :destroy
-    has_many :stay_roles, through: :role_users, class_name: 'Stay::Role', source: :role
+    has_many :role_users, class_name: "Stay::RoleUser", dependent: :destroy
+    has_many :stay_roles, through: :role_users, class_name: "Stay::Role", source: :role
     has_many :bookings
+    has_many :booking_queries
     has_many :reviews
     has_many :properties
-    has_many :sent_chats, class_name: 'Stay::Chat', foreign_key: :sender_id, dependent: :destroy
-    has_many :received_chats, class_name: 'Stay::Chat', foreign_key: :receiver_id, dependent: :destroy
-    has_many :addresses, class_name: 'Stay::Address'
-    validates :phone, format: { with: /\A\d{10}\z/, message: "number must be valid." }
+    has_many :sent_chats, class_name: "Stay::Chat", foreign_key: :sender_id, dependent: :destroy
+    has_many :received_chats, class_name: "Stay::Chat", foreign_key: :receiver_id, dependent: :destroy
+    has_many :addresses, class_name: "Stay::Address"
+    has_many :chats, class_name: "Stay::Chat"
+    has_many :credit_cards, class_name: "Stay::CreditCard"
+    has_one :user_paypal, class_name: "Stay::UserPaypal"
+    has_one_attached :profile_image
+
+    # validates :phone, format: { with: /\A\d{10}\z/, message: "number must be valid." }
+
+    # acts_as_paranoid
 
     accepts_nested_attributes_for :addresses, allow_destroy: true
-    
+
+    store_accessor :preferences, :whatsapp_notification, :sms_notification
+    after_initialize :set_default_preferences, if: :new_record?
+
     users_table_name = User.table_name
     roles_table_name = Role.table_name
 
@@ -35,7 +46,11 @@ module Stay
     end
 
     def stay_admin?
-      has_stay_role?('admin')
+      has_stay_role?("admin")
+    end
+
+    def stay_host?
+      has_stay_role?("host")
     end
 
     def name
@@ -45,12 +60,16 @@ module Stay
     def password_required?
       updating_password || super
     end
-    
-    private 
+
+    def set_default_preferences
+      self.whatsapp_notification = true if whatsapp_notification.nil?
+      self.sms_notification = false if sms_notification.nil?
+    end
+
+    private
 
     def assign_default_role
       Stay::RoleUser.create(user: self, role: Stay::Role.where(name: Stay::Role::USER).first_or_create) unless stay_roles.exists?
     end
-
   end
 end

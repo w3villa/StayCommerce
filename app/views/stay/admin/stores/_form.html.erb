@@ -1,0 +1,30 @@
+<%= form_with(model: [:admin, @store], local: true) do |f| %>
+  <% if @store.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@store.errors.count, "error") %> prohibited this room from being saved:</h2>
+      <ul>
+        <% @store.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div data-hook="admin_store_form_fields">
+    <%= render partial: 'stay/admin/stores/form/basic', locals: { f: f } %>
+    <%= render partial: 'stay/admin/stores/form/emails', locals: { f: f } %>
+    <%= render partial: 'stay/admin/stores/form/internationalization', locals: { f: f } %>
+    <% if @store.persisted? %>
+      <%= render partial: 'stay/admin/stores/form/seo', locals: { f: f } %>
+      <%= render partial: 'stay/admin/stores/form/social', locals: { f: f } %>
+      <%#= render partial: 'stay/admin/stores/form/footer', locals: { f: f } %>
+    </div>
+  <% end %>
+    <div class="row">
+    <div class="col-md-12">
+      <div class="form-group mt-4">
+        <%= f.submit class: 'btn btn-primary' %>
+      </div>
+    </div>
+  </div>
+<%end%>

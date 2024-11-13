@@ -4,18 +4,18 @@ module Stay
       before_action :set_booking, only: %i[show edit update destroy]
 
       def index
-        @bookings = Stay::Booking.page(params[:page])
+        @bookings = current_store.bookings.order(created_at: :desc).page(params[:page])
       end
 
       def show
       end
 
       def new
-        @booking = Stay::Booking.new
+        @booking = current_store.bookings.build
       end
 
       def create
-        @booking = Stay::Booking.new(booking_params)
+        @booking = current_store.bookings.build(booking_params)
         if @booking.save
           redirect_to admin_booking_path(@booking), notice: 'Booking was successfully created.'
         else
@@ -42,7 +42,7 @@ module Stay
       private
 
       def set_booking
-        @booking = Stay::Booking.find_by(id: params[:id])
+        @booking = current_store.bookings.find_by(id: params[:id])
       end
 
       def booking_params

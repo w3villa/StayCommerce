@@ -1,0 +1,47 @@
+<%= form_with(model: [:admin, @amenity], local: true) do |f| %>
+  <% if @amenity.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@amenity.errors.count, "error") %> prohibited this room from being saved:</h2>
+      <ul>
+        <% @amenity.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="row">
+    <div class="col-md-6">
+      <div class="field">
+        <%= f.label :name, class: "form-label" %>
+        <%= f.text_field :name, class: 'form-control' %>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-6">
+      <div class="field">
+        <%= f.label :amenity_category, '*Amenity Category (mandatory)', class: "form-label" %>
+        <%= f.select :amenity_category_id, Stay::AmenityCategory.all.collect { |ac| [ac.name, ac.id] }, { include_blank: 'None' }, required: true, class: 'form-control' %>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-6">
+      <div class="field">
+        <%= f.label :amenity_type, "Amenity Type", class: "form-label" %>
+        <%= f.select :amenity_type, Stay::Amenity.amenity_types.keys.map { |type| [type.titleize, type] }, {}, class: 'form-control' %>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      <div class="form-group mt-4">
+        <%= f.submit class: 'btn btn-primary' %>
+      </div>
+    </div>
+  </div>
+<% end %>

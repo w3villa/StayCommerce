@@ -1,0 +1,52 @@
+<div class="card mb-4">
+  <div class="card-header">
+    <h5 class="card-title mb-0 h6">
+      Internationalization
+    </h5>
+  </div>
+
+  <div class="row">
+    <div class="col-md-6">
+      <div class="field">
+        <%= f.label :default_currency, class:"form-label" %>
+        <%= f.select :default_currency, currency_options(@store.default_currency), {}, { class: 'select2 form-control' } %>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-6">
+      <div class="field">
+        <%= f.label :supported_currencies, class:"form-label" %>
+        <%= f.select :supported_currencies, currency_options(@store.supported_currencies&.split(',')), { prompt: false }, { multiple: true, class: 'select2 form-control' } %>      
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-6">
+      <div class="field">
+        <%= f.label :default_country_id, class:"form-label" %>
+        <%= f.select :default_country_id, options_for_select(@countries, @store.default_country_id), {}, { class: 'select2 form-control' } %>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-6">
+      <div class="field">
+        <%= f.label :default_locale, class:"form-label" %>
+        <%= f.select :default_locale, options_from_collection_for_select(all_locales_options, :last, :first, @store.default_locale || I18n.locale), {}, { class: 'select2 form-control' } %>      
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-6">
+      <div class="field">
+        <%= f.label :supported_locales, class:"form-label" %>
+        <%= f.select :supported_locales, options_from_collection_for_select(all_locales_options, :last, :first, @store.supported_locales&.split(',')), {}, { multiple: true, class: 'select2 form-control' } %>      
+      </div>
+    </div>
+  </div>
+</div>

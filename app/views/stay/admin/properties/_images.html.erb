@@ -1,0 +1,31 @@
+<%= form_with(model: [:admin, property], local: true) do |f| %>
+  <% if property.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(property.errors.count, "error") %> prohibited this property from being saved:</h2>
+      <ul>
+        <% property.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="row">
+    <div class="col-md-6">
+      <div class="field">
+        <%= f.label :cover_image, "Upload Images", class: "form-label" %>
+        <%= f.file_field :cover_image, class: "form-control" %>
+        <%= f.hidden_field :cover_image_cache, value: property.cover_image %>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      <div class="form-group mt-4">
+        <%= hidden_field_tag :step, 'images' %>
+        <%= f.submit 'Continue', class: 'btn btn-primary' %>
+      </div>
+    </div>
+  </div>
+<% end %>

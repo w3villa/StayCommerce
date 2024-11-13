@@ -1,0 +1,96 @@
+<%= form_with(model: [:admin,  @property], local: true) do |f| %>
+  <% if @property.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@property.errors.count, "error") %> prohibited this room from being saved:</h2>
+      <ul>
+        <% @property.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="row">
+    <div class="col-md-6">
+      <div class="field">
+        <%= f.label :price_per_month, class:"form-label" %>
+        <%= f.text_field :price_per_night, class: 'form-control' %>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="row">
+    <div class="col-md-6">
+      <div class="field">
+        <% Stay::Tax.all.each_with_index do |tax, index| %>
+            <%= label_tag "property[property_taxes_attributes][#{index}][value]", tax.name, class: 'form-label' %>
+              <%= number_field_tag "property[property_taxes_attributes][#{index}][value]",
+                                    @property.property_taxes.find_by(tax_id: tax.id)&.value || 0,
+                                    class: 'form-control', step: '0.01' %>
+            <div class="col-md-4">
+              <%= hidden_field_tag "property[property_taxes_attributes][#{index}][tax_id]", tax.id %>
+              <%= hidden_field_tag "property[property_taxes_attributes][#{index}][id]",
+                                    @property.property_taxes.find_by(tax_id: tax.id)&.id %>
+            </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-6">
+      <div class="field">
+        <%= f.label :city_fee_per_month, class:"form-label" %>
+        <%= f.text_field :city_fee_per_month, class: 'form-control' %>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-6">
+      <div class="field">
+        <%= f.label :minimum_days_of_booking, class:"form-label" %>
+        <%= f.text_field :minimum_days_of_booking, class: 'form-control' %>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-6">
+      <div class="field">
+        <%= f.label :security_deposit, class:"form-label" %>
+        <%= f.text_field :security_deposit, class: 'form-control' %>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-6">
+      <div class="field">
+        <%= f.label :extra_guest, class:"form-label" %>
+        <%= f.text_field :extra_guest, class: 'form-control' %>
+      </div>
+    </div>
+
+    <div class="col-md-6 mt-8">
+      <div class="field">
+        <%= f.label :allow_extra_guest, class:"form-label" %>
+        <%= f.check_box :allow_extra_guest %>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="row">
+    <div class="col-md-12">
+      <div class="form-group mt-4">
+        <%= hidden_field_tag :step, 'price' %>
+        <%= f.submit 'Continue', class: 'btn btn-primary' %>
+      </div>
+    </div>
+  </div>
+<% end %>
+
+
+
