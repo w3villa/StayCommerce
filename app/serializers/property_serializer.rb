@@ -4,7 +4,7 @@ class PropertySerializer < ActiveModel::Serializer
   attributes :id, :title, :description, :is_shared_property, :availability_start, :availability_end, :guest_number, :bedroom_description,
               :university_nearby, :about_neighbourhoods, :instant_booking, :minimum_days_of_booking, :security_deposit, :extra_guest,
               :allow_extra_guest, :city, :address, :latitude, :longitude, :state, :country, :zipcode, :total_rooms, :total_bathrooms, :property_size,
-              :cover_image, :place_images, :price_per_night, :house_rules, :additional_rules, :amenities, :property_taxes,  :features
+              :cover_image, :place_images, :price_per_night, :house_rules, :additional_rules, :amenities, :property_taxes,  :features, :cancellation_policy
 
   belongs_to :property_category, Serializer: :PropertyCategorySerializer
   belongs_to :property_type, Serializer: :PropertyTypeSerializer
@@ -59,5 +59,11 @@ class PropertySerializer < ActiveModel::Serializer
         value: property_tax.value
       }
     end
-  end  
+  end
+
+  def cancellation_policy
+    return nil unless object.cancellation_policy.present?
+    CancellationPolicySerializer.new(object.cancellation_policy)
+  end
+  
 end

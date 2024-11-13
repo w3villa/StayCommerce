@@ -1,8 +1,8 @@
 class Stay::Api::V1::PropertiesController < Stay::BaseApiController
     before_action :set_property, only: [ :show, :update ]
     before_action :authenticate_devise_api_token!
-    before_action :check_create_access, only: [:create, :update]
-    before_action :check_update_access, only: [:update]
+    # before_action :check_create_access, only: [:create, :update]
+    # before_action :check_update_access, only: [:update]
 
     def index
       begin
@@ -11,7 +11,7 @@ class Stay::Api::V1::PropertiesController < Stay::BaseApiController
         
         cumulative_per_page = page * per_page
 
-        @properties = Stay::Property.order(created_at: :asc).limit(cumulative_per_page)
+        @properties = Stay::Property.order(created_at: :desc).limit(cumulative_per_page)
         total_count =  Stay::Property.count
         total_pages = (total_count.to_f / per_page).ceil
         
@@ -95,7 +95,6 @@ class Stay::Api::V1::PropertiesController < Stay::BaseApiController
             end
           end
         end
-    
         if @property.update(property_params)
           render json: {
             message: "property updated",
@@ -155,7 +154,7 @@ class Stay::Api::V1::PropertiesController < Stay::BaseApiController
     private
 
     def property_params
-      params.require(:property).permit(:title, :description, :user_id, :guest_number, :availability_start, :availability_end,  :bedroom_description,
+      params.require(:property).permit(:title, :description, :user_id, :guest_number, :availability_start, :availability_end,  :bedroom_description, :cancellation_policy_id,
                                         :university_nearby, :about_neighbourhoods, :instant_booking, :minimum_days_of_booking, :security_deposit,
                                         :extra_guest, :allow_extra_guest, :city, :address, :latitude, :longitude, :total_rooms, :total_bathrooms, :state, :country, :zipcode, :property_state,
                                         :property_size, :property_category_id, :property_type_id, :cover_image, :price_per_night, place_images: [],

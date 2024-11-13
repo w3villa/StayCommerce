@@ -11,7 +11,8 @@ module Stay
          inverse_of: :property,
          class_name: "Stay::Room",
          dependent: :destroy
-
+         
+    belongs_to :cancellation_policy, class_name: "Stay::CancellationPolicy", optional: :true
     has_many :chats, class_name: "Stay::Chat", dependent: :destroy
 
     belongs_to :user, class_name: "Stay::User", optional: true
