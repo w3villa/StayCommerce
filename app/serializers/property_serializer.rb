@@ -60,14 +60,10 @@ class PropertySerializer < ActiveModel::Serializer
       }
     end
   end
-  
+
   def cancellation_policy
     return nil unless object.cancellation_policy.present?
-    {
-      id: object.cancellation_policy.id,
-      name: object.cancellation_policy.name,
-      description: object.cancellation_policy.description
-    }
+    CancellationPolicySerializer.new(object.cancellation_policy)
   end
   
 end

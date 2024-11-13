@@ -1,5 +1,5 @@
 module Stay
   class CancellationPolicy < ApplicationRecord
-    has_many :stay_properties, class_name: "Stay::Property"
+    has_many :properties, class_name: "Stay::Property", dependent: :nullify
   end
 end
