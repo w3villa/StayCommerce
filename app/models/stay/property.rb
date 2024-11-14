@@ -11,7 +11,7 @@ module Stay
          inverse_of: :property,
          class_name: "Stay::Room",
          dependent: :destroy
-         
+
     belongs_to :cancellation_policy, class_name: "Stay::CancellationPolicy", optional: :true
     has_many :chats, class_name: "Stay::Chat", dependent: :destroy
 
@@ -51,6 +51,7 @@ module Stay
     has_many :store_properties, class_name: "Stay::StoreProperty", dependent: :destroy
     has_many :stores, through: :store_properties, class_name: "Stay::Store"
     scope :approved, -> { where(property_state: "approved") }
+    scope :active, -> { where(active: true) }
 
     # validates :latitude, format: { with: /\A-?([1-8]?\d(?:\.\d{1,})?|90(?:\.0{1,6})?)\z/ }
     # validates :longitude, format: { with: /\A-?((?:1[0-7]|[1-9])?\d(?:\.\d{1,})?|180(?:\.0{1,})?)\z/ }
@@ -66,7 +67,7 @@ module Stay
     # end
 
     def combine_address
-      [address, city, state, country].compact.join(' ')
+      [ address, city, state, country ].compact.join(" ")
     end
 
     state_machine :property_state, initial: :waiting_for_approval do

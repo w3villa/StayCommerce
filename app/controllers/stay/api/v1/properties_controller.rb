@@ -11,7 +11,7 @@ class Stay::Api::V1::PropertiesController < Stay::BaseApiController
 
         cumulative_per_page = page * per_page
 
-        @properties = Stay::Property.order(created_at: :desc).limit(cumulative_per_page)
+        @properties = Stay::Property.approved.active.joins(:rooms).order(created_at: :desc).limit(cumulative_per_page)
         total_count =  Stay::Property.count
         total_pages = (total_count.to_f / per_page).ceil
 
