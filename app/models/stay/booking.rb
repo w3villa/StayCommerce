@@ -22,7 +22,7 @@ module Stay
     scope :complete, -> { where.not(completed_at: nil).where(payment_state: "paid") }
     scope :incomplete, -> { where(completed_at: nil).where(payment_state: [ "failed", nil ]) }
     scope :not_canceled, -> { where.not(status: "canceled") }
-    scope :confirmed, -> { where(status: "confirmed") }
+    scope :confirmed, -> { where(status: "confirmed").where(payment_state: "paid") }
     after_commit :booking_completed_at
     before_create :link_by_email, :generate_number
     before_validation :ensure_store_presence

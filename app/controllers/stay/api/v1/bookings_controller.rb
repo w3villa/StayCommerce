@@ -10,11 +10,11 @@ class Stay::Api::V1::BookingsController < Stay::BaseApiController
 
       cumulative_per_page = page * per_page
 
-      @bookings = current_devise_api_user.bookings&.complete
+      @bookings = current_devise_api_user.bookings&.confirmed
                   .order(created_at: :desc)
                   .limit(cumulative_per_page)
 
-      total_count = current_devise_api_user.bookings&.complete.count
+      total_count = current_devise_api_user.bookings&.confirmed.count
       total_pages = (total_count.to_f / per_page).ceil
 
       if @bookings.empty?
