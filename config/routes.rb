@@ -101,6 +101,7 @@ Stay::Engine.routes.draw do
       resources :bookings do
         collection do
           get :host_request
+          get :host_booking
           get :my_reservation, to: "bookings#my_reservation"
         end
         resources :line_items
