@@ -38,6 +38,40 @@ class Stay::Api::V1::BookingQueriesController < Stay::BaseApiController
     end
   end
 
+  def host_query
+    begin
+      page = params[:page].to_i > 0 ? params[:page].to_i : 1
+      per_page = params[:per_page].to_i > 0 ? params[:per_page].to_i : 10
+
+      cumulative_per_page = page * per_page
+      query = Stay::BookingQuery.joins(:property).where(stay_properties: { user_id: current_devise_api_user&.id }).ongoing.order(created_at: :asc)
+      @booking_queries = query.uniq.limit(cumulative_per_page)
+
+      total_count = query.count
+      total_pages = (total_count.to_f / per_page).ceil
+
+      return render json: { success: false, error: "Query not found" }, status: :not_found if @booking_queries.empty?
+
+      render json: {
+        success: true,
+        booking_queries: ActiveModelSerializers::SerializableResource.new(@booking_queries, each_serializer: BookingQuerySerializer),
+        meta: {
+            total_pages: total_pages,
+            current_page: page,
+            next_page: page < total_pages ? page + 1 : nil,
+            prev_page: page > 1 ? page - 1 : nil,
+            total_count: total_count
+          }
+      }, status: :ok
+    rescue ActiveRecord::RecordNotFound => e
+      render json: { success: false, error: "Query not found", message: e.message }, status: :not_found
+    rescue ArgumentError => e
+      render json: { success: false, error: "Invalid pagination parameters", message: e.message }, status: :bad_request
+    rescue StandardError => e
+      render json: { success: false, error: "Internal server error", message: e.message }, status: :internal_server_error
+    end
+  end
+
   def create
     ActiveRecord::Base.transaction do
       return render json: { error: "you can not query for your own property", success: false }, status: :unprocessable_entity if current_devise_api_user == @property.user
