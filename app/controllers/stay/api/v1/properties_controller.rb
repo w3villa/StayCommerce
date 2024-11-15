@@ -11,8 +11,9 @@ class Stay::Api::V1::PropertiesController < Stay::BaseApiController
 
         cumulative_per_page = page * per_page
 
-        @properties = Stay::Property.approved.active.joins(:rooms).order(created_at: :desc).limit(cumulative_per_page)
-        total_count =  Stay::Property.count
+        @data = Stay::Property.approved.active.joins(:rooms).distinct
+        @properties = @data.order(created_at: :desc).limit(cumulative_per_page)
+        total_count =  @data.count
         total_pages = (total_count.to_f / per_page).ceil
 
         return render json: { data: "No properties found", properties: [], success: false }, status: :ok  if @properties.empty?
@@ -44,9 +45,9 @@ class Stay::Api::V1::PropertiesController < Stay::BaseApiController
         per_page = params[:per_page].to_i > 0 ? params[:per_page].to_i : 10
 
         cumulative_per_page = page * per_page
-
-        @properties = current_devise_api_user.properties.order(created_at: :asc).limit(cumulative_per_page)
-        total_count = current_devise_api_user.properties.count
+        @data =  current_devise_api_user.properties
+        @properties = @data.order(created_at: :asc).limit(cumulative_per_page)
+        total_count =  @data.count
         total_pages = (total_count.to_f / per_page).ceil
         return render json: { data: "No properties found", properties: [], success: false }, status: :ok  if @properties.empty?
         render json: {
