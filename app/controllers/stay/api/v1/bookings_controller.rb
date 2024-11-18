@@ -117,13 +117,15 @@ class Stay::Api::V1::BookingsController < Stay::BaseApiController
   end
 
   def create
-    @booking = Stay::Booking.new(booking_params.merge(user: current_devise_api_user))
-    if @booking.save
-        Stay::Chat::ChatMessagingService.new(@booking).send_initial_messages
-        @booking.calculate_totals
-        render json: {  data: BookingSerializer.new(@booking), success: true }, status: :created
+    booking = find_incomplete_booking
+
+    property = Stay::Property.find_by_id(booking_params[:property_id])
+    return render json: { error: "property not found", success: false }, status: :unprocessable_entity if property.nil?
+
+    if booking.any?
+      handle_existing_booking(booking)
     else
-        render json: { error: @booking.errors.full_messages }, status: :unprocessable_entity
+      create_new_booking(property)
     end
   end
 
@@ -236,6 +238,56 @@ class Stay::Api::V1::BookingsController < Stay::BaseApiController
     )
   end
 
+  def find_incomplete_booking
+    booking = current_devise_api_user.bookings.where(property: booking_params[:property_id]).incomplete
+  end
+
+  def handle_existing_booking(booking)
+    @booking = booking.last
+    @booking.line_items.destroy_all if @booking.line_items
+    result = Stay::Bookings::ExistingBookingService.new(@booking, booking_params).perform
+    if result[:success]
+      if @booking.check_in_date != booking_params[:check_in_date].to_date &&  @booking.check_out_date != booking_params[:check_out_date].to_date
+        Stay::Chat::ChatMessagingService.new(@booking).send_initial_messages
+      end
+      render json: { data: BookingSerializer.new(@booking), success: true }, status: :ok
+    else
+    render json: { success: false, errors: result[:errors] }, status: :unprocessable_entity
+    end
+  end
+
+  def create_new_booking(property)
+    @booking = current_devise_api_user.bookings.new(booking_params)
+    unless property.shared_property
+      @booking.line_items = []
+      room_numbers = property.rooms.pluck(:id)
+      build_line_items(room_numbers, @booking)
+    end
+    if @booking.save
+      Stay::Chat::ChatMessagingService.new(@booking).send_initial_messages
+      @booking.calculate_totals
+      render json: {  data: BookingSerializer.new(@booking), success: true }, status: :created
+    else
+      render json: { error: @booking.errors.full_messages }, status: :unprocessable_entity
+    end
+  end
+
+
+  def build_line_items(room_numbers, booking)
+    room_numbers.map do |room_number|
+      room = Stay::Room.find_by(id: room_number)
+      next unless room
+      booking.line_items.new(
+        room: room,
+        price: room.price.to_s,
+        quantity: 1
+      )
+    end
+  end
+
+  def line_items_attributes
+  end
+
   def set_room
     @room = Stay::Room.find(params[:room_id])
   end
@@ -255,16 +307,23 @@ class Stay::Api::V1::BookingsController < Stay::BaseApiController
       return render json: { success: false, message: "You can not create booking for your own Property" }, status: :unprocessable_entity
     end
 
+    if current_devise_api_user.stay_host?
+      return render json: { success: false, message: "Host can not create booking for property" }, status: :unprocessable_entity
+    end
+
     check_in_date = params[:booking][:check_in_date].to_date
     check_out_date = params[:booking][:check_out_date].to_date
 
-    if check_in_date < property.availability_start.to_date
+    month_diff = (check_in_date.year * 12 + check_in_date.month) - (check_out_date.to_date.year * 12 + check_out_date.to_date.month)
+
+    if month_diff > property.minimum_days_of_booking
+      render json: { success: false, message: "minimum month for booking is #{property.minimum_days_of_booking}" }, status: :unprocessable_entity
+    elsif check_in_date < property.availability_start.to_date
       render json: { success: false, message: "Check-in date cannot be earlier than the property's check-in date." }, status: :unprocessable_entity
     elsif check_out_date > property.availability_end.to_date
       render json: { success: false, message: "Check-out date cannot be greater than the property's check-out date." }, status: :unprocessable_entity
     end
   end
-
 
   def set_booking
     @booking = Stay::Booking.find_by(id: params[:id])

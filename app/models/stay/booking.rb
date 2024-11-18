@@ -20,12 +20,13 @@ module Stay
     has_one :invoice, dependent: :destroy
 
     scope :complete, -> { where.not(completed_at: nil).where(payment_state: "paid") }
-    scope :incomplete, -> { where(completed_at: nil).where(payment_state: [ "failed", nil ]) }
+    scope :incomplete, -> { where(completed_at: nil).where(payment_state: [ "failed", nil ]).where.not(status: :canceled) }
     scope :not_canceled, -> { where.not(status: "canceled") }
     scope :confirmed, -> { where(status: "confirmed").where(payment_state: "paid") }
     after_commit :booking_completed_at
     before_create :link_by_email, :generate_number
     before_validation :ensure_store_presence
+    before_validation :ensure_guest_count
     after_commit :booking_completed_at, if: :booking_completed?
     after_commit :update_payment_status, on: [ :update ]
 
@@ -134,6 +135,20 @@ module Stay
 
     def ensure_store_presence
       self.store ||= Stay::Store.default
+    end
+
+    def ensure_guest_count
+      unless property.shared_property
+        if number_of_guests > property.guest_number
+          errors.add(:number_of_guests, "can not be greater than entire property capacity")
+        end
+      end
+
+      if property.shared_property
+        if number_of_guests < property.room.max_guests
+          errors.add(:number_of_guests, "can not be greater than seleted property room capacity")
+        end
+      end
     end
 
     def calculate_totals
