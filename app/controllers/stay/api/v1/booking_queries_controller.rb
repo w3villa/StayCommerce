@@ -45,7 +45,7 @@ class Stay::Api::V1::BookingQueriesController < Stay::BaseApiController
 
       cumulative_per_page = page * per_page
       query = Stay::BookingQuery.joins(:property).where(stay_properties: { user_id: current_devise_api_user&.id }).ongoing.order(created_at: :desc)
-      @booking_queries = query.uniq.limit(cumulative_per_page)
+      @booking_queries = query.limit(cumulative_per_page).uniq
 
       total_count = query.count
       total_pages = (total_count.to_f / per_page).ceil
