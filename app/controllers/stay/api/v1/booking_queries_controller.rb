@@ -1,6 +1,6 @@
 class Stay::Api::V1::BookingQueriesController < Stay::BaseApiController
   before_action :authenticate_devise_api_token!
-  before_action :set_property, except: [ :index, :show ]
+  before_action :set_property, except: [ :index, :show, :host_query ]
   before_action :booking_availability, only: [ :create, :update ]
   before_action :set_query, only: [ :update, :show ]
 
