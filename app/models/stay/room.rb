@@ -23,7 +23,7 @@ module Stay
     accepts_nested_attributes_for :room_amenities, allow_destroy: true
 
     after_create :set_price
-    after_update :update_price, if: :saved_change_to_price_per_night?
+    after_update :update_price, if: :saved_change_to_price_per_month?
     # validates :status, inclusion: { in: STATUSES }
     validate :booking_dates_are_valid
 
@@ -47,7 +47,7 @@ module Stay
 
 
     def price
-      price_per_night
+      price_per_month
     end
 
     def images_urls
@@ -63,12 +63,12 @@ module Stay
     end
 
     def set_price
-      prices.create(amount: price_per_night, currency: Stay::Store.default.default_currency) if price_per_night.present? && !is_master
+      prices.create(amount: price_per_month, currency: Stay::Store.default.default_currency) if price_per_month.present? && !is_master
     end
 
     def update_price
       price = prices.find_or_initialize_by(currency: Stay::Store.default.default_currency)
-      price.amount = price_per_night
+      price.amount = price_per_month
       price.save
     end
   end
