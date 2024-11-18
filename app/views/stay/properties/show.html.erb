@@ -90,7 +90,7 @@
             <td>
               <div class="col-md-5">
                 <div class="price-section">
-                  <h4>₹<%= room.price_per_night %> <small class="text-muted">/ night</small></h4>
+                  <h4>₹<%= room.price_per_month %> <small class="text-muted">/ night</small></h4>
                   <input type="checkbox" name="selected_rooms[]" value="<%= room.id %>" >
                   <div class="row my-3">
                     <div class="col">
@@ -106,7 +106,7 @@
                       <div class="max-guest-message" style="color: red; display: none;">Maximum number of guests reached</div>
                     </div>
                   </div>
-                  <input type="hidden" name="bookings[<%= room.id %>][total]" value="<%= room.price_per_night %>">
+                  <input type="hidden" name="bookings[<%= room.id %>][total]" value="<%= room.price_per_month %>">
                 </div>
               </div>
             </td>

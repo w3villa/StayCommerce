@@ -73,15 +73,15 @@ module Stay
 
       def property_params
         params.require(:property).permit(:active, :title, :description, :availability_start, :availability_end, :address, :user_id, :property_type_id,
-                                          :price_per_night, :property_category_id, :guest_number, :country_id, :state_id, :bedroom_description,
-                                          :university_nearby, :about_neighbourhoods, :instant_booking, :minimum_days_of_booking, :security_deposit, 
+                                          :price_per_month, :property_category_id, :guest_number, :country_id, :state_id, :bedroom_description,
+                                          :university_nearby, :about_neighbourhoods, :instant_booking, :minimum_months_of_booking, :security_deposit,
                                           :extra_guest, :allow_extra_guest, :city, :total_bedrooms, :latitude, :longitude, :total_rooms, :country, :state,
                                           :total_bathrooms, :property_size, :cover_image, :zipcode, amenity_ids: [], feature_ids: [],
                                           property_taxes_attributes: [:id, :tax_id, :value, :_destroy],
                                           property_amenities_attributes: [:id, :property_id, :amenity_id, :_destroy],
                                           property_features_attributes: [:id, :name, :feature_id, :_destroy],
                                           additional_rules_attributes: [:id, :name, :property_id, :_destroy],
-                                          rooms_attributes: [:id, :property_id, :max_guests, :price_per_night, :room_type_id, :status, :is_master, :booking_start, :booking_end, :description, :size, :bed_type_id, :_destroy],
+                                          rooms_attributes: [:id, :property_id, :max_guests, :price_per_month, :room_type_id, :status, :is_master, :booking_start, :booking_end, :description, :size, :bed_type_id, :_destroy],
                                           property_house_rules_attributes: [:id, :property_id, :house_rule_id, :value, :_destroy]
                                         )
       end

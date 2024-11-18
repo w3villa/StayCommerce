@@ -6,9 +6,9 @@
           <h2 class="text-xl font-semibold mb-0">Room Details</h2> 
         </div>
         <div class="card-body">
-          <p><strong>Image: </strong><%= image_tag main_app.url_for(@room.images.first), size: "60x60" if @room.images.attached? %></p>
+          <p><strong>Image: </strong><%= image_tag main_app.url_for(@room.room_images.first), size: "60x60" if @room.room_images.attached? %></p>
           <p><strong>Max Guests: </strong><%= @room.max_guests %></p> 
-          <p><strong>Price Per Night: </strong><%= currency_symbol(current_currency)%> <%= @room.price_per_night %></p>
+          <p><strong>Price Per Night: </strong><%= currency_symbol(current_currency)%> <%= @room.price_per_month %></p>
           <p><strong>Room Type: </strong><%= @room.room_type.name%></p>
           <p><strong>Booking Start: </strong><%= @room.booking_start%></p>
           <p><strong>Booking End: </strong><%= @room.booking_end%></p>

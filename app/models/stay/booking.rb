@@ -120,7 +120,7 @@ module Stay
       selected_rooms.each do |room_id|
         room = property.rooms.find(room_id.to_i)
         number_of_guests = booking_params[:bookings][room_id][:number_of_guests].to_i
-        price = room.price_per_night * (check_out_date - check_in_date).to_i
+        price = room.price_per_month * (check_out_date - check_in_date).to_i
 
         line_items.build(room: room, quantity: number_of_guests, price: price)
 

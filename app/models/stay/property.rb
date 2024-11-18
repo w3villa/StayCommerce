@@ -56,7 +56,7 @@ module Stay
     # validates :latitude, format: { with: /\A-?([1-8]?\d(?:\.\d{1,})?|90(?:\.0{1,6})?)\z/ }
     # validates :longitude, format: { with: /\A-?((?:1[0-7]|[1-9])?\d(?:\.\d{1,})?|180(?:\.0{1,})?)\z/ }
 
-    # attr_accessor :price_per_night
+    # attr_accessor :price_per_month
     # after_create :create_default_room
     # after_update :update_prices
     after_create :create_store_property
@@ -148,7 +148,7 @@ module Stay
     end
 
     def price
-      master&.price_per_night.to_f || 0
+      master&.price_per_month.to_f || 0
     end
 
     def place_images_urls
@@ -192,12 +192,12 @@ module Stay
 
     def create_default_room
       return unless Stay::RoomType.first.present?
-      master_room = rooms.create!(is_master: true, property_id: self.id, max_guests: 2, price_per_night: price_per_night, room_type_id: Stay::RoomType.first&.id, status: "available")
-      master_room.prices.create(amount: master_room.price_per_night, currency: Stay::Store.default.default_currency)
+      master_room = rooms.create!(is_master: true, property_id: self.id, max_guests: 2, ffnth: price_per_month, room_type_id: Stay::RoomType.first&.id, status: "available")
+      master_room.prices.create(amount: master_room.price_per_month, currency: Stay::Store.default.default_currency)
     end
 
     def update_prices
-      master&.prices&.update(amount: master.price_per_night, currency: Stay::Store.default.default_currency)
+      master&.prices&.update(amount: master.price_per_month, currency: Stay::Store.default.default_currency)
     end
   end
 end
