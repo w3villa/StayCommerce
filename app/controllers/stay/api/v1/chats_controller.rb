@@ -1,16 +1,15 @@
 class Stay::Api::V1::ChatsController < ApplicationController
-  # protect_from_forgery with: :null_session, if: -> { request.format.json? }
   before_action :authenticate_devise_api_token!
 
   def index
-    chats = Stay::Chat.joins(:property).where(stay_properties: { user_id: current_devise_api_user&.id })
+    chats = chats = Stay::Chat.joins(:messages, :property).where(stay_properties: { user_id: current_devise_api_user&.id }).order_by_latest_messages.uniq
     if chats.any?
       data = {
         message: "Chats Found",
         chats: ActiveModelSerializers::SerializableResource.new(chats, each_serializer: ChatSerializer, scope: { current_user: current_devise_api_user }),
         success: true
       }
-      render json: {data: data} , status: :ok
+      render json: { data: data }, status: :ok
     else
       render json: { error: "No chats found", success: false }, status: :unprocessable_entity
     end
@@ -32,13 +31,14 @@ class Stay::Api::V1::ChatsController < ApplicationController
   end
 
   def user_chat
-    @chats = Stay::Chat.where(sender_id: current_devise_api_user.id).or(Stay::Chat.where(receiver_id: current_devise_api_user.id))
+    @chats = Stay::Chat.for_user(current_devise_api_user).get_all_messages.order_by_latest_messages
+
     data = {
-      message: "Chats Found",
+      message: @chats.any? ? "Chats Found" : "No Chat Found",
       chats: @chats.any? ? ActiveModelSerializers::SerializableResource.new(@chats, each_serializer: ChatSerializer, scope: { current_user: current_devise_api_user }) : [],
-      success: true
+      success: @chats.any? ? true : false
     }
-    render json: {data: data} , status: :ok
+    render json: { data: data }, status: :ok
   end
 
   def chat_messages
@@ -54,7 +54,6 @@ class Stay::Api::V1::ChatsController < ApplicationController
   end
 
   private
-
   def chat_params
     params.require(:chat).permit(:sender_id, :receiver_id, :property_id, :booking_id, :chat_event, :event_message)
   end

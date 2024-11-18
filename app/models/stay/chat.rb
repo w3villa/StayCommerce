@@ -6,7 +6,9 @@ module Stay
     has_one :booking_query, dependent: :destroy
     belongs_to :property, class_name: "Stay::Property"
     belongs_to :booking, class_name: "Stay::Booking", optional: true
-
+    scope :for_user, ->(user) { where(sender: user).or(where(receiver: user)) }
+    scope :get_all_messages, -> { joins(:messages) }
+    scope :order_by_latest_messages, -> { group("stay_chats.id").order("MAX(stay_messages.created_at) DESC") }
     enum :chat_event, { booking_request: 0, booking_accept: 1, booking_reject: 2, booking_request_change: 3 }
 
     scope :between, ->(sender_id, receiver_id) do
