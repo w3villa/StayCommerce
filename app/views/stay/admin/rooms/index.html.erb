@@ -37,7 +37,7 @@
     <% @rooms.each do |room| %>
       <tr>
         <td>
-          <%= image_tag main_app.url_for(room.images.first), size: "25x25" if room.images.attached? %>
+          <%= image_tag main_app.url_for(room.room_images.first), size: "25x25" if room.room_images.attached? %>
         </td>
         <td><%= room.max_guests %></td>
         <td><%= currency_symbol(current_currency) %> <%= room.price_per_night %></td>
