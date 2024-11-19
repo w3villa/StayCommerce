@@ -10,19 +10,19 @@ class Stay::Chat::QueryMessagingService
   def perform
     messages_by_status = {
       "send_message" => {
-       message: { text: "Query Sent for property #{@property.title} for dates #{@query.check_in_date} to #{@query.check_out_date} for #{@query.guest_count} guest."},
+       message: { text: "Query Sent for property #{@property.title} for dates #{@query.check_in_date.to_date} to #{@query.check_out_date.to_date} for #{@query.guest_count} guest." }
       },
       "booking_invitation" => {
-        message: { text: "Host Invited For Booking" },
+        message: { text: "Host Invited For Booking" }
       },
       "request_change" => {
-        message: { text: "Request Change in dates with stay in between #{@query.check_in_date} to #{@query.check_out_date}"},
+        message: { text: "Request Change in dates with stay in between #{@query.check_in_date.to_date} to #{@query.check_out_date.to_date}" }
       },
       "accepted" => {
-        message: { text:  "Booking Request Sent"},
+        message: { text:  "Booking Request Sent" }
       },
       "rejected" => {
-        message: { text: "Your stay at #{@property.title} from #{@query.check_in_date} to #{@query.check_out_date} is Rejected."},
+        message: { text: "Your stay at #{@property.title} from #{@query.check_in_date.to_date} to #{@query.check_out_date.to_date} is Rejected." }
       }
     }
 

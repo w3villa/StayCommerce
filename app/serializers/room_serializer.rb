@@ -4,6 +4,7 @@ class RoomSerializer < ActiveModel::Serializer
             :size, :bed_type, :room_type, :amenities, :features
 
   def bed_type
+    return nil unless object.bed_type.present?
     BedTypeSerializer.new(object.bed_type)
   end
 
