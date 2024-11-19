@@ -144,11 +144,11 @@ module Stay
         end
       end
 
-      if property.shared_property
-        if number_of_guests < property.room.max_guests
-          errors.add(:number_of_guests, "can not be greater than seleted property room capacity")
-        end
-      end
+      # if property.shared_property
+      #   if number_of_guests < property.room.max_guests
+      #     errors.add(:number_of_guests, "can not be greater than seleted property room capacity")
+      #   end
+      # end
     end
 
     def calculate_totals

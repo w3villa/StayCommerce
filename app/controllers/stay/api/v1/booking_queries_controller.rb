@@ -170,12 +170,12 @@ class Stay::Api::V1::BookingQueriesController < Stay::BaseApiController
 
   def booking_availability
     if @property.user.nil?
-      return render json: { success: false, message: "Property Host not active." }, status: :not_found
+      render json: { success: false, message: "Property Host not active." }, status: :not_found
     end
 
-    if @property&.user == current_devise_api_user
-      render json: { success: false, message: "You can not create booking for your own Property" }, status: :unprocessable_entity
-    end
+    # if @property&.user == current_devise_api_user
+    #   render json: { success: false, message: "You can not create booking for your own Property" }, status: :unprocessable_entity
+    # end
   end
 
   def existing_query
