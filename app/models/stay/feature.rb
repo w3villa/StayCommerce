@@ -5,6 +5,7 @@ module Stay
     has_many :room_features, class_name: "Stay::RoomFeature"
     has_many :rooms, through: :room_features, class_name: "Stay::Room"
 
-    enum :feature_type, {:property=>0, :room=>1}  
+    enum :feature_type, { property: 0, room: 1 }
+    validates :name, presence: true, uniqueness: true
   end
 end

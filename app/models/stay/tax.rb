@@ -3,6 +3,6 @@ module Stay
     has_many :property_taxes, class_name: "Stay::PropertyTax"
     has_many :properties, through: :property_taxes, class_name: "Stay::Property"
 
-    validates :name, presence: true
+    validates :name, presence: true, uniqueness: true
   end
 end
