@@ -138,7 +138,7 @@ module Stay
     end
 
     def ensure_guest_count
-      unless property.shared_property
+      unless property.shared_property && property.allow_extra_guest
         if number_of_guests > property.guest_number
           errors.add(:number_of_guests, "can not be greater than entire property capacity")
         end

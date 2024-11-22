@@ -3,7 +3,7 @@ module Stay
     DISPLAY = [ :both, :front_end, :back_end ].freeze
 
     has_many :payments, class_name: "Stay::Payment", dependent: :destroy
-    validates :name, presence: true, uniqueness: true
+    validates :name, presence: true, uniqueness: { case_sensitive: false }
 
     scope :active,                 -> { where(active: true).order(position: :asc) }
     scope :available,              -> { active.where(display_on: [ :front_end, :back_end, :both ]) }
