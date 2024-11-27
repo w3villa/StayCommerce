@@ -18,7 +18,7 @@ class Stay::Api::V1::BookingsController < Stay::BaseApiController
       total_pages = (total_count.to_f / per_page).ceil
 
       if @bookings.empty?
-        return render json: { data: "No bookings found", bookings: [], success: false }, status: :ok
+        return render json: { error: "No bookings found", bookings: [], success: false }, status: :ok
       end
 
       render json: {
@@ -55,7 +55,7 @@ class Stay::Api::V1::BookingsController < Stay::BaseApiController
       total_pages = (total_count.to_f / per_page).ceil
 
       if @bookings.empty?
-        return render json: { data: "No bookings found", bookings: [], success: false }, status: :ok
+        return render json: { error: "No bookings found", bookings: [], success: false }, status: :ok
       end
 
       render json: {
@@ -85,14 +85,14 @@ class Stay::Api::V1::BookingsController < Stay::BaseApiController
       per_page = params[:per_page].to_i > 0 ? params[:per_page].to_i : 10
 
       cumulative_per_page = page * per_page
-      @request =  Stay::Booking.joins(:property).where(stay_properties: { user_id: current_devise_api_user&.id }).where.not(status: "completed")
+      @request =  Stay::Booking.joins(:property).where(stay_properties: { user_id: current_devise_api_user&.id }).where.not(status: "confirmed")
       @bookings = @request.order(created_at: :desc).limit(cumulative_per_page)
 
       total_count = @request.count
       total_pages = (total_count.to_f / per_page).ceil
 
       if @bookings.empty?
-        return render json: { data: "No bookings found", bookings: [], success: false }, status: :ok
+        return render json: { error: "No bookings found", bookings: [], success: false }, status: :ok
       end
 
       render json: {
@@ -143,7 +143,7 @@ class Stay::Api::V1::BookingsController < Stay::BaseApiController
       total_pages = (total_count.to_f / per_page).ceil
 
       if @bookings.empty?
-        return render json: { data: "No bookings found", bookings: [], success: false }, status: :ok
+        return render json: { error: "No bookings found", bookings: [], success: false }, status: :ok
       end
 
       render json: {
@@ -296,19 +296,19 @@ class Stay::Api::V1::BookingsController < Stay::BaseApiController
     property = Stay::Property.find_by(id: params[:booking][:property_id])
 
     if property.nil?
-      return render json: { success: false, message: "Property not found." }, status: :not_found
+      return render json: { success: false, error: "Property not found." }, status: :not_found
     end
 
     unless property.user
-      return render json: { success: false, message: "Property Host not active." }, status: :not_found
+      return render json: { success: false, error: "Property Host not active." }, status: :not_found
     end
 
     if property.user == current_devise_api_user
-      return render json: { success: false, message: "You can not create booking for your own Property" }, status: :unprocessable_entity
+      return render json: { success: false, error: "You can not create booking for your own Property" }, status: :unprocessable_entity
     end
 
     if current_devise_api_user.stay_host?
-      return render json: { success: false, message: "Host can not create booking for property" }, status: :unprocessable_entity
+      return render json: { success: false, error: "Host can not create booking for property" }, status: :unprocessable_entity
     end
 
     check_in_date = params[:booking][:check_in_date].to_date
@@ -317,11 +317,11 @@ class Stay::Api::V1::BookingsController < Stay::BaseApiController
     month_diff = (check_in_date.year * 12 + check_in_date.month) - (check_out_date.to_date.year * 12 + check_out_date.to_date.month)
 
     if month_diff > property.minimum_days_of_booking
-      render json: { success: false, message: "minimum month for booking is #{property.minimum_days_of_booking}" }, status: :unprocessable_entity
+      render json: { success: false, error: "minimum month for booking is #{property.minimum_days_of_booking}" }, status: :unprocessable_entity
     elsif check_in_date < property.availability_start.to_date
-      render json: { success: false, message: "Check-in date cannot be earlier than the property's check-in date." }, status: :unprocessable_entity
+      render json: { success: false, error: "Check-in date cannot be earlier than the property's check-in date." }, status: :unprocessable_entity
     elsif check_out_date > property.availability_end.to_date
-      render json: { success: false, message: "Check-out date cannot be greater than the property's check-out date." }, status: :unprocessable_entity
+      render json: { success: false, error: "Check-out date cannot be greater than the property's check-out date." }, status: :unprocessable_entity
     end
   end
 
