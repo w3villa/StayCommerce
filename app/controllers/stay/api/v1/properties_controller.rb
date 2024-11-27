@@ -1,5 +1,5 @@
 class Stay::Api::V1::PropertiesController < Stay::BaseApiController
-    before_action :set_property, only: [ :show, :update ]
+    before_action :set_property, only: [ :show, :update, :destroy ]
     before_action :authenticate_devise_api_token!
     # before_action :check_create_access, only: [:create, :update]
     # before_action :check_update_access, only: [:update]
@@ -20,7 +20,7 @@ class Stay::Api::V1::PropertiesController < Stay::BaseApiController
 
         render json: {
           data: "Data Found",
-          properties: ActiveModelSerializers::SerializableResource.new(@properties, each_serializer: PropertyListingSerializer),
+        properties: ActiveModelSerializers::SerializableResource.new(@properties, each_serializer: PropertyListingSerializer),
           success: true,
           meta: {
           total_pages: total_pages,
@@ -152,13 +152,22 @@ class Stay::Api::V1::PropertiesController < Stay::BaseApiController
       render json: { error: "Property not approved",  success: :false }, status: :unprocessable_entity
     end
 
+    def destroy
+      if @property.destroy
+        render json: { message: "Property destroyed successfully", success: true }, status: :ok
+      else
+        render json: { error: "Property not destroyed",  success: :false }, status: :unprocessable_entity
+      end
+    end
+
     private
 
     def property_params
       params.require(:property).permit(:active, :title, :description, :user_id, :guest_number, :availability_start, :availability_end,  :bedroom_description, :cancellation_policy_id,
                                         :university_nearby, :about_neighbourhoods, :instant_booking, :minimum_months_of_booking, :security_deposit,
                                         :extra_guest, :allow_extra_guest, :city, :address, :latitude, :longitude, :total_rooms, :total_bathrooms, :state, :country, :zipcode, :property_state,
-                                        :property_size, :property_category_id, :property_type_id, :cover_image, :price_per_month, place_images: [],
+                                        :property_size, :property_category_id, :property_type_id, :cover_image, :price_per_month, :taxes_in_percentage, :cleaning_fee, :city_fee,
+                                        :early_bird_discount, :advance_days, :is_city_fee_percentage, :unlimited_availability,  place_images: [],
                                         additional_rules_attributes: [ :id, :name,  :_destroy ],
                                         property_house_rules_attributes: [ :id, :house_rule_id, :value, :_destroy ],
                                         property_amenities_attributes: [ :id, :amenity_id, :_destroy ],

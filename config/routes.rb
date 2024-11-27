@@ -130,7 +130,7 @@ Stay::Engine.routes.draw do
           end
         end
       end
-      resources :properties, only: [ :index, :show, :create, :update ] do
+      resources :properties do
         collection do
           get :my_properties, to: "properties#my_properties"
         end
