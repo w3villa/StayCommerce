@@ -11,13 +11,13 @@
   <% end %>
 
   <div class="row">
-    <div class="col-md-6">
+    <div class="col-md-12">
       <div class="field">
         <%= f.label :amenity_ids, 'Amenities', class: 'form-label' %>
         <%= hidden_field_tag 'property[amenity_ids][]', '' %>
-        <div class="custom-checkbox">
-          <% Stay::Amenity.all.each do |amenity| %>
-            <div class="form-check">
+        <div class="custom-checkbox row">
+          <% Stay::Amenity.where(amenity_type: 'property').each do |amenity| %>
+            <div class="form-check col-md-2">
               <%= check_box_tag 'property[amenity_ids][]', amenity.id, property.amenities.include?(amenity), class: 'form-check-input', id: "amenity_#{amenity.id}" %>
               <%= label_tag "amenity_#{amenity.id}", amenity.name, class: 'form-check-label' %>
             </div>
