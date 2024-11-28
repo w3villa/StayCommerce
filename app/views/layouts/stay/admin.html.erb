@@ -29,7 +29,7 @@
     <% if user_signed_in? %>
       <div class="d-flex flex-column flex-lg-row h-lg-full">
         <%= render 'stay/admin/shared/sidebar' %>
-        <div class="flex-grow-1">
+        <div class="flex-grow-1 content-parent">
           <main class="bg-surface-secondary">
             <%= yield %>
           </main>

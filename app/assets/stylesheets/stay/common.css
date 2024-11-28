@@ -154,6 +154,12 @@
 
 .navbar-vertical.navbar-expand-lg {
     z-index: 2 !important;
+    height: 91vh;
+}
+
+.content-parent {
+    height: 91vh;
+    overflow-y: scroll;
 }
 
 .radio-button-label {
