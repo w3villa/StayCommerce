@@ -85,6 +85,13 @@ Stay::Engine.routes.draw do
           get :room
         end
       end
+
+      resources :amenities do
+        collection do
+          get :property
+          get :room
+        end
+      end
       resources :booking_queries do
         collection do
           get :host_query
