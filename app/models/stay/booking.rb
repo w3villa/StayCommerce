@@ -29,6 +29,7 @@ module Stay
     before_validation :ensure_guest_count
     after_commit :booking_completed_at, if: :booking_completed?
     after_commit :update_payment_status, on: [ :update ]
+    after_create :booking_room_count
 
     accepts_nested_attributes_for :line_items, allow_destroy: true
     accepts_nested_attributes_for :payments, allow_destroy: true
@@ -164,6 +165,10 @@ module Stay
           total_amount: total_amount
         )
       end
+    end
+
+    def booking_room_count
+      self.update_column(:room_count, self.rooms.count)
     end
 
     private
