@@ -23,7 +23,7 @@
       <thead class="table-light">
         <tr>
           <th scope="col">Name</th>
-          <th scope="col">Amentity Category</th>
+          <th scope="col">Amentity Type</th>
           <th></th>
         </tr>
       </thead>
@@ -32,7 +32,7 @@
         <% @amenities.each do |amenity| %>
           <tr>
             <td><%= amenity.name %></td>
-            <td><%= amenity.amenity_category&.name %></td>
+            <th scope="col"><%= amenity.amenity_type%></th>
             <td class="text-end d-flex justify-content-end">
               <%= link_to edit_admin_amenity_path(amenity), class: 'btn d-inline-flex btn-sm btn-neutral mx-1' do %>
                 <i class="bi bi-pencil"></i>
