@@ -114,12 +114,16 @@ class Stay::Api::V1::PropertiesController < Stay::BaseApiController
     end
 
     def search
-      @q = Stay::Property.approved.ransack(params[:q])
-      @properties = @q.result.includes(:rooms).distinct
+      amenity_ids = parse_to_array(params[:q][:amenity_ids])
+      latitude, longitude = params[:q].values_at(:latitude, :longitude)
 
-      if @properties.any? && params[:q][:latitude].present? && params[:q][:longitude].present?
-        @properties = @properties.near([ params[:q][:latitude], params[:q][:longitude] ], params[:distance] || 10)
-      end
+      @q = Stay::Property.approved.ransack(params[:q])
+      @properties = @q.result.distinct
+
+      @properties = @properties.with_amenities(amenity_ids) if amenity_ids.any?
+      @properties = @properties.nearby(latitude, longitude, params[:distance] || 10) if latitude && longitude
+      @properties = @properties.by_property_type(params[:q][:property_type_id]) if params[:q][:property_type_id].present?
+
       @properties = @properties.page(params[:page]).per(params[:per_page] || 10)
 
       if @properties.any?
@@ -186,6 +190,14 @@ class Stay::Api::V1::PropertiesController < Stay::BaseApiController
       rescue ActiveRecord::RecordNotFound => e
         render json: { success: false, error: "Properties not found" }, status: :not_found
       end
+    end
+
+    def parse_to_array(param)
+      return [] unless param.present?
+      param = JSON.parse(param) if param.is_a?(String)
+      Array(param)
+    rescue JSON::ParserError
+      []
     end
 
   # def check_create_access

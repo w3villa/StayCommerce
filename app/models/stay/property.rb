@@ -53,6 +53,17 @@ module Stay
     scope :approved, -> { where(property_state: "approved") }
     scope :active, -> { where(active: true) }
 
+    scope :with_amenities, ->(amenity_ids) {
+      joins(:amenities).where(stay_amenities: { id: amenity_ids }).distinct
+    }
+
+    scope :nearby, ->(latitude, longitude, distance) {
+      near([ latitude, longitude ], distance)
+    }
+
+    scope :by_property_type, ->(property_type_id) {
+      joins(:property_type).where(property_type: { id: property_type_id })
+    }
     # validates :latitude, format: { with: /\A-?([1-8]?\d(?:\.\d{1,})?|90(?:\.0{1,6})?)\z/ }
     # validates :longitude, format: { with: /\A-?((?:1[0-7]|[1-9])?\d(?:\.\d{1,})?|180(?:\.0{1,})?)\z/ }
 
@@ -108,13 +119,16 @@ module Stay
     #   puts message
     # end
 
-    def self.ransackable_attributes(auth_object = nil)
-      [ "active", "address", "availability_end", "availability_start", "title", "extra_guest", "total_rooms", "total_bathrooms", "latitude", "longitude" ]
+    def self.ransackable_scopes(auth_object = nil)
+      %i[with_amenities nearby by_property_type]
     end
 
+    def self.ransackable_attributes(auth_object = nil)
+      %w[active address availability_end availability_start title extra_guest total_rooms total_bathrooms latitude longitude]
+    end
 
     def self.ransackable_associations(auth_object = nil)
-      [ "rooms" ]
+      %w[rooms amenities property_type]
     end
 
     def shared_property

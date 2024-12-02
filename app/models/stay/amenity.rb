@@ -1,6 +1,6 @@
 module Stay
   class Amenity < ApplicationRecord
-    # belongs_to :amenity_category, class_name: "Stay::AmenityCategory"
+    belongs_to :amenity_category, class_name: "Stay::AmenityCategory", optional: true
     has_many :property_amenities, class_name: "Stay::PropertyAmenity"
     has_many :properties, through: :property_amenities, class_name: "Stay::Property"
     enum amenity_type: { property: 0, room: 1 }
