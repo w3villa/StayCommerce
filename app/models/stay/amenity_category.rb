@@ -1,6 +1,6 @@
 module Stay
   class AmenityCategory < ApplicationRecord
-    has_many :amenities, class_name: "Stay::Amenity"
+    # has_many :amenities, class_name: "Stay::Amenity"
     validates :name, presence: true, uniqueness: { case_sensitive: false }
   end
 end

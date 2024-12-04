@@ -22,17 +22,8 @@
   <div class="row">
     <div class="col-md-6">
       <div class="field">
-        <%= f.label :amenity_category, '*Amenity Category (mandatory)', class: "form-label" %>
-        <%= f.select :amenity_category_id, Stay::AmenityCategory.all.collect { |ac| [ac.name, ac.id] }, { include_blank: 'None' }, required: true, class: 'form-control' %>
-      </div>
-    </div>
-  </div>
-
-  <div class="row">
-    <div class="col-md-6">
-      <div class="field">
         <%= f.label :amenity_type, "Amenity Type", class: "form-label" %>
-        <%= f.select :amenity_type, Stay::Amenity.amenity_types.keys.map { |type| [type.titleize, type] }, {}, class: 'form-control' %>
+        <%= f.select :amenity_type, Stay::Amenity.amenity_types.keys.map { |type| [type.titleize, type] }, {}, class: 'form-control custom-select-box' %>
       </div>
     </div>
   </div>

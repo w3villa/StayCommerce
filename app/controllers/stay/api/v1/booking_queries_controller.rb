@@ -3,6 +3,8 @@ class Stay::Api::V1::BookingQueriesController < Stay::BaseApiController
   before_action :set_property, except: [ :index, :show, :host_query ]
   before_action :booking_availability, only: [ :create, :update ]
   before_action :set_query, only: [ :update, :show ]
+  before_action :restrict_multiple_query, only: [ :create ]
+  before_action :check_booking_validation, only: [ :create ]
 
   def index
     begin
@@ -170,14 +172,34 @@ class Stay::Api::V1::BookingQueriesController < Stay::BaseApiController
 
   def booking_availability
     if @property.user.nil?
-      render json: { success: false, message: "Property Host not active." }, status: :not_found
+      render json: { success: false, error: "Property Host not active." }, status: :not_found
     end
-
-    # if @property&.user == current_devise_api_user
-    #   render json: { success: false, message: "You can not create booking for your own Property" }, status: :unprocessable_entity
-    # end
   end
 
-  def existing_query
+  def check_booking_validation
+    check_in_date = booking_query_params[:check_in_date].to_date
+    check_out_date = booking_query_params[:check_out_date].to_date
+
+    month_diff = (check_in_date.year * 12 + check_in_date.month) - (check_out_date.to_date.year * 12 + check_out_date.to_date.month)
+    if   @property&.minimum_months_of_booking && month_diff > @property.minimum_months_of_booking
+      render json: { success: false, error: "minimum month for booking is #{@property.minimum_months_of_booking}" }, status: :unprocessable_entity
+    end
+  end
+
+  def restrict_multiple_query
+    existing_query = Stay::BookingQuery
+                     .joins(:property)
+                     .date_range(booking_query_params[:check_in_date], booking_query_params[:check_out_date])
+                     .without_booking
+                     .for_current_user(current_devise_api_user)
+                     .where(stay_properties: { id: @property.id })
+                     .exists?
+
+    if existing_query
+      render json: {
+        error: "You already raised a query for this property. Visit the booking query section for updates.",
+        success: false
+      }, status: :unprocessable_entity
+    end
   end
 end
