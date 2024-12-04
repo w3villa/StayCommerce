@@ -5,7 +5,8 @@ module Stay
       
       # GET /Stay/admin/users
       def index
-        @users = Stay::User.page(params[:page])
+        @q = Stay::User.ransack(params[:q])
+        @users = @q.result.order(created_at: :desc).page(params[:page]).per(30)
       end
 
       # GET /Stay/admin/users/1

@@ -4,7 +4,8 @@ module Stay
       before_action :set_property, only: %i[show edit update destroy approve reject]
 
       def index
-        @properties = current_store.properties.page(params[:page])
+        @q = current_store.properties.ransack(params[:q])
+        @properties = @q.result.page(params[:page]).per(params[:per_page] || 30)
       end
 
       def show

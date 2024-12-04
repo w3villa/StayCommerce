@@ -1,0 +1,37 @@
+<div class="card mb-3" id="order_tab_summary">
+  <div class="card-header text-white">
+    <h3 class="card-title mb-0 h6">Invoice Details</h3>
+  </div>
+  <ul class="list-group">
+    <% if @booking.invoice&.expenses.present? %>
+      <li class="list-group-item">
+        <h6 class="mb-2 text-muted">Expenses</h6>
+        <ul class="list-unstyled">
+          <% @booking.invoice.expenses.each do |expense| %>
+            <li class="d-flex justify-content-between align-items-center py-1">
+              <span class="text-muted"><%= expense.category %></span>
+              <span class="font-weight-bold text-muted">
+                <%= currency_symbol(current_currency) %> <%= number_to_currency(expense.amount, unit: '', precision: 2) %>
+              </span>
+            </li>
+          <% end %>
+        </ul>
+      </li>
+    <% end %>
+    <% if @booking.invoice&.discounts.present? %>
+      <li class="list-group-item">
+        <h6 class="mb-2 text-muted">Discounts</h6>
+        <ul class="list-unstyled">
+          <% @booking.invoice.discounts.each do |discount| %>
+            <li class="d-flex justify-content-between align-items-center py-1">
+              <span class="text-muted"><%= discount.description %></span>
+              <span class="font-weight-bold text-success text-muted">
+                -<%= currency_symbol(current_currency) %> <%= number_to_currency(discount.amount, unit: '', precision: 2) %>
+              </span>
+            </li>
+          <% end %>
+        </ul>
+      </li>
+    <% end %>
+  </ul>
+</div>
