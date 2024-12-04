@@ -52,6 +52,10 @@ module Stay
     has_many :stores, through: :store_properties, class_name: "Stay::Store"
     scope :approved, -> { where(property_state: "approved") }
     scope :active, -> { where(active: true) }
+    scope :similar_properties, ->(type_id, category_id, property_id) {
+      where(property_type_id: type_id, property_category_id: category_id)
+        .where.not(id: property_id)
+    }
 
     scope :with_amenities, ->(amenity_ids) {
       joins(:amenities).where(stay_amenities: { id: amenity_ids }).distinct

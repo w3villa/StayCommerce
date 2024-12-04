@@ -113,6 +113,25 @@ class Stay::Api::V1::PropertiesController < Stay::BaseApiController
       end
     end
 
+    def similar_property
+      begin
+        properties = Stay::Property.similar_properties(params[:property_type_id], params[:property_category_id], params[:property_id])
+
+        if properties.exists?
+          render json: {
+            data: "Data Found",
+            properties: ActiveModelSerializers::SerializableResource.new(properties, each_serializer: PropertyListingSerializer),
+            success: true
+          }, status: :ok
+        else
+          render json: { error: "No property found", success: false }, status: :unprocessable_entity
+        end
+      rescue StandardError => e
+        render json: { error: "No property found ", message: e.message, success: false }, status: :internal_server_error
+      end
+    end
+
+
     def search
       amenity_ids = parse_to_array(params[:q][:amenity_ids])
       latitude, longitude = params[:q].values_at(:latitude, :longitude)
