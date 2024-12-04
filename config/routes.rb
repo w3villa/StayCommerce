@@ -77,6 +77,7 @@ Stay::Engine.routes.draw do
 
   namespace :api do
     namespace :v1 do
+      resources :invoices, only: [ :show, :index ]
       resources :cancellation_policies, only: [ :index ]
       resources :property_categories,  only: [ :index, :show ]
       resources :amenity_categories do

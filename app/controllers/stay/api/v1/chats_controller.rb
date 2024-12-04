@@ -31,7 +31,12 @@ class Stay::Api::V1::ChatsController < ApplicationController
   end
 
   def user_chat
-    @chats = Stay::Chat.for_user(current_devise_api_user).get_all_messages.order_by_latest_messages
+    @chats = Stay::Chat.for_user(current_devise_api_user)
+    if params[:unread].present?
+      @chats = @chats.get_unread_messages_chat.order_by_latest_messages.uniq
+    else
+      @chats = @chats.get_all_messages.order_by_latest_messages.uniq
+    end
 
     data = {
       message: @chats.any? ? "Chats Found" : "No Chat Found",

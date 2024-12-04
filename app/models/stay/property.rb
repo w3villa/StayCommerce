@@ -4,9 +4,9 @@ module Stay
     include CurrencyHelper
     include Stay::ControllerHelpers::Currency
     include Stay::ControllerHelpers::Store
-
+    ACTIVE_STATUS = "active".freeze
     has_one :master, -> { where is_master: true }, class_name: "Stay::Room", dependent: :destroy
-    has_many :rooms, class_name: "Stay::Room", dependent: :destroy
+    has_many :rooms, -> { where(status: ACTIVE_STATUS) }, class_name: "Stay::Room", dependent: :destroy
     has_many :rooms_including_master,
          inverse_of: :property,
          class_name: "Stay::Room",

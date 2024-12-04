@@ -1,7 +1,7 @@
 class PropertySerializer < ActiveModel::Serializer
     include Rails.application.routes.url_helpers
 
-  attributes :id, :title, :description, :is_shared_property, :availability_start, :availability_end, :guest_number, :bedroom_description,
+  attributes :id, :title, :description, :booked_dates, :is_shared_property, :availability_start, :availability_end, :guest_number, :bedroom_description,
               :university_nearby, :about_neighbourhoods, :instant_booking, :minimum_months_of_booking, :security_deposit, :extra_guest,
               :allow_extra_guest, :city, :address, :latitude, :longitude, :state, :country, :zipcode, :total_rooms, :total_bathrooms, :property_size,
               :cover_image, :place_images, :price_per_month, :house_rules, :additional_rules, :amenities, :property_taxes,  :features, :cancellation_policy
@@ -65,5 +65,13 @@ class PropertySerializer < ActiveModel::Serializer
     return nil unless object.cancellation_policy.present?
     CancellationPolicySerializer.new(object.cancellation_policy)
   end
-  
+
+  def booked_dates
+    return [] if object.shared_property
+    bookings = Stay::Booking.joins(:property).where(stay_properties: { id: object.id })
+    bookings.exists? ? bookings.pluck(:check_in_date, :check_out_date).uniq : []
+  rescue StandardError => e
+    Rails.logger.error("Error fetching bookings for room #{object.id}: #{e.message}")
+    []
+  end
 end

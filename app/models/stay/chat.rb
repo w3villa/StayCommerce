@@ -9,6 +9,7 @@ module Stay
     scope :for_user, ->(user) { where(sender: user).or(where(receiver: user)) }
     scope :get_all_messages, -> { joins(:messages) }
     scope :order_by_latest_messages, -> { group("stay_chats.id").order("MAX(stay_messages.created_at) DESC") }
+    scope :get_unread_messages_chat, -> { joins(:messages).where(stay_messages: { read_at: nil }) }
     enum :chat_event, { booking_request: 0, booking_accept: 1, booking_reject: 2, booking_request_change: 3 }
 
     scope :between, ->(sender_id, receiver_id) do

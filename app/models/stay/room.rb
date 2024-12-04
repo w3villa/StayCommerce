@@ -1,7 +1,7 @@
 module Stay
   class Room < ApplicationRecord
     include CurrencyHelper
-    # STATUSES = %w[active booked inactive].freeze
+    STATUSES = %w[active inactive].freeze
 
     belongs_to :property, class_name: "Stay::Property"
     belongs_to :room_type, class_name: "Stay::RoomType"
@@ -24,7 +24,7 @@ module Stay
 
     after_create :set_price
     after_update :update_price, if: :saved_change_to_price_per_month?
-    # validates :status, inclusion: { in: STATUSES }
+    validates :status, presence: true, inclusion: { in: STATUSES, message: "%{value} is not a valid status" }
     validate :booking_dates_are_valid
 
     # state_machine :status, initial: :active do
