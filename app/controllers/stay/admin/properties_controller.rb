@@ -77,7 +77,7 @@ module Stay
                                           :price_per_month, :property_category_id, :guest_number, :country_id, :state_id, :bedroom_description,
                                           :university_nearby, :about_neighbourhoods, :instant_booking, :minimum_months_of_booking, :security_deposit,
                                           :extra_guest, :allow_extra_guest, :city, :total_bedrooms, :latitude, :longitude, :total_rooms, :country, :state,
-                                          :total_bathrooms, :property_size, :cover_image, :zipcode, amenity_ids: [], feature_ids: [],
+                                          :total_bathrooms, :property_size, :cover_image, :zipcode, amenity_ids: [], feature_ids: [], place_images: [],
                                           property_taxes_attributes: [:id, :tax_id, :value, :_destroy],
                                           property_amenities_attributes: [:id, :property_id, :amenity_id, :_destroy],
                                           property_features_attributes: [:id, :name, :feature_id, :_destroy],
