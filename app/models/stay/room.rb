@@ -26,6 +26,7 @@ module Stay
     after_update :update_price, if: :saved_change_to_price_per_month?
     validates :status, presence: true, inclusion: { in: STATUSES, message: "%{value} is not a valid status" }
     validate :booking_dates_are_valid
+    validate :room_count_limit
 
     # state_machine :status, initial: :active do
     #   state :active
@@ -59,6 +60,12 @@ module Stay
     def booking_dates_are_valid
       if booking_start && booking_end && booking_start >= booking_end
         errors.add(:booking_end, "must be after availability start date")
+      end
+    end
+
+    def room_count_limit
+      if property.rooms.count >= property.total_rooms
+        errors.add(:base, "You cannot create more rooms than the property's total room count.")
       end
     end
 
