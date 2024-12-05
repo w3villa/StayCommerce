@@ -63,6 +63,14 @@ module Stay
       end
     end
 
+    def self.ransackable_attributes(auth_object = nil)
+      %w[number]
+    end
+
+    def self.ransackable_association(auth_object = nil)
+      %w[user]
+    end
+
     def update_payment_status
       update_columns(payment_state: "paid") if payments.exists?(state: "paid")
     end
