@@ -5,6 +5,10 @@ module Stay
     include Stay::ControllerHelpers::Currency
     include Stay::ControllerHelpers::Store
     ACTIVE_STATUS = "active".freeze
+    extend FriendlyId
+
+    friendly_id :id_with_title
+
     has_one :master, -> { where is_master: true }, class_name: "Stay::Room", dependent: :destroy
     has_many :rooms, -> { where(status: ACTIVE_STATUS) }, class_name: "Stay::Room", dependent: :destroy
     has_many :rooms_including_master,
@@ -52,6 +56,7 @@ module Stay
     has_many :stores, through: :store_properties, class_name: "Stay::Store"
     scope :approved, -> { where(property_state: "approved") }
     scope :active, -> { where(active: true) }
+
     scope :similar_properties, ->(type_id, category_id, property_id) {
       where(property_type_id: type_id, property_category_id: category_id)
         .where.not(id: property_id)
@@ -80,6 +85,17 @@ module Stay
     # def self.ransackable_attributes(auth_object = nil)
     #   ["id", "name", "created_at", "updated_at"]
     # end
+
+    def id_with_title
+      [
+      :title,
+      [ :id, :title ]
+    ]
+    end
+
+    def should_generate_new_friendly_id?
+      title_changed?
+    end
 
     def combine_address
       [ address, city, state, country ].compact.join(" ")
