@@ -118,7 +118,7 @@ module Stay
     end
 
     def self.ransackable_attributes(auth_object = nil)
-      %w[active address availability_end availability_start title extra_guest total_rooms total_bathrooms latitude longitude total_bedrooms]
+      %w[active address availability_end availability_start title extra_guest total_rooms total_bathrooms latitude longitude total_bedrooms guest_number]
     end
 
     def self.ransackable_associations(auth_object = nil)
