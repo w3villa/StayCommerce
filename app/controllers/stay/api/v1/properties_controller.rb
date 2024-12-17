@@ -113,16 +113,36 @@ class Stay::Api::V1::PropertiesController < Stay::BaseApiController
       end
     end
 
+    def similar_property
+      begin
+        properties = Stay::Property.similar_properties(params[:property_type_id], params[:property_category_id], params[:property_id])
+
+        if properties.exists?
+          render json: {
+            data: "Data Found",
+            properties: ActiveModelSerializers::SerializableResource.new(properties, each_serializer: PropertyListingSerializer),
+            success: true
+          }, status: :ok
+        else
+          render json: { error: "No property found", success: false }, status: :unprocessable_entity
+        end
+      rescue StandardError => e
+        render json: { error: "No property found ", message: e.message, success: false }, status: :internal_server_error
+      end
+    end
+
+
     def search
       amenity_ids = parse_to_array(params[:q][:amenity_ids])
       latitude, longitude = params[:q].values_at(:latitude, :longitude)
 
-      @q = Stay::Property.approved.ransack(params[:q])
+      @q = Stay::Property.approved.active.ransack(params[:q])
       @properties = @q.result.distinct
 
       @properties = @properties.with_amenities(amenity_ids) if amenity_ids.any?
       @properties = @properties.nearby(latitude, longitude, params[:distance] || 10) if latitude && longitude
       @properties = @properties.by_property_type(params[:q][:property_type_id]) if params[:q][:property_type_id].present?
+      @properties = @properties.price_filter(params[:q][:min_price], params[:q][:max_price]) if params[:q][:min_price] && params[:q][:max_price].present?
 
       @properties = @properties.page(params[:page]).per(params[:per_page] || 10)
 

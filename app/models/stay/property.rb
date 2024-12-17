@@ -36,7 +36,7 @@ module Stay
     has_many :features, through: :property_features, class_name: "Stay::Feature"
     has_many :property_taxes, class_name: "Stay::PropertyTax", dependent: :destroy
     has_many :taxes, through: :property_taxes, class_name: "Stay::Tax"
-
+    acts_as_paranoid
     # nested_attributes
     accepts_nested_attributes_for :property_amenities, allow_destroy: true
     accepts_nested_attributes_for :additional_rules, allow_destroy: true
@@ -52,6 +52,9 @@ module Stay
     has_many :stores, through: :store_properties, class_name: "Stay::Store"
     scope :approved, -> { where(property_state: "approved") }
     scope :active, -> { where(active: true) }
+    after_restore :restore_associated_rooms
+    after_restore :restore_active_storage_files
+
 
     scope :with_amenities, ->(amenity_ids) {
       joins(:amenities).where(stay_amenities: { id: amenity_ids }).distinct
@@ -64,6 +67,11 @@ module Stay
     scope :by_property_type, ->(property_type_id) {
       joins(:property_type).where(property_type: { id: property_type_id })
     }
+
+    scope :price_filter, ->(min_price, max_price) {
+      joins(:rooms).where(stay_rooms: { price_per_month: min_price..max_price })
+    }
+
     # validates :latitude, format: { with: /\A-?([1-8]?\d(?:\.\d{1,})?|90(?:\.0{1,6})?)\z/ }
     # validates :longitude, format: { with: /\A-?((?:1[0-7]|[1-9])?\d(?:\.\d{1,})?|180(?:\.0{1,})?)\z/ }
 
@@ -192,6 +200,18 @@ module Stay
     end
 
     private
+
+    def restore_active_storage_files
+      place_images.each do |image|
+        unless File.exist?(ActiveStorage::Blob.service.path_for(image.blob.key))
+          Rails.logger.error "Missing file for #{image.filename}"
+        end
+      end
+    end
+
+    def restore_associated_rooms
+      rooms.only_deleted.each(&:restore)
+    end
 
     def availability_dates_are_valid
       if availability_start && availability_end && availability_start >= availability_end
