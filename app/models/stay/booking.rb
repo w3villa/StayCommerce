@@ -13,7 +13,7 @@ module Stay
     has_many :line_items, class_name: "Stay::LineItem", dependent: :destroy
     has_many :rooms, through: :line_items
     # has_many :properties, through: :rooms
-    belongs_to :property, class_name: "Stay::Property"
+    belongs_to :property, -> { with_deleted }, class_name: "Stay::Property", foreign_key: "property_id"
     belongs_to :store, class_name: "Stay::Store"
     has_one :chat, class_name: "Stay::Chat", dependent: :destroy
     has_one :booking_query, class_name: "Stay::BookingQuery", dependent: :destroy

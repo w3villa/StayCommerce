@@ -2,6 +2,7 @@ module Stay
   class Room < ApplicationRecord
     include CurrencyHelper
     STATUSES = %w[active inactive].freeze
+    acts_as_paranoid
 
     belongs_to :property, class_name: "Stay::Property"
     belongs_to :room_type, class_name: "Stay::RoomType"
