@@ -8,7 +8,10 @@ class Stay::Chat::QueryMessagingService
   end
 
   def perform
+    binding.pry
+
     messages_by_status = {
+
       "send_message" => {
        message: { text: "Query Sent for property #{@property.title} for dates #{@query.check_in_date.to_date} to #{@query.check_out_date.to_date} for #{@query.guest_count} guest." }
       },

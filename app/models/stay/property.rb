@@ -7,7 +7,7 @@ module Stay
     ACTIVE_STATUS = "active".freeze
     extend FriendlyId
 
-    friendly_id :id_with_title
+    friendly_id :id_with_title, use: :slugged
 
     has_one :master, -> { where is_master: true }, class_name: "Stay::Room", dependent: :destroy
     has_many :rooms, -> { where(status: ACTIVE_STATUS) }, class_name: "Stay::Room", dependent: :destroy
@@ -49,8 +49,8 @@ module Stay
     accepts_nested_attributes_for :property_features, allow_destroy: true
     accepts_nested_attributes_for :property_taxes, allow_destroy: true
 
-    geocoded_by :combine_address
-    after_validation :geocode
+    # geocoded_by :combine_address
+    # after_validation :geocode
 
     has_many :store_properties, class_name: "Stay::StoreProperty", dependent: :destroy
     has_many :stores, through: :store_properties, class_name: "Stay::Store"
@@ -85,12 +85,19 @@ module Stay
     # def self.ransackable_attributes(auth_object = nil)
     #   ["id", "name", "created_at", "updated_at"]
     # end
-
     def id_with_title
       [
-      :title,
-      [ :id, :title ]
-    ]
+        truncated_title,
+        [ truncated_title, truncated_description ]
+      ]
+    end
+
+    def truncated_title
+      title.split[0..9].join(" ") # Limit title to 10 words
+    end
+
+    def truncated_description
+      description.split[0..5].join(" ") # Limit description to 10 words
     end
 
     def should_generate_new_friendly_id?
@@ -220,7 +227,8 @@ module Stay
     end
 
     def create_store_property
-      return unless current_store.present?
+      room_attr.none? { |item| item == "0" } && room_attr.any? { |item| item.is_a?(ActionController::Parameters) && item[:id].present? }
+      room_attr.none? { |item| item == "0" } && room_attr.any? { |item| item.is_a?(ActionController::Parameters) && item[:id].present? }
       StoreProperty.create(store_id: current_store.id, property_id: self.id)
     end
 
