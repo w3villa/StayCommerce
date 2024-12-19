@@ -27,7 +27,7 @@ module Stay
     after_update :update_price, if: :saved_change_to_price_per_month?
     validates :status, presence: true, inclusion: { in: STATUSES, message: "%{value} is not a valid status" }
     validate :booking_dates_are_valid
-    validate :room_count_limit
+    validate :room_count_limit, on: :create
 
     # state_machine :status, initial: :active do
     #   state :active

@@ -117,6 +117,13 @@
         <%= f.hidden_field :room_images, value: room.room_images if room.room_images.attached?%>
       </div>
     </div>
+
+    <div class="col-md-6">
+      <div class="field">
+        <%= f.label :status, class: "form-label" %>
+        <%= f.select :status, Stay::Room::STATUSES.map { |status| [status.humanize, status] }, {}, class: 'form-control custom-select-box' %>
+      </div>
+    </div>
   </div>
 
   <div class="row">
