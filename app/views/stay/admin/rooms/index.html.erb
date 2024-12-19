@@ -28,6 +28,7 @@
       <th scope="col">Room Type</th>
       <th scope="col">Booking Start</th>
       <th scope="col">Booking End</th>
+      <th scope="col">Status</th>
 
       <th></th>
     </tr>
@@ -44,6 +45,7 @@
         <td><%= room.room_type&.name %></td>
         <td><%= room.booking_start%></td>
         <td><%= room.booking_end%></td>
+        <td><%= room.status%></td>
         <td class="text-end d-flex justify-content-end">
           <%= link_to edit_admin_property_room_path(@property, room), class: 'btn d-inline-flex btn-sm btn-neutral mx-1' do %>
             <i class="bi bi-pencil">Edit</i>
