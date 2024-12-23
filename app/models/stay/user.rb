@@ -37,6 +37,14 @@ module Stay
 
     attr_accessor :updating_password
 
+    def self.ransackable_attributes(auth_object = nil)
+      %w[email first_name last_name]
+    end
+
+    def self.ransackable_associations(auth_object = nil)
+      %w[stay_roles bookings]
+    end
+
     def roles
       stay_roles
     end

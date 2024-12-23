@@ -4,7 +4,8 @@ module Stay
       before_action :set_property, only: %i[show edit update destroy approve reject]
 
       def index
-        @properties = current_store.properties.page(params[:page])
+        @q = current_store.properties.ransack(params[:q])
+        @properties = @q.result.page(params[:page]).per(params[:per_page] || 30)
       end
 
       def show
@@ -76,7 +77,7 @@ module Stay
                                           :price_per_month, :property_category_id, :guest_number, :country_id, :state_id, :bedroom_description,
                                           :university_nearby, :about_neighbourhoods, :instant_booking, :minimum_months_of_booking, :security_deposit,
                                           :extra_guest, :allow_extra_guest, :city, :total_bedrooms, :latitude, :longitude, :total_rooms, :country, :state,
-                                          :total_bathrooms, :property_size, :cover_image, :zipcode, amenity_ids: [], feature_ids: [],
+                                          :total_bathrooms, :property_size, :cover_image, :zipcode, amenity_ids: [], feature_ids: [], place_images: [],
                                           property_taxes_attributes: [:id, :tax_id, :value, :_destroy],
                                           property_amenities_attributes: [:id, :property_id, :amenity_id, :_destroy],
                                           property_features_attributes: [:id, :name, :feature_id, :_destroy],

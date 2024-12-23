@@ -134,14 +134,18 @@ class Stay::Api::V1::PropertiesController < Stay::BaseApiController
 
     def search
       amenity_ids = parse_to_array(params[:q][:amenity_ids])
+      feature_ids = parse_to_array(params[:q][:feature_ids])
       latitude, longitude = params[:q].values_at(:latitude, :longitude)
 
-      @q = Stay::Property.approved.ransack(params[:q])
+      @q = Stay::Property.approved.active.ransack(params[:q])
       @properties = @q.result.distinct
 
       @properties = @properties.with_amenities(amenity_ids) if amenity_ids.any?
+      @properties = @properties.with_features(feature_ids) if feature_ids.any?
       @properties = @properties.nearby(latitude, longitude, params[:distance] || 10) if latitude && longitude
       @properties = @properties.by_property_type(params[:q][:property_type_id]) if params[:q][:property_type_id].present?
+      @properties = @properties.price_filter(params[:q][:min_price], params[:q][:max_price]) if params[:q][:min_price] && params[:q][:max_price].present?
+      @properties = @properties.by_property_category(params[:q][:property_category_id]) if params[:q][:property_category_id].present?
 
       @properties = @properties.page(params[:page]).per(params[:per_page] || 10)
 

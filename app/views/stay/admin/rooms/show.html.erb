@@ -12,6 +12,7 @@
           <p><strong>Room Type: </strong><%= @room.room_type.name%></p>
           <p><strong>Booking Start: </strong><%= @room.booking_start%></p>
           <p><strong>Booking End: </strong><%= @room.booking_end%></p>
+          <p><strong>Status: </strong><%= @room.status%></p>
 
           <div class="d-flex mt-4 p-4 justify-content-center">  
             <%= link_to 'Edit', edit_admin_property_room_path(@property, @room), class: 'btn btn-warning me-3' %> 
