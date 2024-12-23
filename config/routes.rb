@@ -141,6 +141,7 @@ Stay::Engine.routes.draw do
       resources :properties do
         collection do
           get :my_properties, to: "properties#my_properties"
+          get :similar_property
         end
         resources :booking_queries
         collection do
