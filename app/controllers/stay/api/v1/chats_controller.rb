@@ -5,7 +5,7 @@ class Stay::Api::V1::ChatsController < ApplicationController
   def index
     begin
       page = params[:page].to_i > 0 ? params[:page].to_i : 1
-      per_page = params[:per_page].to_i > 0 ? params[:per_page].to_i : 10
+      per_page = params[:per_page].to_i > 0 ? params[:per_page].to_i : 15
       cumulative_per_page = page * per_page
 
       chats = Stay::Chat.joins(:messages, :property).where(stay_properties: { user: current_devise_api_user })
@@ -57,7 +57,7 @@ class Stay::Api::V1::ChatsController < ApplicationController
   def user_chat
     begin
       page = params[:page].to_i > 0 ? params[:page].to_i : 1
-      per_page = params[:per_page].to_i > 0 ? params[:per_page].to_i : 10
+      per_page = params[:per_page].to_i > 0 ? params[:per_page].to_i : 15
 
       cumulative_per_page = page * per_page
       @chats = Stay::Chat.for_user(current_devise_api_user)

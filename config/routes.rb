@@ -145,7 +145,7 @@ Stay::Engine.routes.draw do
         end
         resources :booking_queries
         collection do
-          post "search", to: "properties#search"
+          get "search", to: "properties#search"
           get :property_tax
         end
         member do
