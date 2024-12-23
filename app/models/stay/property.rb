@@ -54,8 +54,8 @@ module Stay
     scope :active, -> { where(active: true) }
     scope :similar_properties, ->(type_id, category_id, property_id) {
         where(property_type_id: type_id, property_category_id: category_id)
-        .where.not(id: property_id)
-    
+        .where.not(id: property_id)}
+
     after_restore :restore_associated_rooms
     after_restore :restore_active_storage_files
 
