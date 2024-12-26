@@ -1,0 +1,61 @@
+<div class="card mb-3" id="order_tab_summary">
+  <div class="card-header">
+    <h3 class="card-title mb-0 h6">summary</h3>
+  </div>
+  <ul class="list-group" style="line-height: 10px;">
+    <li class="list-group-item d-flex justify-content-between align-items-center">
+      <span class="text-muted">status</span>
+      <span class="text-muted"><%= @booking.status %></span>
+    </li>
+
+    <li class="list-group-item d-flex justify-content-between align-items-center">
+      <span class="text-muted">Check In Date</span>
+      <span class="text-muted"><%= @booking.check_in_date %></span>
+    </li>
+
+    <li class="list-group-item d-flex justify-content-between align-items-center">
+      <span class="text-muted">Check Out Date</span>
+      <span class="text-muted"><%= @booking.check_out_date %></span>
+    </li>
+
+    <li class="list-group-item d-flex justify-content-between align-items-center">
+      <span class="text-muted">Total Rooms</span>
+      <span class="text-muted"><%= @booking.room_count %></span>
+    </li>
+
+    <% if @booking.payment_state.present? %>
+      <li class="list-group-item d-flex justify-content-between align-items-center">
+        <span class="text-muted">payment</span>
+        <span class="text-muted"><%= @booking.payment_state %></span>
+      </li>
+    <% end %>
+    <% if @booking.completed? %>
+      <li class="list-group-item d-flex justify-content-between align-items-center">
+        <span data-hook='admin_order_tab_date_completed_title' class="text-muted">Date Completed</span>
+        <span class="text-right span font-weight-bold text-muted" id='date_complete'>
+          <%= (@booking.completed_at.to_date) %>
+        </span>
+      </li>
+    <% end %>
+
+    <li class="list-group-item d-flex justify-content-between align-items-center">
+      <span class="text-muted">Subtotal</span>
+      <span class="text-muted"><%= currency_symbol(current_currency)%> <%= @booking.item_total %></span>
+    </li>
+
+    <li class="list-group-item d-flex justify-content-between align-items-center">
+      <span class="text-muted">Invoice Total</span>
+      <span class="text-muted"><%= currency_symbol(current_currency)%> <%= @booking.total %></span>
+    </li>
+
+    <li class="list-group-item d-flex justify-content-between align-items-center">
+      <span class="text-muted">Tax</span>
+      <span class="text-muted"><%= @booking.property.property_taxes.uniq { |property_tax| property_tax.tax_id }.pluck(:value).sum %></span>
+    </li>
+
+    <li class="list-group-item d-flex justify-content-between align-items-center">
+      <span data-hook='admin_order_tab_total_title' class="text-muted">total</span>
+      <span class="text-muted"><%= currency_symbol(current_currency)%> <%= @booking.total_amount %></span>
+    </li>
+  </ul>
+</div>

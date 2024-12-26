@@ -1,5 +1,7 @@
 class PropertyTypeSerializer < ActiveModel::Serializer
+  attributes :id, :name, :property_count
 
-  attributes :id ,:name
-
+  def property_count
+    object.properties.approved.active.count
+  end
 end

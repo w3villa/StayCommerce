@@ -1,18 +1,19 @@
 module Stay
   module Admin
     class UsersController < Stay::Admin::BaseController
-      before_action :set_user, only: [:show, :edit, :update, :destroy, :addresses]
-      
+      before_action :set_user, only: [ :show, :edit, :update, :destroy, :addresses ]
+
       # GET /Stay/admin/users
       def index
-        @users = Stay::User.page(params[:page])
+        @q = Stay::User.ransack(params[:q])
+        @users = @q.result.order(created_at: :desc).page(params[:page]).per(30)
       end
 
       # GET /Stay/admin/users/1
       def show
       end
 
-       # GET /Stay/admin/users/new
+      # GET /Stay/admin/users/new
       def new
         @user = Stay::User.new
       end
@@ -26,7 +27,7 @@ module Stay
       def create
         @user = Stay::User.new(user_params)
         if @user.save
-          redirect_to admin_user_path(@user), notice: 'User was successfully created.'
+          redirect_to admin_user_path(@user), notice: "User was successfully created."
         else
           render :new
         end
@@ -43,7 +44,7 @@ module Stay
         @user.updating_password = params[:user][:password].present?
 
         if @user.update(user_params)
-          redirect_to admin_user_path(@user), notice: 'User was successfully updated.'
+          redirect_to admin_user_path(@user), notice: "User was successfully updated."
         else
           render :edit
         end
@@ -53,17 +54,17 @@ module Stay
       # DELETE /Stay/admin/users/1.json
       def destroy
         @user.destroy
-        redirect_to admin_users_url, notice: 'User was successfully destroyed.'
+        redirect_to admin_users_url, notice: "User was successfully destroyed."
       end
 
       def addresses
         if request.put?
           params[:user][:addresses_attributes][:user_id] = @user.id if params[:user][:addresses_attributes].present?
           if @user.update(user_params)
-            flash[:success] = 'Address updated successfully'
+            flash[:success] = "Address updated successfully"
             redirect_to admin_user_path(@user)
           else
-            flash.now[:error] = 'Failed to update address'
+            flash.now[:error] = "Failed to update address"
             render :addresses, status: :unprocessable_entity
           end
         end
@@ -76,8 +77,8 @@ module Stay
         end
 
         def user_params
-          params.require(:user).permit(:first_name, :last_name, :email, :phone, :date_of_birth, :gender, :password, :password_confirmation, stay_role_ids: [], addresses_attributes: [:id, :address1, :address2, :city, :state, :country, 
-                                :zipcode, :longitude, :latitude, :state_id, :country_id, :firstname, :lastname, :phone, :alternative_phone])
+          params.require(:user).permit(:first_name, :last_name, :email, :phone, :date_of_birth, :gender, :password, :password_confirmation, :profile_image, stay_role_ids: [], addresses_attributes: [ :id, :address1, :address2, :city, :state, :country,
+                                :zipcode, :longitude, :latitude, :state_id, :country_id, :firstname, :lastname, :phone, :alternative_phone ])
         end
     end
   end

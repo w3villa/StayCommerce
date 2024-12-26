@@ -40,7 +40,7 @@ module Stay
     has_many :features, through: :property_features, class_name: "Stay::Feature"
     has_many :property_taxes, class_name: "Stay::PropertyTax", dependent: :destroy
     has_many :taxes, through: :property_taxes, class_name: "Stay::Tax"
-
+    acts_as_paranoid
     # nested_attributes
     accepts_nested_attributes_for :property_amenities, allow_destroy: true
     accepts_nested_attributes_for :additional_rules, allow_destroy: true
@@ -58,8 +58,14 @@ module Stay
     scope :active, -> { where(active: true) }
 
     scope :similar_properties, ->(type_id, category_id, property_id) {
-      where(property_type_id: type_id, property_category_id: category_id)
-        .where.not(id: property_id)
+        where(property_type_id: type_id, property_category_id: category_id)
+        .where.not(id: property_id)}
+
+    after_restore :restore_associated_rooms
+    after_restore :restore_active_storage_files
+
+    scope :with_features, ->(feature_ids) {
+      joins(:features).where(stay_features: { id: feature_ids }).distinct
     }
 
     scope :with_amenities, ->(amenity_ids) {
@@ -72,6 +78,14 @@ module Stay
 
     scope :by_property_type, ->(property_type_id) {
       joins(:property_type).where(property_type: { id: property_type_id })
+    }
+
+    scope :price_filter, ->(min_price, max_price) {
+      joins(:rooms).where(stay_rooms: { price_per_month: min_price..max_price })
+    }
+
+    scope :by_property_category, ->(property_category_id) {
+      joins(:property_category).where(property_category: { id: property_category_id })
     }
 
     attr_accessor :price_per_month
@@ -127,7 +141,7 @@ module Stay
     end
 
     def self.ransackable_attributes(auth_object = nil)
-      %w[active address availability_end availability_start title extra_guest total_rooms total_bathrooms latitude longitude]
+      %w[active address availability_end availability_start title extra_guest total_rooms total_bathrooms latitude longitude total_bedrooms guest_number]
     end
 
     def self.ransackable_associations(auth_object = nil)
@@ -195,6 +209,18 @@ module Stay
     end
 
     private
+
+    def restore_active_storage_files
+      place_images.each do |image|
+        unless File.exist?(ActiveStorage::Blob.service.path_for(image.blob.key))
+          Rails.logger.error "Missing file for #{image.filename}"
+        end
+      end
+    end
+
+    def restore_associated_rooms
+      rooms.only_deleted.each(&:restore)
+    end
 
     def availability_dates_are_valid
       if availability_start && availability_end && availability_start >= availability_end
