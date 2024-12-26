@@ -73,18 +73,14 @@ module Stay
     scope :by_property_type, ->(property_type_id) {
       joins(:property_type).where(property_type: { id: property_type_id })
     }
-    # validates :latitude, format: { with: /\A-?([1-8]?\d(?:\.\d{1,})?|90(?:\.0{1,6})?)\z/ }
-    # validates :longitude, format: { with: /\A-?((?:1[0-7]|[1-9])?\d(?:\.\d{1,})?|180(?:\.0{1,})?)\z/ }
 
-    # attr_accessor :price_per_month
-    # after_create :create_default_room
-    # after_update :update_prices
+    attr_accessor :price_per_month
+    after_create :create_default_room
+    after_update :update_prices
     after_create :create_store_property
     validate :availability_dates_are_valid
 
-    # def self.ransackable_attributes(auth_object = nil)
-    #   ["id", "name", "created_at", "updated_at"]
-    # end
+
     def id_with_title
       [
         truncated_title,
@@ -93,11 +89,11 @@ module Stay
     end
 
     def truncated_title
-      title.split[0..9].join(" ") # Limit title to 10 words
+      title.split[0..9].join(" ")
     end
 
     def truncated_description
-      description.split[0..5].join(" ") # Limit description to 10 words
+      description.split[0..5].join(" ")
     end
 
     def should_generate_new_friendly_id?
@@ -124,27 +120,7 @@ module Stay
       event :resubmit do
         transition rejected: :waiting_for_approval
       end
-
-      # after_transition on: :approve do |property|
-      #   property.notify_user("Your property has been approved!")
-      # end
-
-      # after_transition on: :reject do |property|
-      #   property.notify_user("Your property has been rejected.")
-      # end
-
-      # after_transition on: :resubmit do |property|
-      #   property.notify_admin("Property has been resubmitted for approval.")
-      # end
     end
-
-    # def notify_user(message)
-    #   puts message
-    # end
-
-    # def notify_admin(message)
-    #   puts message
-    # end
 
     def self.ransackable_scopes(auth_object = nil)
       %i[with_amenities nearby by_property_type]
@@ -227,14 +203,14 @@ module Stay
     end
 
     def create_store_property
-      room_attr.none? { |item| item == "0" } && room_attr.any? { |item| item.is_a?(ActionController::Parameters) && item[:id].present? }
-      room_attr.none? { |item| item == "0" } && room_attr.any? { |item| item.is_a?(ActionController::Parameters) && item[:id].present? }
+      # room_attr.none? { |item| item == "0" } && room_attr.any? { |item| item.is_a?(ActionController::Parameters) && item[:id].present? }
+      # room_attr.none? { |item| item == "0" } && room_attr.any? { |item| item.is_a?(ActionController::Parameters) && item[:id].present? }
       StoreProperty.create(store_id: current_store.id, property_id: self.id)
     end
 
     def create_default_room
       return unless Stay::RoomType.first.present?
-      master_room = rooms.create!(is_master: true, property_id: self.id, max_guests: 2, ffnth: price_per_month, room_type_id: Stay::RoomType.first&.id, status: "available")
+      master_room = rooms.create!(is_master: true, property_id: self.id, max_guests: 2, price_per_month: price_per_month, room_type_id: Stay::RoomType.first&.id, status: "active")
       master_room.prices.create(amount: master_room.price_per_month, currency: Stay::Store.default.default_currency)
     end
 
