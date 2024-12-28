@@ -15,5 +15,6 @@ gem 'active_model_serializers'
 gem "rack-cors"
 gem 'faker'
 gem 'geocoder'
+gem "rails", "~> 8.0"
 # Start debugger with binding.b [https://github.com/ruby/debug]
 # gem "debug", ">= 1.0.0"
