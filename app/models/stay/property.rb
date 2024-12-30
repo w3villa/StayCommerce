@@ -5,6 +5,11 @@ module Stay
     include Stay::ControllerHelpers::Currency
     include Stay::ControllerHelpers::Store
     ACTIVE_STATUS = "active".freeze
+    extend FriendlyId
+
+    friendly_id :title, use: :slugged
+
+    validates :title, presence: true, uniqueness: { case_sensitive: false, error: "Title has already been taken" }
     has_one :master, -> { where is_master: true }, class_name: "Stay::Room", dependent: :destroy
     has_many :rooms, -> { where(status: ACTIVE_STATUS) }, class_name: "Stay::Room", dependent: :destroy
     has_many :rooms_including_master,
@@ -45,13 +50,14 @@ module Stay
     accepts_nested_attributes_for :property_features, allow_destroy: true
     accepts_nested_attributes_for :property_taxes, allow_destroy: true
 
-    geocoded_by :combine_address
-    after_validation :geocode
+    # geocoded_by :combine_address
+    # after_validation :geocode
 
     has_many :store_properties, class_name: "Stay::StoreProperty", dependent: :destroy
     has_many :stores, through: :store_properties, class_name: "Stay::Store"
     scope :approved, -> { where(property_state: "approved") }
     scope :active, -> { where(active: true) }
+
     scope :similar_properties, ->(type_id, category_id, property_id) {
         where(property_type_id: type_id, property_category_id: category_id)
         .where.not(id: property_id)}
@@ -80,20 +86,34 @@ module Stay
     }
 
     scope :by_property_category, ->(property_category_id) {
-      joins(:property_category).where(property_category: { id: property_category_id })    }
+      joins(:property_category).where(property_category: { id: property_category_id })
+    }
 
-    # validates :latitude, format: { with: /\A-?([1-8]?\d(?:\.\d{1,})?|90(?:\.0{1,6})?)\z/ }
-    # validates :longitude, format: { with: /\A-?((?:1[0-7]|[1-9])?\d(?:\.\d{1,})?|180(?:\.0{1,})?)\z/ }
-
-    # attr_accessor :price_per_month
-    # after_create :create_default_room
-    # after_update :update_prices
+    attr_accessor :price_per_month
+    after_create :create_default_room
+    after_update :update_prices
     after_create :create_store_property
     validate :availability_dates_are_valid
 
-    # def self.ransackable_attributes(auth_object = nil)
-    #   ["id", "name", "created_at", "updated_at"]
-    # end
+
+    def id_with_title
+      [
+        truncated_title,
+        [ truncated_title, truncated_description ]
+      ]
+    end
+
+    def truncated_title
+      title.split[0..9].join(" ")
+    end
+
+    def truncated_description
+      description.split[0..5].join(" ")
+    end
+
+    def should_generate_new_friendly_id?
+      title_changed?
+    end
 
     def combine_address
       [ address, city, state, country ].compact.join(" ")
@@ -210,13 +230,14 @@ module Stay
     end
 
     def create_store_property
-      return unless current_store.present?
+      # room_attr.none? { |item| item == "0" } && room_attr.any? { |item| item.is_a?(ActionController::Parameters) && item[:id].present? }
+      # room_attr.none? { |item| item == "0" } && room_attr.any? { |item| item.is_a?(ActionController::Parameters) && item[:id].present? }
       StoreProperty.create(store_id: current_store.id, property_id: self.id)
     end
 
     def create_default_room
       return unless Stay::RoomType.first.present?
-      master_room = rooms.create!(is_master: true, property_id: self.id, max_guests: 2, ffnth: price_per_month, room_type_id: Stay::RoomType.first&.id, status: "available")
+      master_room = rooms.create!(is_master: true, property_id: self.id, max_guests: 2, price_per_month: price_per_month, room_type_id: Stay::RoomType.first&.id, status: "active")
       master_room.prices.create(amount: master_room.price_per_month, currency: Stay::Store.default.default_currency)
     end
 

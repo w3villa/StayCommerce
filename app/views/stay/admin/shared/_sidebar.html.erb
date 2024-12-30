@@ -113,9 +113,11 @@
                   <%end%>
               </li>
               <li class="nav-item">
+                <% if Stay::Country.any? %>
                   <%= link_to admin_country_states_path(country_id: Stay::Country.first.id), class: 'nav-link' do %>
                   <i></i> States
                   <%end%>
+                <%end%>
               </li>
               <li class="nav-item">
                   <%#= link_to 'Cities', admin_state_cities_path(state_id: Stay::State.first.id), class: 'nav-link' %>
