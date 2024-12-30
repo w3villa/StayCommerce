@@ -7,8 +7,9 @@ module Stay
     ACTIVE_STATUS = "active".freeze
     extend FriendlyId
 
-    friendly_id :id_with_title, use: :slugged
+    friendly_id :title, use: :slugged
 
+    validates :title, presence: true, uniqueness: { case_sensitive: false, error: "Title has already been taken" }
     has_one :master, -> { where is_master: true }, class_name: "Stay::Room", dependent: :destroy
     has_many :rooms, -> { where(status: ACTIVE_STATUS) }, class_name: "Stay::Room", dependent: :destroy
     has_many :rooms_including_master,
