@@ -32,6 +32,7 @@ Stay::Engine.routes.draw do
     resources :chats
     resources :messages
     resources :room_types
+    resources :cancellation_policies
     resources :property_categories
     resources :property_types
     resources :bed_types
