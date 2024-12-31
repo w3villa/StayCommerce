@@ -89,7 +89,7 @@ module Stay
       joins(:property_category).where(property_category: { id: property_category_id })
     }
 
-    attr_accessor :price_per_month
+    # attr_accessor :price_per_month
     after_create :create_default_room
     after_update :update_prices
     after_create :create_store_property
