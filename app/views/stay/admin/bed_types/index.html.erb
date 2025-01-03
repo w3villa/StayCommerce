@@ -19,19 +19,21 @@
     </div>  
   </div>
   <div class="table-responsive">
-    <table class="table table-hover table-nowrap">
+    <table class="table table-hover table-nowrap text-center align-middle">
       <thead class="table-light">
     <tr>
+      <th scope="col">Sr. No</th>
       <th scope="col">Name</th>
-      <th></th>
+      <th scope="col">Actions</th>
     </tr>
   </thead>
 
   <tbody>
-    <% @bed_types.each do |bed_type| %>
+    <% @bed_types.each_with_index do |bed_type, index| %>
       <tr>
+        <td><%= index + 1 %></td>
         <td><%= bed_type.name %></td>
-        <td class="text-end d-flex justify-content-end">
+        <td class="text-end d-flex justify-content-center">
           <%= link_to edit_admin_bed_type_path(bed_type), class: 'btn d-inline-flex btn-sm btn-neutral mx-1' do %>
             <i class="bi bi-pencil"></i>
           <% end %>  
