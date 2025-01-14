@@ -16,9 +16,9 @@
           </div>
       </div>
       <div class="row g-3 mt-4">
-        <div class="col-12">
+        <div class="col-lg-3">
           <%= search_form_for @q, url: admin_properties_path, method: :get, local: true, class: "input-group" do |f| %>
-            <%= f.search_field :title_cont, placeholder: "Search by Name", class: "form-control" %>
+            <%= f.search_field :title_cont, placeholder: "Search by title", class: "form-control" %>
             <%= f.submit "Search", class: "btn btn-primary" %>
           <% end %>
         </div>

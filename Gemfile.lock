@@ -21,6 +21,7 @@ PATH
       carmen
       devise
       devise-api
+      friendly_id
       geocoder
       hotwire-rails
       inline_svg
@@ -183,6 +184,8 @@ GEM
       i18n (>= 1.8.11, < 2)
     ffi (1.17.0-arm64-darwin)
     ffi (1.17.0-x86_64-linux-gnu)
+    friendly_id (5.5.1)
+      activerecord (>= 4.0.0)
     geocoder (1.8.3)
       base64 (>= 0.1.0)
       csv (>= 3.0.0)
@@ -424,6 +427,7 @@ DEPENDENCIES
   active_model_serializers
   devise-api!
   faker
+  friendly_id
   geocoder
   letter_opener
   mysql2 (~> 0.5.2)

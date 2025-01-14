@@ -76,11 +76,21 @@ class Stay::Api::V1::PropertiesController < Stay::BaseApiController
     end
 
     def create
-      @property = current_devise_api_user.properties.new(property_params)
-      if @property.save
-        render json: { message: "property create", property: PropertySerializer.new(@property), success: true }, status: :created
-      else
-        render json: { message: @property.errors.full_messages, success: false }, status: :unprocessable_entity
+      ActiveRecord::Base.transaction do
+        begin
+          @property = current_devise_api_user.properties.new(property_params)
+          if @property.save
+            render json: { message: "Property created", property: PropertySerializer.new(@property), success: true }, status: :created
+          else
+            raise ActiveRecord::RecordInvalid.new(@property)
+          end
+        rescue ActiveRecord::RecordInvalid => e
+          render json: { error: @property.errors.full_messages.to_sentence, success: false }, status: :unprocessable_entity
+          raise ActiveRecord::Rollback
+        rescue StandardError => e
+          render json: { error: "Something went wrong: #{e.message}", success: false }, status: :unprocessable_entity
+          raise ActiveRecord::Rollback
+        end
       end
     end
 

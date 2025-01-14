@@ -1,7 +1,7 @@
 <%= form_with(model: [:admin,  @property_type], local: true) do |f| %>
   <% if @property_type.errors.any? %>
     <div id="error_explanation">
-      <h2><%= pluralize(@property_type.errors.count, "error") %> prohibited this room from being saved:</h2>
+      <h2><%= pluralize(@property_type.errors.count, "error") %> prohibited this property type from being saved:</h2>
       <ul>
         <% @property_type.errors.full_messages.each do |message| %>
           <li><%= message %></li>

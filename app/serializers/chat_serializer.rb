@@ -1,5 +1,5 @@
 class ChatSerializer < ActiveModel::Serializer
-  attributes :id, :sender_id, :receiver_id, :sender, :receiver, :last_message,:last_message_time, :unread_count, :property
+  attributes :id, :sender_id, :receiver_id, :sender, :receiver, :last_message, :last_message_time, :unread_count, :property
 
   def property
     PropertyListingSerializer.new(object.property)
@@ -30,11 +30,38 @@ class ChatSerializer < ActiveModel::Serializer
   end
 
   def last_message
-    object.messages.any? ? object.messages.last.body : nil
+    last_message = object.messages.last
+    return nil unless last_message
+
+    if last_message.body.blank? && last_message.attachments.any?
+      attachment = last_message.attachments.last
+      content_type = attachment.blob.content_type
+
+      if content_type.start_with?("image/")
+        "Image: " + attachment.blob.filename.to_s
+      elsif content_type.start_with?("video/")
+        "Video: " + attachment.blob.filename.to_s
+      else
+        attachment.blob.filename.to_s
+      end
+    else
+      last_message.body
+    end
   end
 
   def last_message_time
-    object.messages.any? ? object.messages.last.created_at : nil
+    object.messages.any? ? formatted_date(object.messages.last.created_at) : nil
   end
 
+  private
+
+  def formatted_date(date)
+    if date.to_date == Date.today
+      date.strftime("%H:%M %p")
+    elsif date.to_date == Date.yesterday
+      date.strftime("%m/%d")
+    else
+      date.strftime("%-m/%d/%Y")
+    end
+  end
 end
