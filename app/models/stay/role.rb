@@ -6,5 +6,6 @@ module Stay
 
     USER = "student".freeze
     ADMIN = "admin".freeze
+    HOST = "host".freeze
   end
 end

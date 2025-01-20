@@ -6,7 +6,6 @@ module Stay
            :recoverable, :rememberable, :validatable, :api
 
     validates :first_name, :last_name, presence: true
-    # after_create :assign_default_role
     has_many :role_users, class_name: "Stay::RoleUser", dependent: :destroy
     has_many :stay_roles, through: :role_users, class_name: "Stay::Role", source: :role
     has_many :bookings
@@ -35,6 +34,11 @@ module Stay
 
     scope :admin, -> { includes(:stay_roles).where("#{roles_table_name}.name" => "admin") }
 
+    # callbacks
+    after_create :welcome_email
+    # after_create :assign_default_role
+    # after_create :admin_host_email
+
     attr_accessor :updating_password
 
     def self.ransackable_attributes(auth_object = nil)
@@ -58,15 +62,23 @@ module Stay
     end
 
     def stay_admin?
-      has_stay_role?("admin")
+      has_stay_role?(Stay::Role::ADMIN)
     end
 
     def stay_host?
-      has_stay_role?("host")
+      has_stay_role?(Stay::Role::HOST)
+    end
+
+    def stay_user?
+      has_stay_role?(Stay::Role::USER)
     end
 
     def name
       "#{first_name} #{last_name}"
+    end
+
+    def full_name
+      [ first_name, last_name ].compact.join(" ")
     end
 
     def password_required?
@@ -78,7 +90,19 @@ module Stay
       self.sms_notification = false if sms_notification.nil?
     end
 
+    def self.admin_emails
+      joins(:stay_roles).where(stay_roles: { name: Stay::Role::ADMIN }).pluck(:email).uniq
+    end
+
     private
+
+    def welcome_email
+      Stay::UserMailer.welcome_email(self).deliver_now
+    end
+
+    def admin_host_email
+      UserMailer.new_host_signup(self).deliver_now if stay_host?
+    end
 
     def assign_default_role
       Stay::RoleUser.create(user: self, role: Stay::Role.where(name: Stay::Role::USER).first_or_create) unless stay_roles.exists?
