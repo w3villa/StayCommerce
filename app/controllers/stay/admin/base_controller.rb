@@ -5,7 +5,7 @@ module Stay
       include Stay::ControllerHelpers::Store
       layout "stay/admin"
       before_action :authenticate_user!
-      before_action :ensure_admin, if: -> { current_user.present? }
+      before_action :ensure_admin
       before_action :load_stores
 
       def stores_scope
@@ -31,8 +31,8 @@ module Stay
       private
 
       def ensure_admin
-        redirect_to root_path, alert: 'Access denied!' unless current_user.stay_admin?
+        redirect_to root_path, alert: "Access denied!" unless current_user.stay_admin?
       end
     end
   end
-end 
+end

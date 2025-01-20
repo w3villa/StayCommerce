@@ -1,8 +1,8 @@
 class Stay::Api::V1::PropertiesController < Stay::BaseApiController
-    before_action :set_property, only: [ :show, :update, :destroy ]
     before_action :authenticate_devise_api_token!
-    # before_action :check_create_access, only: [:create, :update]
-    # before_action :check_update_access, only: [:update]
+    before_action :set_property, only: [ :show, :update, :destroy ]
+    before_action :check_create_access, only: [ :create, :update ]
+    before_action :check_update_access, only: [ :update ]
 
     def index
       begin
@@ -20,7 +20,7 @@ class Stay::Api::V1::PropertiesController < Stay::BaseApiController
 
         render json: {
           data: "Data Found",
-        properties: ActiveModelSerializers::SerializableResource.new(@properties, each_serializer: PropertyListingSerializer),
+          properties: ActiveModelSerializers::SerializableResource.new(@properties, each_serializer: PropertyListingSerializer),
           success: true,
           meta: {
           total_pages: total_pages,
@@ -96,16 +96,6 @@ class Stay::Api::V1::PropertiesController < Stay::BaseApiController
 
     def update
       ActiveRecord::Base.transaction do
-        if property_params["property_taxes_attributes"].present? &&  @property.property_taxes.any?
-          property_params["property_taxes_attributes"].each do |p_tax|
-            tax = @property.property_taxes.where(tax_id: p_tax["tax_id"])
-            if p_tax["value"].present?
-              tax.update_all(value: p_tax["value"])
-            elsif p_tax["_destroy"] == "true"
-              tax.destroy_all
-            end
-          end
-        end
         if @property.update(property_params)
           render json: {
             message: "property updated",
@@ -233,11 +223,11 @@ class Stay::Api::V1::PropertiesController < Stay::BaseApiController
       []
     end
 
-  # def check_create_access
-  #   return render json:{error: "You don't have access to create property", success: false}, status: :unprocessable_entity unless current_devise_api_user.stay_host?
-  # end
+  def check_create_access
+    render json: { error: "You don't have access to create property", success: false }, status: :unprocessable_entity unless current_devise_api_user.stay_host?
+  end
 
-  # def check_update_access
-  #   return render json:{error: "You don't have access to update this property", success: false}, status: :unprocessable_entity if current_devise_api_user != @property.user
-  # end
+  def check_update_access
+    render json: { error: "You don't have access to update this property", success: false }, status: :unprocessable_entity if current_devise_api_user != @property.user
+  end
 end

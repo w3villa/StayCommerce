@@ -4,6 +4,12 @@ module Stay
     STATUSES = %w[active inactive].freeze
     acts_as_paranoid
 
+    # validations
+    validates :status, presence: true, inclusion: { in: STATUSES, message: "%{value} is not a valid status" }
+    validate :booking_dates_are_valid
+    validate :room_count_limit, on: :create
+
+    # associations
     belongs_to :property, class_name: "Stay::Property"
     belongs_to :room_type, class_name: "Stay::RoomType"
     belongs_to :bed_type, class_name: "Stay::BedType", optional: :true
@@ -20,14 +26,12 @@ module Stay
     has_many :room_amenities, class_name: "Stay::RoomAmenity", dependent: :destroy
     has_many :amenities, through: :room_amenities, class_name: "Stay::Amenity"
 
+    # nested attributes
     accepts_nested_attributes_for :room_features, allow_destroy: true
     accepts_nested_attributes_for :room_amenities, allow_destroy: true
 
     after_create :set_price
     after_update :update_price, if: :saved_change_to_price_per_month?
-    validates :status, presence: true, inclusion: { in: STATUSES, message: "%{value} is not a valid status" }
-    validate :booking_dates_are_valid
-    validate :room_count_limit, on: :create
 
     # state_machine :status, initial: :active do
     #   state :active
@@ -60,11 +64,12 @@ module Stay
 
     def booking_dates_are_valid
       if booking_start && booking_end && booking_start >= booking_end
-        errors.add(:booking_end, "must be after availability start date")
+        errors.add(:booking_end, "must be after start date")
       end
     end
 
     def room_count_limit
+      return if property.rooms.count == 0
       if property.rooms.count >= property.total_rooms
         errors.add(:base, "You cannot create more rooms than the property's total room count.")
       end

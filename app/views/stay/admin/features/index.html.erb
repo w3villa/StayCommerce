@@ -19,21 +19,23 @@
     </div>  
   </div>
   <div class="table-responsive">
-    <table class="table table-hover table-nowrap">
+    <table class="table table-hover table-nowrap text-center align-middle">
       <thead class="table-light">
         <tr>
+          <th scope="col">Sr. No</th>
           <th scope="col">Name</th>
           <th scope="col">Feature Type</th>
-          <th></th>
+          <th scope="col">Actions</th>
         </tr>
       </thead>
 
       <tbody>
-        <% @features.each do |feature| %>
+        <% @features.each_with_index do |feature, index| %>
           <tr>
+            <td><%= index + 1%></td>
             <td><%= feature.name %></td>
             <td><%= feature.feature_type %></td>
-            <td class="text-end d-flex justify-content-end">
+            <td class="text-end d-flex justify-content-center">
               <%= link_to edit_admin_feature_path(feature), class: 'btn d-inline-flex btn-sm btn-neutral mx-1' do %>
                 <i class="bi bi-pencil"></i>
               <% end %>

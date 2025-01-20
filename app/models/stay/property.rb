@@ -1,15 +1,18 @@
 module Stay
   class Property < ApplicationRecord
+    ACTIVE_STATUS = "active".freeze
+    APPROVED = "approved".freeze
     include Rails.application.routes.url_helpers
     include CurrencyHelper
     include Stay::ControllerHelpers::Currency
     include Stay::ControllerHelpers::Store
-    ACTIVE_STATUS = "active".freeze
     extend FriendlyId
+    acts_as_paranoid
 
     friendly_id :title, use: :slugged
 
     validates :title, presence: true, uniqueness: { case_sensitive: false, error: "Title has already been taken" }
+    validate :availability_dates_are_valid
     has_one :master, -> { where is_master: true }, class_name: "Stay::Room", dependent: :destroy
     has_many :rooms, -> { where(status: ACTIVE_STATUS) }, class_name: "Stay::Room", dependent: :destroy
     has_many :rooms_including_master,
@@ -23,13 +26,9 @@ module Stay
     belongs_to :user, class_name: "Stay::User", optional: true
     # belongs_to :address, class_name: 'Stay::Address', optional: true
 
-    has_one_attached :cover_image
-    has_many_attached :place_images
     has_many :prices, through: :rooms
-
     has_many :line_items, through: :variants_including_master
     has_many :bookings
-
     belongs_to :property_category, class_name: "Stay::PropertyCategory", optional: true
     belongs_to :property_type, class_name: "Stay::PropertyType"
     has_many :property_amenities, class_name: "Stay::PropertyAmenity", dependent: :destroy
@@ -41,7 +40,13 @@ module Stay
     has_many :features, through: :property_features, class_name: "Stay::Feature"
     has_many :property_taxes, class_name: "Stay::PropertyTax", dependent: :destroy
     has_many :taxes, through: :property_taxes, class_name: "Stay::Tax"
-    acts_as_paranoid
+    has_many :store_properties, class_name: "Stay::StoreProperty", dependent: :destroy
+    has_many :stores, through: :store_properties, class_name: "Stay::Store"
+
+    # images
+    has_one_attached :cover_image
+    has_many_attached :place_images
+
     # nested_attributes
     accepts_nested_attributes_for :property_amenities, allow_destroy: true
     accepts_nested_attributes_for :additional_rules, allow_destroy: true
@@ -50,20 +55,21 @@ module Stay
     accepts_nested_attributes_for :property_features, allow_destroy: true
     accepts_nested_attributes_for :property_taxes, allow_destroy: true
 
-    # geocoded_by :combine_address
-    # after_validation :geocode
-
-    has_many :store_properties, class_name: "Stay::StoreProperty", dependent: :destroy
-    has_many :stores, through: :store_properties, class_name: "Stay::Store"
-    scope :approved, -> { where(property_state: "approved") }
-    scope :active, -> { where(active: true) }
-
-    scope :similar_properties, ->(type_id, category_id, property_id) {
-        where(property_type_id: type_id, property_category_id: category_id)
-        .where.not(id: property_id)}
-
     after_restore :restore_associated_rooms
     after_restore :restore_active_storage_files
+    after_create :create_default_room
+    after_update :update_prices
+    after_create :create_store_property
+    geocoded_by :combine_address
+    after_validation :geocode
+
+    # scopes
+    scope :approved, -> { where(property_state: APPROVED) }
+    scope :active, -> { where(active: true) }
+    scope :similar_properties, ->(type_id, category_id, property_id) {
+      where(property_type_id: type_id, property_category_id: category_id)
+      .where.not(id: property_id)
+    }
 
     scope :with_features, ->(feature_ids) {
       joins(:features).where(stay_features: { id: feature_ids }).distinct
@@ -88,13 +94,6 @@ module Stay
     scope :by_property_category, ->(property_category_id) {
       joins(:property_category).where(property_category: { id: property_category_id })
     }
-
-    # attr_accessor :price_per_month
-    after_create :create_default_room
-    after_update :update_prices
-    after_create :create_store_property
-    validate :availability_dates_are_valid
-
 
     def id_with_title
       [
@@ -213,9 +212,7 @@ module Stay
 
     def restore_active_storage_files
       place_images.each do |image|
-        unless File.exist?(ActiveStorage::Blob.service.path_for(image.blob.key))
-          Rails.logger.error "Missing file for #{image.filename}"
-        end
+        Rails.logger.error "Missing file for #{image.filename}" unless File.exist?(ActiveStorage::Blob.service.path_for(image.blob.key))
       end
     end
 
@@ -230,8 +227,6 @@ module Stay
     end
 
     def create_store_property
-      # room_attr.none? { |item| item == "0" } && room_attr.any? { |item| item.is_a?(ActionController::Parameters) && item[:id].present? }
-      # room_attr.none? { |item| item == "0" } && room_attr.any? { |item| item.is_a?(ActionController::Parameters) && item[:id].present? }
       StoreProperty.create(store_id: current_store.id, property_id: self.id)
     end
 

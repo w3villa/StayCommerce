@@ -65,33 +65,6 @@
   </div>
 
   <div class="row">
-    <div class="col-md-9">
-      <%= f.label :property_house_rules, class: "form-label mt-4" %>
-      <div id="house_rules">
-          <div class="nested-fields border p-3 mb-3 form-control">
-        <% Stay::HouseRule.all.each do |house_rule| %>
-          <% property_house_rule = @property.property_house_rules.find_or_initialize_by(house_rule_id: house_rule.id) %>
-            <%= f.fields_for :property_house_rules, property_house_rule do |house_rule_fields| %>
-              <%= house_rule_fields.label :house_rule_id, house_rule.name, class: "form-label mt-6"%>
-              <%= house_rule_fields.hidden_field :house_rule_id, value: house_rule.id %>
-              <div class="form-group mt-2">
-                <%= house_rule_fields.radio_button :value, "allow", checked: (property_house_rule.value == "allow" || property_house_rule.value.nil?) %>
-                <%= house_rule_fields.label :value, "Allow", class: 'radio-button-label' %>
-
-                <%= house_rule_fields.radio_button :value, "do_not_allow", checked: (property_house_rule.value == "do_not_allow"), class: 'radio-button'  %>
-                <%= house_rule_fields.label :value, "Do Not Allow", class: 'radio-button-label'%>
-
-                <%= house_rule_fields.radio_button :value, "charge", checked: (property_house_rule.value == "charge"), class: 'radio-button'  %>
-                <%= house_rule_fields.label :value, "Charge", class: 'radio-button-label' %>
-              </div>
-            <% end %>
-        <% end %>
-          </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="row">
     <div class="col-md-12">
       <div class="form-group mt-4">
         <%= hidden_field_tag :step, 'details' %>

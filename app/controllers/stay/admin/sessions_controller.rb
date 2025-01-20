@@ -1,20 +1,19 @@
 class Stay::Admin::SessionsController < Devise::SessionsController
-
-  layout 'stay/admin'
+  layout "stay/admin"
 
   def create
-    user = Stay::User.find_by(email: params[:user][:email])
+    user = Stay::User.find_by(email: params.dig(:user, :email))
     if user && user.stay_admin?
       super
     else
-      flash[:alert] = user ? 'Access Denied, User must have admin role' : 'User not found'
+      flash[:alert] = user ? "Access Denied, User must have admin role" : "User not found"
       redirect_to admin_login_path
     end
-  end 
+  end
 
-	protected
+  protected
 
-	def respond_to_on_destroy
+  def respond_to_on_destroy
     respond_to do |format|
       format.all { head :no_content }
       format.any(*navigational_formats) { redirect_to after_sign_out_redirect(resource_name) }

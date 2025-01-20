@@ -16,7 +16,7 @@ module Stay
     # before_action :authenticate_user!
 
     def after_sign_in_path_for(resource)
-      if resource.has_stay_role?('admin')
+      if resource.has_stay_role?("admin")
         admin_users_path
       else
         root_path
@@ -29,9 +29,13 @@ module Stay
 
     private
 
+    def authorize_admin
+      redirect_to admin_login_path unless current_user.stay_admin?
+    end
+
     def set_active_storage_url_options
-      ActiveStorage::Current.url_options = {host: 'localhost', port: 3000} if Rails.env.development?
-    end  
+      ActiveStorage::Current.url_options = { host: "localhost", port: 3000 } if Rails.env.development?
+    end
 
     def set_locale
       I18n.locale = params[:locale] || I18n.default_locale

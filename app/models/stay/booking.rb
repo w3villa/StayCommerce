@@ -5,14 +5,10 @@ module Stay
 
     belongs_to :user, class_name: "Stay::User"
     belongs_to :canceler, class_name: "Stay::User", foreign_key: "canceler_id", optional: true
-    # belongs_to :room, class_name: 'Stay::Room'
     has_many :reviews, class_name: "Stay::Review", dependent: :destroy
-
     has_many :payments, class_name: "Stay::Payment", dependent: :destroy
-
     has_many :line_items, class_name: "Stay::LineItem", dependent: :destroy
     has_many :rooms, through: :line_items
-    # has_many :properties, through: :rooms
     belongs_to :property, -> { with_deleted }, class_name: "Stay::Property", foreign_key: "property_id"
     belongs_to :store, class_name: "Stay::Store"
     has_one :chat, class_name: "Stay::Chat", dependent: :destroy
@@ -23,6 +19,7 @@ module Stay
     scope :incomplete, -> { where(completed_at: nil).where(payment_state: [ "failed", nil ]).where.not(status: :canceled) }
     scope :not_canceled, -> { where.not(status: "canceled") }
     scope :confirmed, -> { where(status: "confirmed").where(payment_state: "paid") }
+    
     after_commit :booking_completed_at
     before_create :link_by_email, :generate_number
     before_validation :ensure_store_presence
