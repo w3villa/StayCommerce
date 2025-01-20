@@ -11,6 +11,14 @@ module Stay
       read_at.present?
     end
 
+    def host_messages
+      where(event_for: [ "host", "both" ])
+    end
+
+    def student_messages
+      where(event_for: [ "student", "both" ])
+    end
+
     def attachments_urls
       attachments.map { |image| image.url }
     end
