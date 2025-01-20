@@ -1,7 +1,7 @@
 class Stay::Api::V1::BookingsController < Stay::BaseApiController
   before_action :set_booking, only: [ :show, :update, :delete_line_item, :booking_chat ]
-  before_action :booking_availability, only: [ :create ]
   before_action :authenticate_devise_api_token!
+  include Stay::BookingValidations
 
   def index
     begin
@@ -119,9 +119,8 @@ class Stay::Api::V1::BookingsController < Stay::BaseApiController
   def create
     booking = find_incomplete_booking
 
-    property = Stay::Property.find_by_id(booking_params[:property_id])
+    property = Stay::Property.friendly.find_by(slug: booking_params[:property_id])
     return render json: { error: "property not found", success: false }, status: :unprocessable_entity if property.nil?
-
     if booking.any?
       handle_existing_booking(booking)
     else
@@ -198,14 +197,12 @@ class Stay::Api::V1::BookingsController < Stay::BaseApiController
     if @booking.payment_state == "failed" && params[:booking][:status] == "confirmed"
       return render json: { error: "Booking cannot be confirmed due to failed payment." }, status: :unprocessable_entity
     end
-
     if @booking.update(booking_params)
-      @booking.update_columns(canceler_id: current_devise_api_user.id, canceled_at: Time.current) if @booking.canceled?
       if @booking.saved_change_to_status?
+        @booking.update_columns(canceler_id: current_devise_api_user.id, canceled_at: Time.current) if @booking.canceled?
         Stay::Chat::ChatMessagingService.new(@booking).send_initial_messages
       end
-      @booking.calculate_totals
-      render json: { data: BookingSerializer.new(@booking), success: true }, status: :ok
+      render json: { data: BookingSerializer.new(@booking, scope: { current_user: current_devise_api_user }), success: true }, status: :ok
     else
       render json: { error: @booking.errors.full_messages }, status: :unprocessable_entity
     end
@@ -225,6 +222,7 @@ class Stay::Api::V1::BookingsController < Stay::BaseApiController
   end
 
   private
+
   def booking_params
     params.require(:booking).permit(
       :check_in_date, :check_out_date, :number_of_guests, :total_amount, :property_id, :status, :payment_intent_id,
@@ -239,7 +237,7 @@ class Stay::Api::V1::BookingsController < Stay::BaseApiController
   end
 
   def find_incomplete_booking
-    booking = current_devise_api_user.bookings.where(property: booking_params[:property_id]).incomplete
+    booking = current_devise_api_user.bookings.joins(:property).where(property: { slug: booking_params[:property_id] }).incomplete
   end
 
   def handle_existing_booking(booking)
@@ -263,6 +261,7 @@ class Stay::Api::V1::BookingsController < Stay::BaseApiController
       room_numbers = property.rooms.pluck(:id)
       build_line_items(room_numbers, @booking)
     end
+    @booking.property = property
     if @booking.save
       Stay::Chat::ChatMessagingService.new(@booking).send_initial_messages
       @booking.calculate_totals
@@ -285,44 +284,12 @@ class Stay::Api::V1::BookingsController < Stay::BaseApiController
     end
   end
 
-  def line_items_attributes
-  end
-
   def set_room
     @room = Stay::Room.find(params[:room_id])
   end
 
-  def booking_availability
-    property = Stay::Property.find_by(id: params[:booking][:property_id])
-
-    if property.nil?
-      return render json: { success: false, error: "Property not found." }, status: :not_found
-    end
-
-    unless property.user
-      return render json: { success: false, error: "Property Host not active." }, status: :not_found
-    end
-
-    if property.user == current_devise_api_user
-      return render json: { success: false, error: "You can not create booking for your own Property" }, status: :unprocessable_entity
-    end
-
-    if current_devise_api_user.stay_host?
-      return render json: { success: false, error: "Host can not create booking for property" }, status: :unprocessable_entity
-    end
-
-    check_in_date = params[:booking][:check_in_date].to_date
-    check_out_date = params[:booking][:check_out_date].to_date
-
-    month_diff = (check_in_date.year * 12 + check_in_date.month) - (check_out_date.to_date.year * 12 + check_out_date.to_date.month)
-
-    if month_diff > property.minimum_days_of_booking
-      render json: { success: false, error: "minimum month for booking is #{property.minimum_days_of_booking}" }, status: :unprocessable_entity
-    elsif check_in_date < property.availability_start.to_date
-      render json: { success: false, error: "Check-in date cannot be earlier than the property's check-in date." }, status: :unprocessable_entity
-    elsif check_out_date > property.availability_end.to_date
-      render json: { success: false, error: "Check-out date cannot be greater than the property's check-out date." }, status: :unprocessable_entity
-    end
+  def render_error(message, status)
+    render json: { error: message, success: false }, status: status
   end
 
   def set_booking

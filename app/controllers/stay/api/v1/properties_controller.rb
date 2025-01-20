@@ -209,7 +209,7 @@ class Stay::Api::V1::PropertiesController < Stay::BaseApiController
 
     def set_property
       begin
-        @property = Stay::Property.find(params[:id])
+        @property = Stay::Property.friendly.find(params[:id])
       rescue ActiveRecord::RecordNotFound => e
         render json: { success: false, error: "Properties not found" }, status: :not_found
       end

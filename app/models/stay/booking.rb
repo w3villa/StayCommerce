@@ -19,11 +19,10 @@ module Stay
     scope :incomplete, -> { where(completed_at: nil).where(payment_state: [ "failed", nil ]).where.not(status: :canceled) }
     scope :not_canceled, -> { where.not(status: "canceled") }
     scope :confirmed, -> { where(status: "confirmed").where(payment_state: "paid") }
-    
+
     after_commit :booking_completed_at
     before_create :link_by_email, :generate_number
     before_validation :ensure_store_presence
-    before_validation :ensure_guest_count
     after_commit :booking_completed_at, if: :booking_completed?
     after_commit :update_payment_status, on: [ :update ]
     after_create :booking_room_count
@@ -143,34 +142,49 @@ module Stay
       self.store ||= Stay::Store.default
     end
 
-    def ensure_guest_count
-      unless property.shared_property && property.allow_extra_guest
-        if number_of_guests > property.guest_number
-          errors.add(:number_of_guests, "can not be greater than entire property capacity")
-        end
-      end
+    def extra_guest_amount
+      return 0 unless property&.allow_extra_guest
+      return 0 unless property&.guest_number
+      return 0 unless property.allow_extra_guest && number_of_guests > property.guest_number
 
-      # if property.shared_property
-      #   if number_of_guests < property.room.max_guests
-      #     errors.add(:number_of_guests, "can not be greater than seleted property room capacity")
-      #   end
-      # end
+      extra_guest = number_of_guests - property.guest_number
+      property.per_extra_guest_amount.to_f * extra_guest
+    end
+
+    def calculate_item_total
+      property.shared_property ? line_items.sum(:price) : property.price_per_month
+    end
+
+    def calculate_tax_total
+      property.property_taxes
+              .uniq { |property_tax| property_tax.tax_id }
+              .sum(&:value)
+    end
+
+    def calculate_cleaning_fee
+      property.cleaning_fee || 0
+    end
+
+    def calculate_city_fee
+      property.city_fee || 0
     end
 
     def calculate_totals
-      item_total = line_items.any? ? line_items.pluck(:price).sum : 0
-      invoice_total = invoice.present? ? invoice.total : 0
-      tax_total = property.property_taxes.any? ? property.property_taxes.uniq { |property_tax| property_tax.tax_id }.pluck(:value).sum : 0
-      total_amount = item_total + invoice_total + tax_total
+      item_total = calculate_item_total || 0
+      invoice_total = invoice&.total || 0
+      tax_total = calculate_tax_total
+      extra_guest_total = extra_guest_amount
+      cleaning_fee = calculate_cleaning_fee
+      city_fee = calculate_city_fee
+      total_amount = item_total + invoice_total + tax_total  + extra_guest_total + cleaning_fee + city_fee
 
-      if item_total != self.item_total || invoice_total != self.total || total_amount != self.total_amount
-        update_columns(
-          item_total: item_total,
-          total: invoice_total,
-          total_amount: total_amount
-        )
-      end
+      update_columns(
+        item_total: item_total,
+        total: invoice_total,
+        total_amount: total_amount
+      ) if item_total != self.item_total || invoice_total != self.total || total_amount != self.total_amount
     end
+
 
     def booking_room_count
       self.update_column(:room_count, self.rooms.count)

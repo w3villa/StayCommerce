@@ -1,37 +1,41 @@
 class Stay::Chat::QueryMessagingService
-  def initialize(query, current_user)
+  def initialize(query, current_user, message = nil)
     @query = query
     @user = current_user
     @property = @query.property
     @owner = @property.user
     @chat = @query.chat
+    @message = message
   end
 
   def perform
     messages_by_status = {
       "send_message" => {
-       message: { text: "Query Sent for property #{@property.title} for dates #{@query.check_in_date.to_date} to #{@query.check_out_date.to_date} for #{@query.guest_count} guest." }
+        user_message: { text: "#{@message} You have raised a request for the property #{@property.title} for dates #{formatted_date(@query.check_in_date.to_date)} to #{formatted_date(@query.check_out_date.to_date)} for #{@query.guest_count} guest(s).", event: "booking query", receiver: @owner },
+        owner_message: { text: "#{@message} A booking query has been received for the property #{@property.title} for dates #{formatted_date(@query.check_in_date.to_date)} to #{formatted_date(@query.check_out_date.to_date)} for #{@query.guest_count} guest(s).", event: "booking query", receiver: @user }
       },
       "booking_invitation" => {
-        message: { text: "Host Invited For Booking" }
+        user_message: { text: "You have received a booking invitation.", event: "booking invitation", receiver: @owner },
+        owner_message: { text: "You have sent a booking invitation.", event: "booking invitation", receiver: @user }
       },
       "request_change" => {
-        message: { text: "Request Change in dates with stay in between #{@query.check_in_date.to_date} to #{@query.check_out_date.to_date}" }
+      user_message: { text: "You have requested a change in booking dates to #{formatted_date(@query.check_in_date.to_date)} - #{formatted_date(@query.check_out_date.to_date)}.", event: "request change", receiver: @owner },
+        owner_message: { text: "The user has requested a change in booking dates to #{formatted_date(@query.check_in_date.to_date)} - #{formatted_date(@query.check_out_date.to_date)}.", event: "request change", receiver: @user }
       },
       "accepted" => {
-        message: { text:  "Booking Request Sent" }
+        user_message: { text: "You have sent a booking request.", event: "booking accepted", receiver: @owner },
+        owner_message: { text: "You have received a booking request.", event: "booking accepted", receiver: @user }
       },
       "rejected" => {
-        message: { text: "Your stay at #{@property.title} from #{@query.check_in_date.to_date} to #{@query.check_out_date.to_date} is Rejected." }
+        user_message: { text: "The booking for #{@property.title} from #{formatted_date(@query.check_in_date.to_date)} to #{formatted_date(@query.check_out_date.to_date)} has been rejected.", event: "booking rejected", receiver: @owner },
+        owner_message: { text: "The booking for #{@property.title} from #{formatted_date(@query.check_in_date.to_date)} to #{formatted_date(@query.check_out_date.to_date)} has been rejected.", event: "booking rejected", receiver: @user }
       }
     }
 
     if messages_by_status.key?(@query.state)
-      if @chat.sender_id == @user.id
-        send_message(@chat, @chat.sender, messages_by_status[@query.state][:message], @owner)
-      else
-        send_message(@chat, @owner, messages_by_status[@query.state][:message], @chat.sender)
-      end
+      messages = messages_by_status[@query.state]
+      send_message(@chat, @user, messages[:user_message], @owner)
+      send_message(@chat, @owner, messages[:owner_message], @user)
     end
   end
 
@@ -42,7 +46,11 @@ class Stay::Chat::QueryMessagingService
       body: message_details[:text],
       sender: sender,
       receiver: receiver,
-      event_for: 2,
+      event_for: sender == @user ? 1 : 0,
     )
+  end
+
+  def formatted_date(date)
+    date.strftime("%B %d, %Y") if date.present?
   end
 end

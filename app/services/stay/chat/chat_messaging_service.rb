@@ -13,27 +13,26 @@ class Stay::Chat::ChatMessagingService
     else
       @chat = @booking.chat
     end
-
     messages_by_status = {
       "booking_request" => {
-        user_message: { text: "Your booking request was sent for property #{@property.title} for dates #{@booking.check_in_date.to_date} to #{@booking.check_out_date.to_date}.", event: "booking request", receiver: @owner, read_at: DateTime.now },
-        owner_message: { text: "You have received a new booking request for property #{@property.title} for dates #{@booking.check_in_date.to_date} to #{@booking.check_out_date.to_date}.", event: "booking request", receiver: @user, read_at: DateTime.now }
+        user_message: { text: "Your booking request was sent for property #{@property.title} for dates #{formatted_date(@booking.check_in_date.to_date)} to #{formatted_date(@booking.check_out_date.to_date)} for #{@booking.number_of_guests} guests.", event: "booking request", receiver: @owner, read_at: DateTime.now },
+        owner_message: { text: "You have received a new booking request for property #{@property.title} for dates #{formatted_date(@booking.check_in_date.to_date)} to #{formatted_date(@booking.check_out_date.to_date)} for #{@booking.number_of_guests} guests.", event: "booking request", receiver: @user, read_at: DateTime.now }
       },
       "invoice_sent" => {
-        user_message: { text: "You Have received a invoice for your booking for #{@property.title} for dates #{@booking.check_in_date.to_date} to #{@booking.check_out_date.to_date}.", event: "invoice_sent", receiver: @owner, read_at: DateTime.now },
-        owner_message: { text: "You have sent a new booking invoice for property #{@property.title} for dates #{@booking.check_in_date.to_date} to #{@booking.check_out_date.to_date}.", event: "invoice_sent", receiver: @user, read_at: DateTime.now }
+        user_message: { text: "You Have received a invoice for your booking for #{@property.title} for dates #{formatted_date(@booking.check_in_date.to_date)} to #{formatted_date(@booking.check_out_date.to_date)}.", event: "invoice_sent", receiver: @owner, read_at: DateTime.now },
+        owner_message: { text: "You have sent a new booking invoice for property #{@property.title} for dates #{formatted_date(@booking.check_in_date.to_date)} to #{formatted_date(@booking.check_out_date.to_date)}.", event: "invoice_sent", receiver: @user, read_at: DateTime.now }
       },
       "confirmed" => {
-        user_message: { text: "Your booking for property #{@property.title} from #{@booking.check_in_date.to_date} to #{@booking.check_out_date.to_date} has been confirmed.", event: "booking confirmed", receiver: @owner, read_at: DateTime.now },
-        owner_message: { text: "You have confirmed the booking for property #{@property.title} from #{@booking.check_in_date.to_date} to #{@booking.check_out_date.to_date}.", event: "booking confirmed", receiver: @user, read_at: DateTime.now }
+        user_message: { text: "Your booking for property #{@property.title} from #{formatted_date(@booking.check_in_date.to_date)} to #{formatted_date(@booking.check_out_date.to_date)} has been confirmed.", event: "booking confirmed", receiver: @owner, read_at: DateTime.now },
+        owner_message: { text: "You have confirmed the booking for property #{@property.title} from #{formatted_date(@booking.check_in_date.to_date)} to #{formatted_date(@booking.check_out_date.to_date)}.", event: "booking confirmed", receiver: @user, read_at: DateTime.now }
       },
       "canceled" => {
         user_message: cancellation_message_for_user,
         owner_message: cancellation_message_for_owner
       },
       "completed" => {
-        user_message: { text: "Your stay at #{@property.title} from #{@booking.check_in_date.to_date} to #{@booking.check_out_date.to_date} is complete. Thank you for staying with us!", event: "booking completed", receiver: @owner, read_at: DateTime.now },
-        owner_message: { text: "The stay for property #{@property.title} from #{@booking.check_in_date.to_date} to #{@booking.check_out_date.to_date} has been completed.", event: "booking completed", receiver: @user, read_at: DateTime.now }
+        user_message: { text: "Your stay at #{@property.title} from #{formatted_date(@booking.check_in_date.to_date)} to #{formatted_date(@booking.check_out_date.to_date)} is complete. Thank you for staying with us!", event: "booking completed", receiver: @owner, read_at: DateTime.now },
+        owner_message: { text: "The stay for property #{@property.title} from #{formatted_date(@booking.check_in_date.to_date)} to #{formatted_date(@booking.check_out_date.to_date)} has been completed.", event: "booking completed", receiver: @user, read_at: DateTime.now }
       }
     }
 
@@ -61,9 +60,9 @@ class Stay::Chat::ChatMessagingService
 
   def cancellation_message_for_user
     if @canceler == @user
-      { text: "You canceled the booking for property #{@property.title} from #{@booking.check_in_date.to_date} to #{@booking.check_out_date.to_date}.", event: "booking canceled", receiver: @owner, read_at: DateTime.now }
+      { text: "You canceled the booking for property #{@property.title} from #{formatted_date(@booking.check_in_date.to_date)} to #{formatted_date(@booking.check_out_date.to_date)}.", event: "booking canceled", receiver: @owner, read_at: DateTime.now }
     else
-      { text: "Your booking for property #{@property.title} from #{@booking.check_in_date.to_date} to #{@booking.check_out_date.to_date} was canceled by the host.", event: "booking canceled", receiver: @user, read_at: DateTime.now }
+      { text: "Your booking for property #{@property.title} from #{formatted_date(@booking.check_in_date.to_date)} to #{formatted_date(@booking.check_out_date.to_date)} was canceled by the host.", event: "booking canceled", receiver: @user, read_at: DateTime.now }
     end
   end
 
@@ -72,6 +71,12 @@ class Stay::Chat::ChatMessagingService
       { text: "The booking for property #{@property.title} from #{@booking.check_in_date.to_date} to #{@booking.check_out_date.to_date} was canceled by the user.", event: "booking canceled", receiver: @owner, read_at: DateTime.now }
     else
       { text: "You canceled the booking for property #{@property.title} from #{@booking.check_in_date.to_date} to #{@booking.check_out_date.to_date}.", event: "booking canceled", receiver: @user, read_at: DateTime.now }
+    end
+  end
+
+  def formatted_date(date)
+    if date.to_date.present?
+      date.to_date.strftime("%B %d, %Y")
     end
   end
 end

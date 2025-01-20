@@ -1,6 +1,5 @@
 class UserListingSerializer < ActiveModel::Serializer
-  attributes :id, :email, :first_name, :full_name, :last_name,  :phone, :gender, :is_user, :is_host, :date_of_birth, :email_verified, :image,
-  :about_me,
+  attributes :id, :email, :first_name, :full_name, :last_name,  :phone, :gender, :is_user, :is_host, :date_of_birth, :image
 
   def full_name
     object.full_name

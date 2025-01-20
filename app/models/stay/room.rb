@@ -3,6 +3,7 @@ module Stay
     include CurrencyHelper
     STATUSES = %w[active inactive].freeze
     acts_as_paranoid
+    after_initialize :set_default_price, if: :new_record?
 
     # validations
     validates :status, presence: true, inclusion: { in: STATUSES, message: "%{value} is not a valid status" }
@@ -58,6 +59,10 @@ module Stay
 
     def images_urls
       room_images.map { |image| image.url }
+    end
+
+    def set_default_price
+      self.price_per_month ||= 0
     end
 
     private
