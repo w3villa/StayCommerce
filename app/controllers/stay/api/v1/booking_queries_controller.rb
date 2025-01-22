@@ -149,7 +149,7 @@ class Stay::Api::V1::BookingQueriesController < Stay::BaseApiController
   private
 
   def set_property
-    @property = Stay::Property.find_by(id: params[:property_id])
+    @property = Stay::Property.friendly.find_by(slug: params[:property_id])
     render json: { success: false, error: "Property not found" }, status: :not_found unless @property
   end
 
