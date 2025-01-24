@@ -51,5 +51,6 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'sass-rails'
   spec.add_dependency 'sprockets'
   spec.add_dependency 'friendly_id'
+  spec.add_dependency 'dotenv-rails'
   spec.add_development_dependency 'letter_opener'
 end

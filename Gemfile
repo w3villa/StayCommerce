@@ -9,13 +9,11 @@ gem "puma"
 
 gem "sprockets-rails"
 
-# Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
 gem "rubocop-rails-omakase", require: false
 gem "devise-api", github: "nejdetkadir/devise-api", branch: "main"
-gem "active_model_serializers"
+gem "active_model_serializers", "~> 0.10.15"
 gem "rack-cors"
-gem 'faker'
-gem 'geocoder'
+gem "faker"
+gem "dotenv-rails"
+gem "geocoder"
 gem "friendly_id"
-# Start debugger with binding.b [https://github.com/ruby/debug]
-# gem "debug", ">= 1.0.0"
