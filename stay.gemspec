@@ -23,33 +23,33 @@ Gem::Specification.new do |spec|
   end
 
   spec.add_dependency "rails", ">= 7.2.1", "< 9.0"
-  spec.add_dependency "devise"
-  spec.add_dependency "devise-api"
-  spec.add_dependency "mysql2"
-  spec.add_dependency "sassc-rails"
-  spec.add_dependency "bootstrap"
-  spec.add_dependency "ransack"
+  spec.add_dependency "devise" , '~> 4.9'
+  spec.add_dependency "devise-api", '~> 0.1'
+  spec.add_dependency "mysql2", '~> 0.5'
+  spec.add_dependency "sassc-rails", '~> 2.1'
+  spec.add_dependency "bootstrap", '~> 5.3'
+  spec.add_dependency "ransack", "~> 1.8"
   spec.add_dependency 'activestorage'
   spec.add_development_dependency 'pry'
-  spec.add_dependency 'state_machines-activerecord'
+  spec.add_dependency 'state_machines-activerecord', "~> 0.9"
   spec.add_dependency 'kaminari', '~> 1.2'
   spec.add_dependency 'stripe', '~> 5.32.0'
-  spec.add_dependency 'geocoder'
-  spec.add_dependency 'carmen'
+  spec.add_dependency 'geocoder', "~> 1.8"
+  spec.add_dependency 'carmen', '~> 1.1'
   spec.add_dependency 'active_model_serializers'
-  spec.add_dependency 'rack-cors'
-  spec.add_dependency 'paranoia'
-  spec.add_dependency 'money'
-  spec.add_dependency 'monetize'
-  spec.add_dependency 'mobility'
-  spec.add_dependency 'mobility-ransack'
-  spec.add_dependency 'inline_svg'
-  spec.add_dependency 'hotwire-rails'
-  spec.add_dependency 'jquery-rails'
-  spec.add_dependency 'jquery-ui-rails'
-  spec.add_dependency 'jsbundling-rails'
-  spec.add_dependency 'sass-rails'
+  spec.add_dependency 'rack-cors', '~> 2.0'
+  spec.add_dependency 'paranoia', '~> 3.0'
+  spec.add_dependency 'money', '~> 6.12'
+  spec.add_dependency 'monetize', '~> 1.13'
+  spec.add_dependency 'mobility', '~> 1.2'
+  spec.add_dependency 'mobility-ransack', "~> 1.2"
+  spec.add_dependency 'inline_svg', '~> 1.10'
+  spec.add_dependency 'hotwire-rails', '~> 0.1'
+  spec.add_dependency 'jquery-rails', '~> 4.6'
+  spec.add_dependency 'jquery-ui-rails', '~> 7.0'
+  spec.add_dependency 'jsbundling-rails', '~> 1.3.1'
+  spec.add_dependency 'sass-rails', '~> 6.0'
   spec.add_dependency 'sprockets'
-  spec.add_dependency 'friendly_id'
-  spec.add_development_dependency 'letter_opener'
+  spec.add_dependency 'friendly_id', '~> 5.5'
+  spec.add_development_dependency 'letter_opener', '~> 1.10'
 end
