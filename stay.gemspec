@@ -28,7 +28,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency "mysql2", '~> 0.5'
   spec.add_dependency "sassc-rails", '~> 2.1'
   spec.add_dependency "bootstrap", '~> 5.3'
-  spec.add_dependency "ransack", "~> 1.8"
+  spec.add_dependency "ransack"
   spec.add_dependency 'activestorage'
   spec.add_development_dependency 'pry'
   spec.add_dependency 'state_machines-activerecord', "~> 0.9"
