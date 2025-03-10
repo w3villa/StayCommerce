@@ -24,6 +24,7 @@
         <tr>
           <th scope="col">Name</th>
           <th scope="col">Feature Type</th>
+          <th scope="col">Icon</th>
           <th></th>
         </tr>
       </thead>
@@ -33,6 +34,7 @@
           <tr>
             <td><%= feature.name %></td>
             <td><%= feature.feature_type %></td>
+            <td><%= image_tag(feature.image&.url) if feature.image.present? %></td>
             <td class="text-end d-flex justify-content-end">
               <%= link_to edit_admin_feature_path(feature), class: 'btn d-inline-flex btn-sm btn-neutral mx-1' do %>
                 <i class="bi bi-pencil"></i>

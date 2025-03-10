@@ -22,6 +22,15 @@
   <div class="row">
     <div class="col-md-6">
       <div class="field">
+        <%= f.label :image, class: "form-label" %>
+        <%= f.file_field :image, class: 'form-control' %>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-6">
+      <div class="field">
         <%= f.label :feature_type, "feature Type", class: "form-label" %>
         <%= f.select :feature_type, Stay::Feature.feature_types.keys.map { |type| [type.titleize, type] }, {}, class: 'form-control custom-select-box' %>
       </div>

@@ -1,9 +1,9 @@
 module Stay
   module Admin
     class FeaturesController < Stay::Admin::BaseController
-      before_action :set_feature, only: [:show, :edit, :update, :destroy]
+      before_action :set_feature, only: [ :show, :edit, :update, :destroy ]
 
-      
+
       def index
         @features = Stay::Feature.page(params[:page])
       end
@@ -18,7 +18,7 @@ module Stay
       def create
         @feature = Stay::Feature.new(feature_params)
         if @feature.save
-          redirect_to admin_features_path, notice: 'Feature was successfully created.'
+          redirect_to admin_features_path, notice: "Feature was successfully created."
         else
           render :new
         end
@@ -29,7 +29,7 @@ module Stay
 
       def update
         if @feature.update(feature_params)
-          redirect_to admin_features_path, notice: 'Feature was successfully updated.'
+          redirect_to admin_features_path, notice: "Feature was successfully updated."
         else
           render :edit
         end
@@ -37,7 +37,7 @@ module Stay
 
       def destroy
         @feature.destroy
-        redirect_to admin_features_path, notice: 'Feature was successfully deleted.'
+        redirect_to admin_features_path, notice: "Feature was successfully deleted."
       end
 
       private
@@ -47,7 +47,7 @@ module Stay
       end
 
       def feature_params
-        params.require(:feature).permit(:name, :feature_type)
+        params.require(:feature).permit(:name, :feature_type, :image)
       end
     end
   end

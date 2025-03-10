@@ -24,6 +24,7 @@
         <tr>
           <th scope="col">Name</th>
           <th scope="col">Amentity Type</th>
+          <th scope="col">Icon</th>
           <th></th>
         </tr>
       </thead>
@@ -33,6 +34,7 @@
           <tr>
             <td><%= amenity.name %></td>
             <th scope="col"><%= amenity.amenity_type%></th>
+            <td><%= image_tag(amenity.image&.url) if amenity.image.present? %></td>
             <td class="text-end d-flex justify-content-end">
               <%= link_to edit_admin_amenity_path(amenity), class: 'btn d-inline-flex btn-sm btn-neutral mx-1' do %>
                 <i class="bi bi-pencil"></i>

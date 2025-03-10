@@ -46,7 +46,7 @@ module Stay
     end
 
     def amenity_params
-      params.require(:amenity).permit(:name, :amenity_type)
+      params.require(:amenity).permit(:name, :amenity_type, :image)
     end
     end
 end
