@@ -19,6 +19,9 @@ module Stay
 
     belongs_to :cancellation_policy, class_name: "Stay::CancellationPolicy", optional: :true
     has_many :chats, class_name: "Stay::Chat", dependent: :destroy
+    has_many :favorite_properties, class_name: "Stay::FavoriteProperty", foreign_key: :property_id
+    has_many :favorited_by_users, through: :favorite_properties, source: :user
+
 
     belongs_to :user, class_name: "Stay::User", optional: true
     # belongs_to :address, class_name: 'Stay::Address', optional: true

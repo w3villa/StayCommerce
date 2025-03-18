@@ -19,6 +19,8 @@ module Stay
     has_many :chats, class_name: "Stay::Chat"
     has_many :credit_cards, class_name: "Stay::CreditCard"
     has_one :user_paypal, class_name: "Stay::UserPaypal"
+    has_many :favorite_properties, class_name: "Stay::FavoriteProperty", foreign_key: :user_id
+    has_many :favorites, through: :favorite_properties, source: :property
     has_one_attached :profile_image
 
     # validates :phone, format: { with: /\A\d{10}\z/, message: "number must be valid." }
