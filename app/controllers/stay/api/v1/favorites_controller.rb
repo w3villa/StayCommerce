@@ -19,8 +19,11 @@ module Stay
           page = params[:page].to_i > 0 ? params[:page].to_i : 1
           per_page = params[:per_page].to_i > 0 ? params[:per_page].to_i : 10
           cumulative_per_page = page * per_page
+
           @fav_properties = current_devise_api_user.favorites
           @fav_properties = @fav_properties.order(created_at: :asc).limit(cumulative_per_page)
+          total_count = @fav_properties.count
+          total_pages = (total_count.to_f / per_page).ceil
 
           if @fav_properties.any?
             render json: {
