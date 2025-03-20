@@ -25,6 +25,13 @@ module Stay
           if @fav_properties.any?
             render json: {
               data: ActiveModelSerializers::SerializableResource.new(@fav_properties, each_serializer: PropertyListingSerializer, scope: { current_user: current_devise_api_user }),
+              meta: {
+                total_pages: total_pages,
+                current_page: page,
+                next_page: page < total_pages ? page + 1 : nil,
+                prev_page: page > 1 ? page - 1 : nil,
+                total_count: total_count
+              },
               message: "Favorite properties found",
               success: true
             }, status: :ok
