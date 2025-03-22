@@ -22,10 +22,11 @@ Gem::Specification.new do |spec|
   spec.files = Dir.chdir(File.expand_path(__dir__)) do
     Dir["{app,config,db,lib}/**/*", "MIT-LICENSE", "Rakefile", "README.md"]
   end
+  spec.require_paths = ["lib"]
 
   spec.add_dependency "rails", ">= 7.2.1", "< 9.0"
-  spec.add_dependency "devise" , '~> 4.9'
-  spec.add_dependency "devise-api", '~> 0.1'
+  spec.add_dependency "devise"
+  spec.add_dependency "devise-api"
   spec.add_dependency "mysql2", '~> 0.5'
   spec.add_dependency "sassc-rails", '~> 2.1'
   spec.add_dependency "bootstrap", '~> 5.3'
@@ -51,6 +52,6 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'jsbundling-rails', '~> 1.3.1'
   spec.add_dependency 'sass-rails', '~> 6.0'
   spec.add_dependency 'sprockets'
-  spec.add_dependency 'friendly_id', '~> 5.5'
+  spec.add_dependency 'friendly_id'
   spec.add_development_dependency 'letter_opener', '~> 1.10'
 end

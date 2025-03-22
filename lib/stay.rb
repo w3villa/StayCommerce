@@ -10,6 +10,9 @@ require 'jsbundling-rails'
 require 'stay/controller_helpers/currency'
 require 'stay/controller_helpers/store'
 require 'bootstrap'
+require "devise"
+require "devise/api"
+require "friendly_id"
 
 module Stay
   # Your code goes here...
