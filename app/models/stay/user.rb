@@ -5,7 +5,6 @@ module Stay
     devise :database_authenticatable, :registerable,
            :recoverable, :rememberable, :validatable, :api
 
-    validates :first_name, :last_name, presence: true
     # after_create :assign_default_role
     has_many :role_users, class_name: "Stay::RoleUser", dependent: :destroy
     has_many :stay_roles, through: :role_users, class_name: "Stay::Role", source: :role
