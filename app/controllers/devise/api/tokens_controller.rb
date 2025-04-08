@@ -27,12 +27,10 @@ module Devise
           token = service.success
 
           call_devise_trackable!(token.resource_owner)
-
           token_response = Devise::Api::Responses::TokenResponse.new(request, token: token, action: __method__)
           Devise.api.config.after_successful_sign_up.call(token.resource_owner, token, request)
           assign_role(token.resource_owner) if token.resource_owner
           data = ActiveModelSerializers::SerializableResource.new(token.resource_owner, serializer: UserSerializer).as_json
-          UserMailer.welcome_email(token.resource_owner).deliver_later if token.resource_owner
           return render json: { access_token: token_response&.token.access_token, success: true }, status: token_response.status
         end
 
@@ -157,8 +155,6 @@ module Devise
       def assign_role(user)
         role  = Stay::Role.find_by(name: params[:type])
         user.role_users.create(role_id: role&.id) if role.present?
-        token = Random.hex(16)
-        user.update(confirmation_token: token)
       end
 
       def sign_in_params

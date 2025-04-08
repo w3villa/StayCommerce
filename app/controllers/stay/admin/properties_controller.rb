@@ -1,6 +1,7 @@
 module Stay
   module Admin
     class PropertiesController < Stay::Admin::BaseController
+      include Stay::ImageResizerConcern
       before_action :set_property, only: %i[show edit update destroy approve reject]
 
       def index
