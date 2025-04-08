@@ -31,10 +31,6 @@ class UserSerializer < ActiveModel::Serializer
     object&.preferences.present? ? object&.preferences["sms_notification"]: false
   end
 
-  def payment_method_preference
-    object.payment_method_name
-  end
-
   def image_file_name
     object.profile_image&.filename&.to_s || nil
   end

@@ -2,9 +2,25 @@ class Stay::Api::V1::PropertyTypesController < Stay::BaseApiController
   before_action :authenticate_devise_api_token!
 
   def index
-    @type = Stay::PropertyType.all
-    render json: { data: ActiveModelSerializers::SerializableResource.new(@type, each_serializer: PropertyTypeSerializer), message: "data found", success: true }, status: :ok
+    property_types = Stay::PropertyType.all
+  
+    if property_types.any?
+      serialized_data = ActiveModelSerializers::SerializableResource.new(property_types, each_serializer: PropertyTypeSerializer)
+  
+      render json: {
+        data: serialized_data,
+        message: "Data found",
+        success: true
+      }, status: :ok
+    else
+      render json: {
+        data: [],
+        message: "No property types found",
+        success: false
+      }, status: :ok
+    end
   end
+  
 
   def show
     @type = Stay::PropertyType.find_by(id: params[:id])
