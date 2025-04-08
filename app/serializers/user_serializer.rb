@@ -1,7 +1,8 @@
 class UserSerializer < ActiveModel::Serializer
   include Rails.application.routes.url_helpers
+  
   attributes :id, :email, :first_name, :full_name, :last_name,  :phone, :gender, :is_user, :is_host, :date_of_birth,
-               :image, :whatsapp_notification, :sms_notification, :image_file_name,
+               :image, :image_file_name, :about_me, :country, :country_code
 
   def full_name
     object.full_name
@@ -21,14 +22,6 @@ class UserSerializer < ActiveModel::Serializer
 
   def image
     object.profile_image.url || nil
-  end
-
-  def whatsapp_notification
-    object&.preferences.present? ? object&.preferences["whatsapp_notification"]: false
-  end
-
-  def sms_notification
-    object&.preferences.present? ? object&.preferences["sms_notification"]: false
   end
 
   def image_file_name
