@@ -7,8 +7,8 @@
 
   <!-- Bootstrap CSS -->
 
-  <%= stylesheet_link_tag 'stay/application', media: 'all', 'data-turbolinks-track': 'reload' %>
-  <%= javascript_include_tag 'stay/application', 'data-turbolinks-track': 'reload' %>
+    <%= stylesheet_link_tag 'stay/application', media: 'all', 'data-turbolinks-track': 'reload' %>
+    <%= javascript_include_tag "stay/application", "data-turbo-track": "reload", defer: true %>
 </head>
 <body>
   <%= render 'stay/shared/navbar' %>
