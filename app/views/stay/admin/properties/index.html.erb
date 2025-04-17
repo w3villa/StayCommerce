@@ -2,81 +2,81 @@
   <div class="card-header">
     <div class="row align-items-center">
       <div class="col-sm-6 col-12 mb-4 mb-sm-0">
-          <!-- Title -->
-          <h1 class="h3 mb-0 ls-tight">Properties</h1>
+        <h1 class="h3 mb-0 ls-tight">Properties</h1>
       </div>
       <div class="col-sm-6 col-12 text-sm-end">
-          <div class="mx-n1">
+        <div class="mx-n1">
           <%= link_to new_admin_property_path, class:"btn d-inline-flex btn-sm btn-primary mx-1" do %>
-              <span class=" pe-2">
+            <span class=" pe-2">
               <i class="bi bi-plus"></i>
-              </span>
-              <span>Create New</span>
+            </span>
+            <span>Create New</span>
           <%end%>
-          </div>
+        </div>
       </div>
       <div class="row g-3 mt-4">
-        <div class="col-lg-3">
+        <div class="col-3 mt-6">
           <%= search_form_for @q, url: admin_properties_path, method: :get, local: true, class: "input-group" do |f| %>
-            <%= f.search_field :title_cont, placeholder: "Search by title", class: "form-control" %>
+            <%= f.search_field :title_cont, placeholder: "Search by Name", class: "form-control" %>
             <%= f.submit "Search", class: "btn btn-primary" %>
           <% end %>
         </div>
-      </div>
+        <div class="col-9 d-flex justify-content-end">
+          <%= form_with url: admin_properties_path, method: :get, local: true, class: "row g-3 align-items-center" do |f| %>
+            <div class="col-auto mt-4">
+              <%= f.label :status, "Filter", class: "form-label" %>
+              <%= f.select :property_state, options_for_select([["All", ""], ["Waiting for Approval", "waiting_for_approval"], ["Approved", "approved"], ["Rejected", "rejected"]], params[:property_state]), {}, class: "form-select" %>
+            </div>
+            <div class="col-auto">
+              <%= f.submit "Filter", class: "btn btn-primary mt-3" %>
+            </div>
+          <% end %>
+        </div>
+      </div>   
     </div>  
   </div>
   <div class="table-responsive">
-    <table class="table table-hover table-nowrap">
+    <table class="table table-hover table-nowrap text-center align-middle">
       <thead class="table-light">
-    <tr>
-      <th scope="col">Image</th>
-      <th scope="col">Title</th>
-      <th scope="col">Description</th>
-      <th scope="col">Availability Start</th>
-      <th scope="col">Availability End</th>
-      <th scope="col">State</th>
-      <th scope="col">Active</th>
-      <th></th>
-    </tr>
-  </thead>
-
-  <tbody>
-    <% @properties.each do |property| %>
-      <tr>
-        <td>
-          <%= image_tag main_app.url_for(property.cover_image), size: "25x25" if property.cover_image.attached? %>
-        </td>
-        <td><%= property.title %></td>
-        <td><%= sanitize property.description %></td>
-        <td><%= property.availability_start %></td>
-        <td><%= property.availability_end %></td>
-        <td><%= property.property_state %></td>
-        <td>
-          <%= property.active %>
-          <span class="badge badge-lg badge-dot <%= property.active ? 'badge-primary' : 'badge-warning' %>">
-            <i class="<%= property.active ? 'bg-primary' : 'bg-warning' %>"></i>
-          </span>
-        </td>
-        <td class="text-end d-flex justify-content-end">
-          <%= link_to edit_admin_property_path(property), class: 'btn d-inline-flex btn-sm btn-neutral mx-1' do %>
-            <i class="bi bi-pencil"></i>
-          <% end %>  
-          <%= link_to admin_property_path(property), class: 'btn d-inline-flex btn-sm btn-neutral mx-1' do %>
-            <i class="bi bi-eye"></i>
-          <% end %>
-          <%= button_to admin_property_path(property), method: :delete, data: { turbo_method: :delete, turbo_confirm: 'Are you sure?' }, class: 'btn btn-sm btn-neutral mx-1 text-danger-hover' do %>
-            <i class="bi bi-trash"></i>
-          <% end %>                
-        </td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
-</div>
-</div>  
-<div class="card-footer border-0 py-5">
-  <span class="text-muted text-sm">Showing <%= @properties.count > 0 ? @properties.count : 0%> items out of <%=  @properties.count||0%> results found</span>
+        <tr>
+          <th scope="col">Sr.No</th>
+          <th scope="col">Title</th>
+          <th scope="col">Availability Start</th>
+          <th scope="col">Availability End</th>
+          <th scope="col">Status</th>
+          <th scope="col">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @properties.each_with_index do |property, index| %>
+          <tr>
+            <td><%= index + 1 %></td>
+            <td><%= property.title %></td>
+            <td><%= property.availability_start && property.availability_start.strftime("%b %d, %Y") %></td>
+            <td><%= property.availability_end && property.availability_end.strftime("%b %d, %Y") %></td>
+            <td style = "color: <%= badge_class(property.property_state) %>">
+              <%= property.property_state.humanize %>
+              <span class="badge badge-lg badge-dot">
+                <i class="<%= icon_class(property.property_state) %>"></i>
+              </span>
+            </td>
+            <td class="d-flex justify-content-center">
+              <%= link_to edit_admin_property_path(property), class: 'btn d-inline-flex btn-sm btn-neutral mx-1' do %>
+                <i class="bi bi-pencil"></i>
+              <% end %>  
+              <%= link_to admin_property_path(property), class: 'btn d-inline-flex btn-sm btn-neutral mx-1' do %>
+                <i class="bi bi-eye"></i>
+              <% end %>
+              <%= button_to admin_property_path(property), method: :delete, data: { turbo_method: :delete, turbo_confirm: 'Are you sure?' }, class: 'btn btn-sm btn-neutral mx-1 text-danger-hover' do %>
+                <i class="bi bi-trash"></i>
+              <% end %>                
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
 </div>
 <div class="d-flex justify-content-center">
-      <%= paginate @properties %>
+  <%= paginate @properties %>
 </div>

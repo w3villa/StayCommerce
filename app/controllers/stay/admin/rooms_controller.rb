@@ -5,7 +5,7 @@ module Stay
       before_action :set_room, only: %i[show edit update destroy]
 
       def index
-        @rooms = @property.rooms
+        @rooms = @property.rooms.page(params[:page]).per(10)
       end
 
       def show
@@ -51,7 +51,7 @@ module Stay
       end
 
       def room_params
-        params.require(:room).permit(:property_id, :max_guests, :price_per_month, :room_type_id, :booking_start, :booking_end, :description,
+        params.require(:room).permit(:property_id, :max_guests, :price_per_month, :room_type_id, :booking_start, :booking_end, :description, :name,
                                       :size, :bed_type_id, :status, amenity_ids: [], feature_ids: [], room_images: [],
                                       room_amenities_attributes: [ :id, :amenity_id, :_destroy ],
                                       room_features_attributes: [ :id, :name, :feature_id, :_destroy ],

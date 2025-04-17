@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class Stay::Users::SessionsController < Devise::SessionsController
+  before_action :redirects
   # before_action :configure_sign_in_params, only: [:create]
 
   # GET /resource/sign_in
@@ -24,4 +25,10 @@ class Stay::Users::SessionsController < Devise::SessionsController
   # def configure_sign_in_params
   #   devise_parameter_sanitizer.permit(:sign_in, keys: [:attribute])
   # end
+
+  private
+
+  def redirects
+    redirect_to "/admin/login"
+  end
 end

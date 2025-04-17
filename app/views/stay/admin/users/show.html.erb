@@ -6,12 +6,15 @@
           <h2 class="text-xl font-semibold mb-0">User Details</h2> 
         </div>
         <div class="card-body">
-          <p><strong>Full Name: </strong><%= @user.first_name %> <%= @user.last_name %></p>
+          <%if @user.profile_image.attached?%>
+            <p><strong>Profile Image: </strong><%= image_tag main_app.url_for(@user.profile_image), size: "100x100", class: "mt-2"  %></p>
+          <%end%>
+          <p><strong>Full Name: </strong><%= @user.full_name %></p>
           <p><strong>Email: </strong><%= @user.email %></p> 
           <p><strong>Phone: </strong><%= @user.phone %></p>
-          <p><strong>Date of Birth: </strong><%= @user.date_of_birth %></p>
+          <p><strong>Date of Birth: </strong><%= @user.date_of_birth&.strftime("%b %d, %Y") %></p>
           <p><strong>Gender: </strong><%= @user.gender %></p>
-          <p><strong>Roles: </strong><%= @user.stay_roles.map(&:name).join(", ") %></p>
+          <p><strong>Role: </strong><%= @user.stay_roles.map(&:name).join(", ").capitalize %></p>
           <div class="d-flex mt-4 p-4 justify-content-center">  
             <%= link_to 'Edit', edit_admin_user_path(@user), class: 'btn btn-warning me-3' %> 
             <%= link_to 'Back', admin_users_path, class: 'btn btn-secondary' %>

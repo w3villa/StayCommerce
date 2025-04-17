@@ -16,7 +16,7 @@ class RoomSerializer < ActiveModel::Serializer
   end
 
   def features
-    ActiveModelSerializers::SerializableResource.new(object.features.distinct, each_serializer: PropertyFeatureSerializer)
+    ActiveModelSerializers::SerializableResource.new(object.features.distinct, each_serializer: FeatureSerializer)
   end
 
   def room_images

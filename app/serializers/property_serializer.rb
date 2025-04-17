@@ -16,7 +16,7 @@ class PropertySerializer < ActiveModel::Serializer
   end
 
   def features
-    ActiveModelSerializers::SerializableResource.new(object.property_type_features, each_serializer: PropertyFeatureSerializer)
+    ActiveModelSerializers::SerializableResource.new(object.property_type_features, each_serializer: FeatureSerializer)
   end
 
   def is_shared_property
