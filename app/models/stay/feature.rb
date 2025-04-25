@@ -7,6 +7,5 @@ module Stay
     has_one_attached :image
 
     enum :feature_type, { property: 0, room: 1 }
-    validates :name, presence: true, uniqueness: { case_sensitive: false }
   end
 end
