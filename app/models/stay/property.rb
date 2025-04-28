@@ -1,5 +1,6 @@
 module Stay
   class Property < ApplicationRecord
+    STATUSES = %w[active inactive].freeze
     ACTIVE_STATUS = "active".freeze
     APPROVED = "approved".freeze
     PROPERTY = "property".freeze
@@ -58,7 +59,6 @@ module Stay
 
     after_restore :restore_associated_rooms
     after_restore :restore_active_storage_files
-    after_create :create_default_room
     after_update :update_prices
     after_create :create_store_property
     geocoded_by :combine_address

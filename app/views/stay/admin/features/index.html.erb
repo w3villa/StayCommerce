@@ -33,8 +33,8 @@
         <% @features.each_with_index do |feature, index| %>
           <tr>
             <td><%= index + 1%></td>
-            <td><%= feature.name %></td>
-            <td><%= feature.feature_type %></td>
+            <td><%= feature.name&.humanize  %></td>
+            <td><%= feature.feature_type&.humanize %></td>
             <td class="text-end d-flex justify-content-center">
               <%= link_to edit_admin_feature_path(feature), class: 'btn d-inline-flex btn-sm btn-neutral mx-1' do %>
                 <i class="bi bi-pencil"></i>

@@ -6,13 +6,23 @@
           <h2 class="text-xl font-semibold mb-0">Room Details</h2> 
         </div>
         <div class="card-body">
-          <p><strong>Image: </strong><%= image_tag main_app.url_for(@room.room_images.first), size: "60x60" if @room.room_images.attached? %></p>
+        <p><strong>Images:</strong></p>
+        <% if @room.room_images.attached? %>
+          <div class="d-flex flex-wrap gap-2">
+            <% @room.room_images.each do |image| %>
+              <%= image_tag main_app.url_for(image.url), size: "60x60", class: "img-thumbnail" %>
+            <% end %>
+          </div>
+        <% else %>
+          <p class="text-muted">No Images Found</p>
+        <% end %>
+          <p><strong>Name: </strong><%= @room&.name %></p> 
           <p><strong>Max Guests: </strong><%= @room.max_guests %></p> 
           <p><strong>Price Per Night: </strong><%= currency_symbol(current_currency)%> <%= @room.price_per_month %></p>
-          <p><strong>Room Type: </strong><%= @room.room_type.name%></p>
-          <p><strong>Booking Start: </strong><%= @room.booking_start%></p>
-          <p><strong>Booking End: </strong><%= @room.booking_end%></p>
-          <p><strong>Status: </strong><%= @room.status%></p>
+          <p><strong>Room Type: </strong><%= @room.room_type&.name%></p>
+          <p><strong>Booking Start: </strong><%= @room.booking_start&.strftime("%b %d, %Y")%></p>
+          <p><strong>Booking End: </strong><%= @room.booking_end&.strftime("%b %d, %Y")%></p>
+          <p><strong>Status: </strong><%= @room.status&.humanize%></p>
 
           <div class="d-flex mt-4 p-4 justify-content-center">  
             <%= link_to 'Edit', edit_admin_property_room_path(@property, @room), class: 'btn btn-warning me-3' %> 

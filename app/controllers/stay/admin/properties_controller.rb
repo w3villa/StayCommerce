@@ -93,26 +93,18 @@ module Stay
       def determine_next_step(current_step)
         case current_step
         when "description"
-          "price"
-        when "price"
           "images"
         when "images"
           "details"
         when "details"
           "location"
-        when "location"
-          "amenities"
-        when "amenities"
-          "features"
-        when "features"
-          "calendar"
         else
           "description"
         end
       end
 
       def valid_step?(step)
-        %w[description price images details location amenities features calendar].include?(step)
+        %w[description images details location].include?(step)
       end
     end
   end

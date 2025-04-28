@@ -41,8 +41,6 @@
         <tr>
           <th scope="col">Sr.No</th>
           <th scope="col">Title</th>
-          <th scope="col">Availability Start</th>
-          <th scope="col">Availability End</th>
           <th scope="col">Status</th>
           <th scope="col">Action</th>
         </tr>
@@ -52,8 +50,6 @@
           <tr>
             <td><%= index + 1 %></td>
             <td><%= property.title %></td>
-            <td><%= property.availability_start && property.availability_start.strftime("%b %d, %Y") %></td>
-            <td><%= property.availability_end && property.availability_end.strftime("%b %d, %Y") %></td>
             <td style = "color: <%= badge_class(property.property_state) %>">
               <%= property.property_state.humanize %>
               <span class="badge badge-lg badge-dot">

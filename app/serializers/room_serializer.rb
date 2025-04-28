@@ -1,5 +1,5 @@
 class RoomSerializer < ActiveModel::Serializer
-  attributes :id, :max_guests, :price_per_month, :status, :booked_dates,
+  attributes :id, :name,:max_guests, :price_per_month, :status, :booked_dates,
              :booking_start, :booking_end, :description,
              :size, :bed_type, :room_type, :amenities, :features, :room_images
 
