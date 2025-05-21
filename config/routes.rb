@@ -1,14 +1,15 @@
 Stay::Engine.routes.draw do
   devise_for :users, class_name: "Stay::User", controllers: {
-    registrations: 'stay/users/registrations',
-    sessions: 'stay/users/sessions',
-    passwords: 'stay/users/passwords'}
+    registrations: "stay/users/registrations",
+    sessions: "stay/users/sessions",
+    passwords: "stay/users/passwords" }
 
   namespace :admin do
-    root to: 'home#index'
+    root to: "home#index"
 
-    get '/', to: 'dashboard#index'
+    get "/", to: "dashboard#index"
     resources :addresses
+    resources :contact_us, only: [:index, :show, :destroy]
     resources :roles
     resources :users do
       member do
@@ -17,6 +18,11 @@ Stay::Engine.routes.draw do
       end
     end
     resources :properties do
+      member do
+        put :approve
+        put :reject
+        put :resubmit
+      end
       resources :rooms
     end
     resources :rooms
@@ -27,6 +33,15 @@ Stay::Engine.routes.draw do
     resources :chats
     resources :messages
     resources :room_types
+    resources :cancellation_policies
+    resources :property_categories
+    resources :property_types
+    resources :bed_types
+    resources :amenities
+    resources :amenity_categories
+    resources :house_rules
+    resources :features
+    resources :taxes
     resources :countries do
       resources :states
     end
@@ -40,40 +55,109 @@ Stay::Engine.routes.draw do
     end
     devise_for :users,
               class_name: "Stay::User",
-              controllers: { sessions: 'stay/admin/sessions',
-                                passwords: 'stay/admin/passwords',
-                                 registrations: 'stay/admin/registrations'},
-              skip: [:unlocks, :omniauth_callbacks],
-              path_names: { sign_out: 'logout' }
+              controllers: { sessions: "stay/admin/sessions",
+                            passwords: "stay/admin/passwords",
+                              registrations: "stay/admin/registrations",
+                            tokens: "customers/api/tokens" },
+              skip: [ :unlocks, :omniauth_callbacks ],
+              path_names: { sign_out: "logout" }
 
     devise_scope :user do
-      get '/authorization_failure', to: 'sessions#authorization_failure', as: :unauthorized
-      get '/login' => 'sessions#new', :as => :login
-      post '/login' => 'sessions#create', :as => :create_new_session
-      delete '/logout' => 'sessions#destroy', :as => :logout
-      get 'sign_up', to: 'registrations#new', as: :new_registration
-      post 'sign_up', to: 'registrations#create', as: :registration
-      get '/password/new', to: 'passwords#new', as: :new_password
-      post '/password', to: 'passwords#create', as: :password
-      get '/password/edit', to: 'passwords#edit', as: :edit_password
-      put '/password', to: 'passwords#update'
-      patch '/password', to: 'passwords#update'
+      get "/authorization_failure", to: "sessions#authorization_failure", as: :unauthorized
+      get "/login" => "sessions#new", :as => :login
+      post "/login" => "sessions#create", :as => :create_new_session
+      delete "/logout" => "sessions#destroy", :as => :logout
+      get "sign_up", to: "registrations#new", as: :new_registration
+      post "sign_up", to: "registrations#create", as: :registration
+      get "/password/new", to: "passwords#new", as: :new_password
+      post "/password", to: "passwords#create", as: :password
+      get "/password/edit", to: "passwords#edit", as: :edit_password
+      put "/password", to: "passwords#update"
+      patch "/password", to: "passwords#update"
     end
   end
 
   namespace :api do
     namespace :v1 do
-      resources :users, only: [:destroy]
-
-      resources :properties, only: [:index, :show] do
-
+      resources :favorites
+      resources :contact_us
+      resources :invoices, only: [ :show, :index ]
+      resources :cancellation_policies, only: [ :index ]
+      resources :property_categories,  only: [ :index, :show ]
+      resources :amenity_categories do
         collection do
-          get 'search', to: 'properties#search'
+          get :property
+          get :room
         end
+      end
 
-        resources :rooms, only: [:index, :show] do
-          resources :bookings, only: [:create, :show, :update] do
-            resources :payments, only: [:new, :create] do
+      resources :amenities do
+        collection do
+          get :property
+          get :room
+        end
+      end
+      resources :booking_queries do
+        collection do
+          get :host_query
+        end
+      end
+      resources :property_types,  only: [ :index, :show ]
+      resources :room_types,  only: [ :index, :show ]
+      resources :users, only: [ :destroy ]
+      resources :house_rules, only: :index
+      resources :bed_types, only: :index
+      resources :payments do
+        collection do
+          get :payment_method
+        end
+      end
+      resources :credit_cards
+      resources :user_paypal
+      resources :bookings do
+        collection do
+          get :host_request
+          get :host_booking
+          get :my_reservation, to: "bookings#my_reservation"
+        end
+        resources :line_items
+        resources :invoices
+      end
+      resources :features do
+        collection do
+          get :property
+          get :room
+        end
+      end
+      resources :chats, only: [ :index, :create, :show ] do
+        collection do
+          get :user_chat
+        end
+        member do
+          get "chat_messages", to: "chats#chat_messages"
+        end
+        resources :messages, only: [ :index, :new, :create ] do
+          member do
+            put :mark_as_read
+          end
+        end
+      end
+      resources :properties do
+        collection do
+          get :my_properties, to: "properties#my_properties"
+          get :similar_property
+        end
+        resources :booking_queries
+        collection do
+          get "search", to: "properties#search"
+          get :property_tax
+        end
+        member do
+          put :resubmit
+        end
+        resources :rooms, only: [ :index, :show ] do
+          resources :bookings, only: [ :create, :show, :update ] do
+            resources :payments, only: [ :new, :create ] do
               collection do
                 post :confirm
               end
@@ -81,22 +165,26 @@ Stay::Engine.routes.draw do
           end
         end
       end
-      
-      resources :profiles , only: [:show, :update]
-    end
-  end
-  
-  root 'properties#index'
-  resources :properties, only: [:index, :show] do
-    resources :bookings, only: [:new, :create, :show, :update] do
-      resources :payments, only: [:new, :create] do
-        collection do
-          post :confirm 
+      resources :profiles, only: [ :show, :update ]
+      resources :bookings do
+        member do
+          get :booking_chat
+          delete "line_items/:room_id", to: "bookings#delete_line_item", as: :delete_line_item
         end
       end
     end
   end
 
-  resources :profiles , only: [:show, :update]
+  root "properties#index"
+  resources :properties, only: [ :index, :show ] do
+    resources :bookings, only: [ :new, :create, :show, :update ] do
+      resources :payments, only: [ :new, :create ] do
+        collection do
+          post :confirm
+        end
+      end
+    end
+  end
 
+  resources :profiles, only: [ :show, :update ]
 end

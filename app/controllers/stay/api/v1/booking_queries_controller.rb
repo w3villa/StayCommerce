@@ -1,0 +1,205 @@
+class Stay::Api::V1::BookingQueriesController < Stay::BaseApiController
+  before_action :authenticate_devise_api_token!
+  before_action :set_property, except: [ :index, :show, :host_query ]
+  before_action :booking_availability, only: [ :create, :update ]
+  before_action :set_query, only: [ :update, :show ]
+  before_action :restrict_multiple_query, only: [ :create ]
+  before_action :check_booking_validation, only: [ :create ]
+
+  def index
+    begin
+      page = params[:page].to_i > 0 ? params[:page].to_i : 1
+      per_page = params[:per_page].to_i > 0 ? params[:per_page].to_i : 10
+
+      cumulative_per_page = page * per_page
+      query = current_devise_api_user.booking_queries.ongoing
+      @booking_queries = query.order(created_at: :desc).limit(cumulative_per_page)
+
+      total_count = query.count
+      total_pages = (total_count.to_f / per_page).ceil
+
+      return render json: { success: false, error: "Query not found" }, status: :not_found if @booking_queries.empty?
+
+      render json: {
+        success: true,
+        booking_queries: ActiveModelSerializers::SerializableResource.new(@booking_queries, each_serializer: BookingQuerySerializer),
+        meta: {
+            total_pages: total_pages,
+            current_page: page,
+            next_page: page < total_pages ? page + 1 : nil,
+            prev_page: page > 1 ? page - 1 : nil,
+            total_count: total_count
+          }
+      }, status: :ok
+    rescue ActiveRecord::RecordNotFound => e
+      render json: { success: false, error: "Query not found", message: e.message }, status: :not_found
+    rescue ArgumentError => e
+      render json: { success: false, error: "Invalid pagination parameters", message: e.message }, status: :bad_request
+    rescue StandardError => e
+      render json: { success: false, error: "Internal server error", message: e.message }, status: :internal_server_error
+    end
+  end
+
+  def host_query
+    begin
+      page = params[:page].to_i > 0 ? params[:page].to_i : 1
+      per_page = params[:per_page].to_i > 0 ? params[:per_page].to_i : 10
+
+      cumulative_per_page = page * per_page
+      query = Stay::BookingQuery.joins(:property).where(stay_properties: { user_id: current_devise_api_user&.id }).ongoing.order(created_at: :desc)
+      @booking_queries = query.limit(cumulative_per_page).uniq
+
+      total_count = query.count
+      total_pages = (total_count.to_f / per_page).ceil
+
+      return render json: { success: false, error: "Query not found" }, status: :not_found if @booking_queries.empty?
+
+      render json: {
+        success: true,
+        booking_queries: ActiveModelSerializers::SerializableResource.new(@booking_queries, each_serializer: BookingQuerySerializer),
+        meta: {
+            total_pages: total_pages,
+            current_page: page,
+            next_page: page < total_pages ? page + 1 : nil,
+            prev_page: page > 1 ? page - 1 : nil,
+            total_count: total_count
+          }
+      }, status: :ok
+    rescue ActiveRecord::RecordNotFound => e
+      render json: { success: false, error: "Query not found", message: e.message }, status: :not_found
+    rescue ArgumentError => e
+      render json: { success: false, error: "Invalid pagination parameters", message: e.message }, status: :bad_request
+    rescue StandardError => e
+      render json: { success: false, error: "Internal server error", message: e.message }, status: :internal_server_error
+    end
+  end
+
+  def create
+    ActiveRecord::Base.transaction do
+      return render json: { error: "you can not query for your own property", success: false }, status: :unprocessable_entity if current_devise_api_user == @property.user
+
+      chat = create_chat(current_devise_api_user, @property)
+      if chat.persisted?
+        booking_query = chat.build_booking_query(booking_query_params.merge(property: @property, user: current_devise_api_user))
+        if booking_query.save
+          Stay::Chat::QueryMessagingService.new(booking_query, current_devise_api_user).perform
+          render json: { success: true, booking_query: BookingQuerySerializer.new(booking_query) }, status: :created
+        else
+          raise ActiveRecord::Rollback
+        end
+      else
+        raise ActiveRecord::Rollback, "Failed to create chat"
+      end
+    end
+
+  rescue ActiveRecord::Rollback => e
+    render json: { success: false, errors: e.message || booking_query.errors.full_messages }, status: :unprocessable_entity
+  end
+
+  def show
+    last_five = @booking_query.chat&.messages.order(created_at: :desc).limit(5)
+    render json: {
+      success: true,
+      booking_query: BookingQuerySerializer.new(@booking_query),
+      booking: @booking_query.booking ? BookingSerializer.new(@booking_query.booking) : nil,
+      messages: ActiveModelSerializers::SerializableResource.new(last_five, each_serializer: MessageSerializer)
+    }, status: :ok
+  end
+
+
+  def update
+    if %w[request_change booking_invitation accepted rejected].include?(booking_query_params[:state])
+      @booking_query.update(state: booking_query_params[:state].to_sym)
+      Stay::Chat::QueryMessagingService.new(@booking_query, current_devise_api_user).perform
+    end
+
+    unless @booking_query.update(booking_query_params)
+      return render json: { success: false, errors: @booking_query.errors.full_messages }, status: :unprocessable_entity
+    end
+
+    last_five = @booking_query.chat&.messages.order(created_at: :desc).limit(5)
+
+    if @booking_query.accepted?
+      if @booking_query.booking.present?
+        render json: { success: false, message: "Booking already created for this query" }, status: :unprocessable_entity
+      else
+        result = Stay::Bookings::CreateBookingService.new(@booking_query).perform
+        if result[:success]
+          render json: {
+            message: "Booking created successfully",
+            success: true,
+            booking_query: BookingQuerySerializer.new(@booking_query),
+            booking: @booking_query.booking ? BookingSerializer.new(@booking_query.booking) : nil,
+            messages: ActiveModelSerializers::SerializableResource.new(last_five, each_serializer: MessageSerializer)
+          }, status: :ok
+        else
+          render json: { success: false, errors: result[:errors] }, status: :unprocessable_entity
+        end
+      end
+    else
+      render json: {
+        success: true,
+        booking_query: BookingQuerySerializer.new(@booking_query),
+        booking: @booking_query.booking ? BookingSerializer.new(@booking_query.booking) : nil,
+        messages: ActiveModelSerializers::SerializableResource.new(last_five, each_serializer: MessageSerializer)
+      }, status: :ok, status: :ok
+    end
+  end
+
+  private
+
+  def set_property
+    @property = Stay::Property.friendly.find_by(slug: params[:property_id])
+    render json: { success: false, error: "Property not found" }, status: :not_found unless @property
+  end
+
+  def create_chat(user, property)
+    host = property.user
+    Stay::Chat.between(current_devise_api_user.id, host.id).create!(sender: user, receiver: host, property: property)
+  end
+
+  def set_query
+    begin
+      @booking_query = Stay::BookingQuery.find(params[:id])
+    rescue ActiveRecord::RecordNotFound => e
+      render json: { success: false, error: "Query not found" }, status: :not_found
+    end
+  end
+
+  def booking_query_params
+    params.require(:booking_query).permit(:chat_id, :user_id, :check_in_date, :check_out_date, :query, :booking_id, :state, :guest_count, :property_id, query_for: {})
+  end
+
+  def booking_availability
+    if @property.user.nil?
+      render json: { success: false, error: "Property Host not active." }, status: :not_found
+    end
+  end
+
+  def check_booking_validation
+    check_in_date = booking_query_params[:check_in_date].to_date
+    check_out_date = booking_query_params[:check_out_date].to_date
+
+    month_diff = (check_in_date.year * 12 + check_in_date.month) - (check_out_date.to_date.year * 12 + check_out_date.to_date.month)
+    if   @property&.minimum_months_of_booking && month_diff > @property.minimum_months_of_booking
+      render json: { success: false, error: "minimum month for booking is #{@property.minimum_months_of_booking}" }, status: :unprocessable_entity
+    end
+  end
+
+  def restrict_multiple_query
+    existing_query = Stay::BookingQuery
+                     .joins(:property)
+                     .date_range(booking_query_params[:check_in_date], booking_query_params[:check_out_date])
+                     .without_booking
+                     .for_current_user(current_devise_api_user)
+                     .where(stay_properties: { id: @property.id })
+                     .exists?
+
+    if existing_query
+      render json: {
+        error: "You already raised a query for this property. Visit the booking query section for updates.",
+        success: false
+      }, status: :unprocessable_entity
+    end
+  end
+end

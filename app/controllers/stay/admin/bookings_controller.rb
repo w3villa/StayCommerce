@@ -4,7 +4,8 @@ module Stay
       before_action :set_booking, only: %i[show edit update destroy]
 
       def index
-        @bookings = current_store.bookings.order(created_at: :desc).page(params[:page])
+        @q = current_store.bookings.ransack(params[:q])
+        @bookings = @q.result.order(created_at: :desc).page(params[:page])
       end
 
       def show

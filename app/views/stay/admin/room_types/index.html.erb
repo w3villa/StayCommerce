@@ -19,21 +19,23 @@
     </div>  
   </div>
   <div class="table-responsive">
-    <table class="table table-hover table-nowrap">
+    <table class="table table-hover table-nowrap text-center align-middle">
       <thead class="table-light">
     <tr>
+      <th scope="col">Sr. No</th>
       <th scope="col">Name</th>
       <th scope="col">Description</th>
-      <th></th>
+      <th scope="col">Actions</th>
     </tr>
   </thead>
 
   <tbody>
-    <% @room_types.each do |room_type| %>
+    <% @room_types.each_with_index do |room_type, index| %>
       <tr>
+        <td><%= index + 1 %></td>
         <td><%= room_type.name %></td>
-        <td><%= room_type.description %></td>
-        <td class="text-end d-flex justify-content-end">
+        <td><%= raw(room_type.description.truncate(50)) %></td>
+        <td class="d-flex justify-content-center">
           <%= link_to edit_admin_room_type_path(room_type), class: 'btn d-inline-flex btn-sm btn-neutral mx-1' do %>
             <i class="bi bi-pencil"></i>
           <% end %>  

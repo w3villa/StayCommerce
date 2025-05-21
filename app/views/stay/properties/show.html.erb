@@ -1,15 +1,15 @@
 <div class="container mt-5">
   <div class="row">
     <div class="col-md-8">
-      <% if @property.images.attached? %>
-        <%= image_tag main_app.url_for(@property.images.first), class: "img-fluid main-image", alt: "Main Hotel Image" %>
+      <% if @property.place_images.attached? %>
+        <%= image_tag main_app.url_for(@property.place_images.first), class: "img-fluid main-image", alt: "Main Hotel Image" %>
       <% else %>
         <%= image_tag "https://via.placeholder.com/600x300", class: "img-fluid main-image", alt: "Main Hotel Image" %>
       <% end %>
     </div>
     <div class="col-md-4">
       <div class="row h-full">
-        <% @property.images.drop(1).each_with_index do |image, index| %>
+        <% @property.place_images.drop(1).each_with_index do |image, index| %>
           <div class="col-6 mb-2">
             <%= image_tag main_app.url_for(image), class: "img-fluid thumbnail-image object_fit_cover h-full", alt: "Thumbnail #{index + 1}" %>
           </div>
@@ -90,7 +90,7 @@
             <td>
               <div class="col-md-5">
                 <div class="price-section">
-                  <h4>₹<%= room.price_per_night %> <small class="text-muted">/ night</small></h4>
+                  <h4>₹<%= room.price_per_month %> <small class="text-muted">/ night</small></h4>
                   <input type="checkbox" name="selected_rooms[]" value="<%= room.id %>" >
                   <div class="row my-3">
                     <div class="col">
@@ -106,7 +106,7 @@
                       <div class="max-guest-message" style="color: red; display: none;">Maximum number of guests reached</div>
                     </div>
                   </div>
-                  <input type="hidden" name="bookings[<%= room.id %>][total]" value="<%= room.price_per_night %>">
+                  <input type="hidden" name="bookings[<%= room.id %>][total]" value="<%= room.price_per_month %>">
                 </div>
               </div>
             </td>

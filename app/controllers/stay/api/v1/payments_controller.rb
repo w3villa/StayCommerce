@@ -1,7 +1,18 @@
 class Stay::Api::V1::PaymentsController < Stay::BaseApiController
-  include Stay::StripeConcern
+  include Stay::StripeConcern 
 
-    before_action :set_booking
+    before_action :set_booking, except: :payment_method
+    before_action :authenticate_devise_api_token!
+
+
+    def payment_method
+      methods =  Stay::PaymentMethod.all
+      if methods.any?
+        render json: { message: "Payment Method Found", data: methods, success: true }, status: :ok
+      else
+        render json: { error: "no method found", success: false }, status: :unprocessable_entity
+      end
+    end
     
     def create
         begin

@@ -1,0 +1,12 @@
+module Stay
+  class Amenity < ApplicationRecord
+    belongs_to :amenity_category, class_name: "Stay::AmenityCategory", optional: true
+    has_many :property_amenities, class_name: "Stay::PropertyAmenity", dependent: :destroy
+    has_many :properties, through: :property_amenities, class_name: "Stay::Property"
+    enum amenity_type: { property: 0, room: 1 }
+    has_one_attached :image
+
+    has_many :room_amenities, class_name: "Stay::RoomAmenity", dependent: :destroy
+    has_many :rooms, through: :room_amenities, class_name: "Stay::Room"
+  end
+end
