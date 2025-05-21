@@ -1,0 +1,20 @@
+<div class="container mx-auto p-4">
+  <div class="row mt-4 justify-content-center">
+    <div class="col-md-8 col-lg-10"> 
+      <div class="card">
+        <div class="card-header">
+          <h2 class="text-xl font-semibold mb-0">Details</h2> 
+        </div>
+        <div class="card-body">
+          <p><strong>Name: </strong><%= @contact_us&.name %></p>
+          <p><strong>Email: </strong><%= @contact_us&.email %></p>
+          <p><strong>Mobile Number: </strong><%= @contact_us&.mobile_number %></p>
+          <p><strong>Description: </strong><%= @contact_us&.description %></p>
+          <div class="d-flex mt-4 p-4 justify-content-center">  
+            <%= link_to 'Back', admin_contact_us_path, class: 'btn btn-secondary' %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

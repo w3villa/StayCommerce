@@ -9,6 +9,7 @@ Stay::Engine.routes.draw do
 
     get "/", to: "dashboard#index"
     resources :addresses
+    resources :contact_us, only: [:index, :show, :destroy]
     resources :roles
     resources :users do
       member do
@@ -79,6 +80,7 @@ Stay::Engine.routes.draw do
   namespace :api do
     namespace :v1 do
       resources :favorites
+      resources :contact_us
       resources :invoices, only: [ :show, :index ]
       resources :cancellation_policies, only: [ :index ]
       resources :property_categories,  only: [ :index, :show ]
