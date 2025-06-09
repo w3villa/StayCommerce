@@ -6,18 +6,22 @@ class Stay::Api::V1::ProfilesController < Stay::BaseApiController
     end
 
     def update 
-      @profile.update(profile_params)
-      render json: { profile: @profile }, status: :ok
+      if @profile.update(profile_params)
+        data = ActiveModelSerializers::SerializableResource.new(@profile, serializer: UserSerializer)
+        render json: { profile: data, success: true }, status: :ok
+      else
+        render json: { errors: @profile.errors.full_messages, success:false }, status: :unprocessable_entity
+      end
     end
-
+    
     private
 
     def set_user
-      @profile = current_devise_api_user || Stay::Profile.find(params[:id])
+      @profile = current_devise_api_user || Stay::User.find(params[:id])
     end
 
     def profile_params
-      params.require(:profile).permit(:first_name, :last_name, :phone, :date_of_birth, :gender )
+      params.require(:profile).permit(:first_name, :last_name, :phone, :date_of_birth, :gender, :profile_image )
     end
     
 end

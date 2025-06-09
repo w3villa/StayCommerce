@@ -17,3 +17,8 @@ gem "faker"
 gem "dotenv-rails"
 gem "geocoder"
 gem "friendly_id"
+gem "image_processing", "~> 1.2"
+gem "mini_magick"
+gem "marcel"
+# Start debugger with binding.b [https://github.com/ruby/debug]
+# gem "debug", ">= 1.0.0"

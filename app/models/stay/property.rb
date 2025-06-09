@@ -1,7 +1,9 @@
 module Stay
   class Property < ApplicationRecord
+    STATUSES = %w[active inactive].freeze
     ACTIVE_STATUS = "active".freeze
     APPROVED = "approved".freeze
+    PROPERTY = "property".freeze
     include Rails.application.routes.url_helpers
     include CurrencyHelper
     include Stay::ControllerHelpers::Currency
@@ -29,15 +31,15 @@ module Stay
     has_many :prices, through: :rooms
     has_many :line_items, through: :variants_including_master
     has_many :bookings
-    belongs_to :property_category, class_name: "Stay::PropertyCategory", optional: true
+    belongs_to :property_category, class_name: "Stay::PropertyCategory"
     belongs_to :property_type, class_name: "Stay::PropertyType"
     has_many :property_amenities, class_name: "Stay::PropertyAmenity", dependent: :destroy
-    has_many :amenities, through: :property_amenities, class_name: "Stay::Amenity"
+    has_many :property_type_amenities, -> { where(amenity_type: PROPERTY) }, through: :property_amenities, source: :amenity, class_name: "Stay::Amenity"
     has_many :additional_rules, class_name: "Stay::AdditionalRule", dependent: :destroy
     has_many :property_house_rules, class_name: "Stay::PropertyHouseRule", dependent: :destroy
     has_many :house_rules, through: :property_house_rules, class_name: "Stay::HouseRule"
     has_many :property_features, class_name: "Stay::PropertyFeature", dependent: :destroy
-    has_many :features, through: :property_features, class_name: "Stay::Feature"
+    has_many :property_type_features,-> { where(feature_type: PROPERTY) },through: :property_features,source: :feature, class_name: "Stay::Feature"
     has_many :property_taxes, class_name: "Stay::PropertyTax", dependent: :destroy
     has_many :taxes, through: :property_taxes, class_name: "Stay::Tax"
     has_many :store_properties, class_name: "Stay::StoreProperty", dependent: :destroy
@@ -57,7 +59,6 @@ module Stay
 
     after_restore :restore_associated_rooms
     after_restore :restore_active_storage_files
-    after_create :create_default_room
     after_update :update_prices
     after_create :create_store_property
     geocoded_by :combine_address

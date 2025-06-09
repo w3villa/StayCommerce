@@ -12,11 +12,11 @@ class PropertySerializer < ActiveModel::Serializer
   belongs_to :user
 
   def amenities
-    ActiveModelSerializers::SerializableResource.new(object.amenities.property.uniq, each_serializer: AmenitySerializer)
+    ActiveModelSerializers::SerializableResource.new(object.property_type_amenities, each_serializer: AmenitySerializer)
   end
 
   def features
-    ActiveModelSerializers::SerializableResource.new(object.features.property.uniq, each_serializer: PropertyFeatureSerializer)
+    ActiveModelSerializers::SerializableResource.new(object.property_type_features, each_serializer: FeatureSerializer)
   end
 
   def is_shared_property

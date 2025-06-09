@@ -1,4 +1,5 @@
 class Stay::Api::V1::PropertiesController < Stay::BaseApiController
+    include Stay::ImageResizerConcern
     before_action :authenticate_devise_api_token!
     before_action :set_property, only: [ :show, :update, :destroy ]
     before_action :check_create_access, only: [ :create, :update ]

@@ -7,7 +7,5 @@ module Stay
 
     has_many :room_amenities, class_name: "Stay::RoomAmenity", dependent: :destroy
     has_many :rooms, through: :room_amenities, class_name: "Stay::Room"
-
-    validates :name, presence: true, uniqueness: { case_sensitive: false }
   end
 end
