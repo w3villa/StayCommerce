@@ -19,22 +19,26 @@ class Stay::Api::V1::MessagesController < Stay::BaseApiController
       total_pages = (total_count.to_f / per_page).ceil
 
       messages = @chat.messages
-                     .order(created_at: :asc)
-                     .limit(cumulative_limit)
+                      .order(created_at: :desc)
+                      .limit(cumulative_limit)
 
-      chat_json = ChatSerializer.new(
-        @chat,
-        scope: { current_user: current_devise_api_user }
-      ).as_json
+      grouped_messages = messages
+                           .select("DATE(created_at) as message_date, stay_messages.*")
+                           .group_by { |message| message.created_at.to_date }
 
-      messages_json = messages.map do |message|
-        MessageSerializer.new(message, scope: current_devise_api_user).as_json
+      grouped_messages_json = grouped_messages.transform_keys(&:to_s).map do |date, msgs|
+        {
+          date: formatted_date(date.to_date),
+          messages: ActiveModelSerializers::SerializableResource.new(msgs, each_serializer: MessageSerializer)
+        }
       end
+
+      serialized_chat = ActiveModelSerializers::SerializableResource.new(@chat, serializer: ChatSerializer, scope: { current_user: current_devise_api_user })
 
       render json: {
         data: "Messages Found",
-        chat: chat_json,
-        message: messages_json,
+        chat: serialized_chat,
+        message: grouped_messages_json,
         success: true,
         meta: {
           total_pages: total_pages,
@@ -48,6 +52,7 @@ class Stay::Api::V1::MessagesController < Stay::BaseApiController
       render json: { error: e.message, success: false }, status: :internal_server_error
     end
   end
+
   def new
     @message = @chat.messages.new
     render json: { data: "Message form loaded", message: @message, success: true }, status: :ok

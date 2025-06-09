@@ -21,6 +21,7 @@ PATH
       carmen (~> 1.1)
       devise
       devise-api
+      dotenv-rails
       friendly_id
       geocoder (~> 1.8)
       hotwire-rails (~> 0.1)
@@ -154,6 +155,10 @@ GEM
       railties (>= 4.1.0)
       responders
       warden (~> 1.2.3)
+    dotenv (3.1.7)
+    dotenv-rails (3.1.7)
+      dotenv (= 3.1.7)
+      railties (>= 6.1)
     drb (2.2.1)
     dry-configurable (1.3.0)
       dry-core (~> 1.1)
@@ -443,8 +448,9 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
-  active_model_serializers
+  active_model_serializers (~> 0.10.15)
   devise-api!
+  dotenv-rails
   faker
   friendly_id
   geocoder

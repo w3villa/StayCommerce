@@ -27,7 +27,11 @@ Stay::Engine.routes.draw do
     resources :rooms
     resources :bookings
     resources :payment_methods
-    resources :payments
+    resources :payments do
+      collection do
+        post :create_payment_method
+      end
+    end
     resources :reviews
     resources :chats
     resources :messages
