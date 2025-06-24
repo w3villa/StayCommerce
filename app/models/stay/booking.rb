@@ -19,6 +19,9 @@ module Stay
     scope :incomplete, -> { where(completed_at: nil).where(payment_state: [ "failed", nil ]).where.not(status: :canceled) }
     scope :not_canceled, -> { where.not(status: "canceled") }
     scope :confirmed, -> { where(status: "confirmed").where(payment_state: "paid") }
+    scope :current_host_booking, ->(host)  {
+          joins(:property).where(stay_properties: { user: host })
+        }
 
     after_commit :booking_completed_at
     before_create :link_by_email, :generate_number

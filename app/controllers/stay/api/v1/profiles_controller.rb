@@ -21,7 +21,7 @@ class Stay::Api::V1::ProfilesController < Stay::BaseApiController
     end
 
     def profile_params
-      params.require(:profile).permit(:first_name, :last_name, :phone, :date_of_birth, :gender, :profile_image )
+      params.require(:profile).permit(:first_name, :last_name, :phone, :date_of_birth, :gender, :profile_image, :about_me )
     end
     
 end

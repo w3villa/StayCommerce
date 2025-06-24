@@ -6,7 +6,7 @@ module Stay
       extend ActiveSupport::Concern
 
       included do
-        Stripe.api_key = Rails.configuration.stripe[:secret_key]
+       Stripe.api_key = ENV["STRIPES_SECRECT_KEY"]
       end
 
       def user

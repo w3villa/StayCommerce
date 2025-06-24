@@ -1,6 +1,6 @@
 class BookingSerializer < ActiveModel::Serializer
   attributes  :id, :number, :calculate_totals, :tax_total, :total, :total_amount, :item_total, :room_count, :check_in_date, :check_out_date,
-              :number_of_guests, :completed_at, :payment_state, :calculate_city_fee, :calculate_cleaning_fee, :status, :invoice_total, :extra_guest_amount, :last_five_messages
+              :number_of_guests, :completed_at, :payment_state, :calculate_city_fee, :calculate_cleaning_fee, :status, :invoice_total, :extra_guest_amount, :last_five_messages , :property_user
   belongs_to :property, serializer: PropertyListingSerializer
   belongs_to :user,  serializer: UserListingSerializer
   has_many :line_items, serializer: LineItemSerializer
@@ -38,6 +38,10 @@ class BookingSerializer < ActiveModel::Serializer
 
   def extra_guest_amount
     object.extra_guest_amount
+  end
+
+  def property_user
+    object.property.user.present? ? UserListingSerializer.new(object.property.user) : nil
   end
 
   def invoice_total
