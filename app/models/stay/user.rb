@@ -5,6 +5,9 @@ module Stay
     devise :database_authenticatable, :registerable,
            :recoverable, :rememberable, :validatable, :api
 
+
+    Stripe.api_key = ENV["STRIPES_SECRECT_KEY"]
+
     has_many :role_users, class_name: "Stay::RoleUser", dependent: :destroy
     has_many :stay_roles, through: :role_users, class_name: "Stay::Role", source: :role
     has_many :bookings
@@ -35,8 +38,7 @@ module Stay
 
     # callbacks
     after_create :welcome_email
-    # after_create :assign_default_role
-    # after_create :admin_host_email
+    after_create :create_stripe_account
 
     attr_accessor :updating_password
 
@@ -105,6 +107,24 @@ module Stay
 
     def assign_default_role
       Stay::RoleUser.create(user: self, role: Stay::Role.where(name: Stay::Role::USER).first_or_create) unless stay_roles.exists?
+    end
+
+    def create_stripe_account
+      user = self
+      customer =  Stripe::Customer.create({
+          email: user.email,
+          name: "#{user&.first_name} #{user&.last_name}",
+          address: {
+            city: user&.addresses&.last&.city,
+            state: user&.addresses&.last&.state&.name,
+            country: user&.addresses&.last&.country&.name,
+            line1: user&.addresses&.last&.address1,
+            line2: user&.addresses&.last&.address2,
+            postal_code: user&.addresses&.last&.zipcode
+          },
+        })
+        user.update(stripe_customer_id: customer.id)
+      
     end
   end
 end
